@@ -1,4 +1,4 @@
 Graphalyzer-Server
 ========
 
-Server backend for Graphalyzer.
+Test Server backend for Graphalyzer.
