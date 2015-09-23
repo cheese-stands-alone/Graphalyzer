@@ -1,0 +1,5 @@
+language: rust
+env:
+  - SERVER_DIR=Graphalyzer-Server
+script: 
+    cd $SERVER_DIR && cargo test && cargo doc

@@ -1,0 +1,4 @@
+[package]
+name = "Graphalyzer-Server"
+version = "0.1.0"
+authors = ["Richard White <rwhite226@gmail.com>"]
