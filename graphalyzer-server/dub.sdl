@@ -1,0 +1,6 @@
+name "graphalyzer-server"
+description "A simple vibe.d server application."
+copyright "Copyright © 2015, richard"
+authors "richard"
+dependency "vibe-d" version="~>0.7.23"
+versions "VibeDefaultMain"

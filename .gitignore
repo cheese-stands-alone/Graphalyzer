@@ -1,5 +1,4 @@
-Graphalyzer-Server/.DS_Store
-Graphalyzer-Server/target/
-Graphalyzer-Server/test/
-Graphalyzer-Server/doc/
-Graphalyzer-Server/Cargo.lock
+graphalyzer-server/public/
+graphalyzer-server/views/
+graphalyzer-server/dub.selections.json
+graphalyzer-server/graphalyzer-server
