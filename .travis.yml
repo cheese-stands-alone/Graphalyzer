@@ -4,6 +4,6 @@ d:
   - gdc
   - ldc
 env:
-  - SERVER_DIR=Graphalyzer-Server
+  - SERVER_DIR=graphalyzer-server
 script: 
     cd $SERVER_DIR && dub test --compiler=${DC}
