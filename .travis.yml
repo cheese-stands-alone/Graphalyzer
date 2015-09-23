@@ -1,5 +1,9 @@
-language: rust
+language: d
+d:
+  - dmd
+  - gdc
+  - ldc
 env:
   - SERVER_DIR=Graphalyzer-Server
 script: 
-    cd $SERVER_DIR && cargo test && cargo doc
+    cd $SERVER_DIR && dub test --compiler=${DC}
