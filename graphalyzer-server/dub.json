@@ -1,0 +1,8 @@
+{
+	"name" : "graphalyzer-server",
+	"description" : "Hello World - A minimal DUB bundle.",
+	"dependencies": {
+		"vibe-d": "~>0.7.23"
+	},
+	"versions": ["VibeDefaultMain"]
+}
