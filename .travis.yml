@@ -3,6 +3,7 @@ d:
   - dmd
   - gdc
   - ldc
+sudo: false
 env:
   - SERVER_DIR=graphalyzer-server
 script: 
