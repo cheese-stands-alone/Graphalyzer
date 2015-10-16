@@ -2,26 +2,35 @@
 <head>
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/angular.js"></script>
-  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 
-  <style type="text/css" rel="css/bootstrap.min.css"></style>
-  <style type="text/css" rel="css/style.css"></style>
+  <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"></link>
+  <link type="text/css" rel="stylesheet" href="css/style.css"></link>
 </head>
 <!-- Controller should probably be the search function  -->
 <body>
-<div ng-app>
-  <div class="search-box">
-    <label>Search: </label>
-    <input type="text" ng-model="query" placeholder="Enter your search query">
-    <hr>
+<div ng-app class="container-fluid">
+  <div class="row">
+    <div class="search-box text-right">
+      <label>Search: </label>
+      <input type="text" ng-model="query" placeholder="Enter your search query">
+    </div>
   </div>
-  <div class="graph-panel">
-    <h1>{{query}}</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="graph-panel">
+        <div class="text-center"> <!-- // TODO - get rid of when graph is on there -->
+          <h2>Graph Panel</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="node-panel">
+        <h1>{{query}}</h1>
+      </div>
+    </div>
   </div>
-  <div class="node-panel">
-    <h2>// TODO</h2>
-  </div>
-</div>
+</div> <!-- container -->
 </body>
 </html>
