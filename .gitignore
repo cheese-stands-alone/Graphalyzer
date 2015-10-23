@@ -2,3 +2,5 @@ graphalyzer-server/public/
 graphalyzer-server/views/
 graphalyzer-server/dub.selections.json
 graphalyzer-server/graphalyzer-server
+__*
+.metadata*

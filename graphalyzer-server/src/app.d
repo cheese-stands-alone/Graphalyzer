@@ -7,10 +7,7 @@ import vibe.d;
  ***********************************************/
 shared static this() {
 	
-	import core.memory;
-	GC.minimize();
-	
-	import vibe.http.router, WebSocketServer;
+	import vibe.http.router, WebSocketServer.Server;
 	auto router = new URLRouter;
 	router.get("/ws", handleWebSockets(&handleWebsocket));
 

@@ -1,4 +1,5 @@
-module WebSocketServer.WebsocketServer;
+module WebSocketServer.Server;
+
 import vibe.web.web;
 import vibe.http.websockets;
 
