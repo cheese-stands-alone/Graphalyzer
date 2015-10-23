@@ -9,7 +9,7 @@ import vibe.http.websockets;
  * Authors: Richard White, rwhite22@iastate.edu
  * Date: October 20, 2015
  ***********************************************/
-private string generateMessageID()
+public string generateMessageID()
 {
     import std.algorithm, std.ascii, std.base64, std.conv, std.random, std.range;
     auto rndNums = rndGen().map!(a => cast(ubyte)a)().take(16);
@@ -53,7 +53,9 @@ public void handleWebsocket(scope WebSocket socket)
                 // corresponding objects to handle them.
                 switch(request) {
                 case "newid":
-                    int i;
+                    import WebSocketServer.Handler.SessionIDHandler;
+                    auto handler = new SessionIDHandler();
+                    handler.handle(payload, socket);
                     break;
                 case "asdfsdf":
                     int b;
@@ -63,49 +65,25 @@ public void handleWebsocket(scope WebSocket socket)
                     break;
                 // Run if request type is not found above.    
                 default:
-                    Json[string] errorMsg;
-                	errorMsg["message_id"] = generateMessageID();
-                	errorMsg["sender_id"] = "Server";
-                	import std.datetime;
-                	errorMsg["time"] = core.stdc.time.time(null);
-                	errorMsg["request"] = "error";
-                	errorMsg["status"] = "error";
-                	errorMsg["error"] = "Unknown request type";
-                	errorMsg["payload"] = request;
-                	errorMsg["message"] = "";
-                	socket.send(serializeToJsonString(errorMsg));
+                    import WebSocketServer.Handler.UnknownRequestHandler;
+                	auto handler = new UnknownRequestHandler();
+                	handler.handle(request, socket);
                     break;
                 }
             }
             // Json parsing exception.
             catch (JSONException e) {
                 logError(e.msg);
-                Json[string] errorMsg;
-                errorMsg["message_id"] = generateMessageID();
-                errorMsg["sender_id"] = "Server";
-                import std.datetime;
-                errorMsg["time"] = core.stdc.time.time(null);
-                errorMsg["request"] = "error";
-                errorMsg["status"] = "error";
-                errorMsg["error"] = e.msg;
-                errorMsg["payload"] = "";
-                errorMsg["message"] = "";
-                socket.send(serializeToJsonString(errorMsg));
+                import WebSocketServer.Handler.JsonParseErrorHandler;
+                auto handler = new JsonParseErrorHandler();
+                handler.handle(e.msg, socket);
             }
             // All other exceptions.
             catch (Exception e) {
                 logError(e.msg);
-                Json[string] errorMsg;
-                errorMsg["message_id"] = generateMessageID();
-                errorMsg["sender_id"] = "Server";
-                import std.datetime;
-                errorMsg["time"] = core.stdc.time.time(null);
-                errorMsg["request"] = "error";
-                errorMsg["status"] = "error";
-                errorMsg["error"] = "Unknown Error: Error Supresses";
-                errorMsg["payload"] = "";
-                errorMsg["message"] = "";
-                socket.send(serializeToJsonString(errorMsg));
+                import WebSocketServer.Handler.UnknownErrorHandler;
+                auto handler = new UnknownErrorHandler();
+                handler.handle(e.msg, socket);
             }
         }
     }

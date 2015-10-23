@@ -4,3 +4,4 @@ graphalyzer-server/dub.selections.json
 graphalyzer-server/graphalyzer-server
 __*
 .metadata*
+*.orig
