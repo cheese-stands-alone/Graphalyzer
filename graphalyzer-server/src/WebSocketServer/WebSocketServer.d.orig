@@ -1,0 +1,76 @@
+import vibe.web.web;
+import vibe.http.websockets;
+
+private string generateMessageID() {
+    import std.algorithm, std.ascii, std.base64, std.conv, std.random, std.range;
+    auto rndNums = rndGen().map!(a => cast(ubyte)a)().take(32);
+    auto result = appender!string();
+    Base64.encode(rndNums, result);
+    return result.data.filter!isAlphaNum().to!string();
+}
+
+public void handleWebsocket(scope WebSocket socket)
+{
+    import vibe.core.log, std.json, vibe.data.json;
+    logInfo("Got new web socket connection.");
+    while(socket.connected()) {
+        if(socket.waitForData()) {
+        	try {
+            string messageString = socket.receiveText();
+            Json json = messageString.parseJsonString();
+            logInfo(serializeToPrettyJson(json));
+            string message_id = json["message_id"].get!string;
+            string sender_id = json["sender_id"].get!string;
+            string time = json["sender_id"].get!string;
+            string request = json["request"].get!string;
+            string status = json["status"].get!string;
+            string error = json["error"].get!string;
+            string payload = json["payload"].get!string;
+            string message = json["message"].get!string;
+            switch(request) {
+            case "initrequest":
+                int i;
+                break;
+            case "asdfsdf":
+                int b;
+                break;
+            case "sdfsdf":
+                int c;
+                break;
+            default:
+                int k;
+                break;
+            }
+            }
+        	catch (JSONException e) {
+        		logError(e.msg);
+        		Json[string] errorMsg;
+				errorMsg["message_id"] = generateMessageID();
+				errorMsg["sender_id"] = "Server";
+				import std.datetime;
+				errorMsg["time"] = core.stdc.time.time(null);
+				errorMsg["request"] = "error";
+				errorMsg["status"] = "error";
+				errorMsg["error"] = e.msg;
+				errorMsg["payload"] = "";
+				errorMsg["message"] = "";
+        		socket.send(serializeToJsonString(errorMsg));
+        	}
+        	catch (Exception e) {
+        		logError(e.msg);
+        		Json[string] errorMsg;
+				errorMsg["message_id"] = generateMessageID();
+				errorMsg["sender_id"] = "Server";
+				import std.datetime;
+				errorMsg["time"] = core.stdc.time.time(null);
+				errorMsg["request"] = "error";
+				errorMsg["status"] = "error";
+				errorMsg["error"] = "Unknown Error: Error Supresses";
+				errorMsg["payload"] = "";
+				errorMsg["message"] = "";
+        		socket.send(serializeToJsonString(errorMsg));
+        	} 
+        }
+    }
+    logInfo("Client disconnected.");
+}

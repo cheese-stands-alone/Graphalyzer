@@ -1,19 +1,22 @@
-import std.stdio, std.datetime, vibe.d;
+import vibe.d;
 
-void postFile(HTTPServerRequest req, HTTPServerResponse res) {
-    logInfo("%s: Recieved a POST from %s", Clock.currTime.toISOExtString(), req.peer);
-    string str = req.toString();
-    str = urlDecode(str[17 .. str.length-9]);
-    res.writeBody("Sucess");
-}
-
+/************************************************
+ * Handles Main entrypoint for server as opposed to void main()
+ * Authors: Richard White, rwhite22@iastate.edu
+ * Date: October 20, 2015
+ ***********************************************/
 shared static this() {
-	URLRouter router = new URLRouter;
-	router.post("/filesubmit/*", &postFile);
+	
+	import core.memory;
+	GC.minimize();
+	
+	import vibe.http.router, WebSocketServer;
+	auto router = new URLRouter;
+	router.get("/ws", handleWebSockets(&handleWebsocket));
 
-    HTTPServerSettings settings = new HTTPServerSettings;
-	settings.port = 8080;
+	auto settings = new HTTPServerSettings;
+	settings.port = 1618;
 	settings.bindAddresses = ["::1", "127.0.0.1"];
-
 	listenHTTP(settings, router);
+	
 }
