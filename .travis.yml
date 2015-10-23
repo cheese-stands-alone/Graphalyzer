@@ -9,3 +9,4 @@ install:
     - wget -q -O - "http://bit.ly/Doveralls" -P $SERVER_DIR | bash
 script: 
     cd $SERVER_DIR && dub test -b unittest-cov --compiler=${DC} 
+    ./doveralls
