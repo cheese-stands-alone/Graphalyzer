@@ -1,0 +1,25 @@
+{
+  "name": "Graphalyzer",
+  "version": "1.0.0",
+  "description": "Graph Visualization and Analysis Tool",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rwhite226/Graphalyzer.git"
+  },
+  "author": "Andrew Bowler, Alberto Gomez-Estrada, Michael Sgroi, Taylor Welter, Richard White",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/rwhite226/Graphalyzer/issues"
+  },
+  "homepage": "https://github.com/rwhite226/Graphalyzer",
+  "dependencies": {
+    "angular": "^1.4.7",
+    "bootstrap": "^3.3.5",
+    "jquery": "^2.1.4",
+    "vis": "^4.9.0"
+  }
+}

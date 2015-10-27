@@ -5,3 +5,4 @@ graphalyzer-server/graphalyzer-server
 __*
 .metadata*
 *.orig
+graph_ui/node_modules/
