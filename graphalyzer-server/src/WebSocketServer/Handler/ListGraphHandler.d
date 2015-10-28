@@ -15,7 +15,6 @@ class ListGraphHandler : HandlerInterface {
     	// Generate a random ammount of random names for now.
     	import std.random;
     	foreach (number; 0..uniform(5, 20)) {  
-    		import WebSocketServer.Server;
     		graphList ~= "name-" ~ generateMessageID(8) ~ "-" ~ SysTime(Clock.currStdTime()).toISOExtString;
     	}
     	
@@ -23,9 +22,9 @@ class ListGraphHandler : HandlerInterface {
         jsonMsg["message_id"] = generateMessageID(16);
         jsonMsg["sender_id"] = "Server";
         jsonMsg["time"] = core.stdc.time.time(null);
-        jsonMsg["request"] = "error";
-        jsonMsg["status"] = "error";
-        jsonMsg["error"] = payload;
+        jsonMsg["request"] = "response";
+        jsonMsg["status"] = "success";
+        jsonMsg["error"] = "";
         jsonMsg["payload"] = graphList.serializeToJson();
         jsonMsg["message"] = "";
         socket.send(serializeToJsonString(jsonMsg));

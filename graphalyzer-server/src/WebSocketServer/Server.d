@@ -51,8 +51,12 @@ public void handleWebsocket(scope WebSocket socket) {
                     handler.handle(payload, socket);
                     handler.clean();
                     break;
-                case "sdfsdf":
-                    int c;
+                case "getgraph":
+                    import WebSocketServer.Handler.GetGraphHandler;
+
+                    auto handler = new GetGraphHandler();
+                    handler.handle(payload, socket);
+                    handler.clean();
                     break;
                     // Run if request type is not found above.    
                 default:
