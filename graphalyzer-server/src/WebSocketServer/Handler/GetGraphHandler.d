@@ -10,7 +10,7 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
 class GetGraphHandler : HandlerInterface {
     override void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json, std.datetime;
+    	import std.json, vibe.data.json, std.datetime, std.conv;
     	string[] nodes;
     	string[] edges;
     	Json[string] graph;
@@ -43,7 +43,7 @@ class GetGraphHandler : HandlerInterface {
         Json[string] jsonMsg;
         jsonMsg["message_id"] = generateMessageID(16);
         jsonMsg["sender_id"] = "Server";
-        jsonMsg["time"] = core.stdc.time.time(null);
+        jsonMsg["time"] = to!string(core.stdc.time.time(null));
         jsonMsg["request"] = "responce";
         jsonMsg["status"] = "success";
         jsonMsg["error"] = "";

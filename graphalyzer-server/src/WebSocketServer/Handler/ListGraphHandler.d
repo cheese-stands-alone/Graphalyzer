@@ -9,7 +9,7 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
 class ListGraphHandler : HandlerInterface {
     override void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json, std.datetime;
+    	import std.json, vibe.data.json, std.datetime, std.conv;
     	string[] graphList;
     	
     	// Generate a random ammount of random names for now.
@@ -21,7 +21,7 @@ class ListGraphHandler : HandlerInterface {
         Json[string] jsonMsg;
         jsonMsg["message_id"] = generateMessageID(16);
         jsonMsg["sender_id"] = "Server";
-        jsonMsg["time"] = core.stdc.time.time(null);
+        jsonMsg["time"] =  to!string(core.stdc.time.time(null));
         jsonMsg["request"] = "response";
         jsonMsg["status"] = "success";
         jsonMsg["error"] = "";

@@ -11,12 +11,12 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
 class UnknownRequestHandler : HandlerInterface {
     void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json;
+    	import std.json, vibe.data.json, std.conv;
         Json[string] errorMsg;
         errorMsg["message_id"] = generateMessageID(16);
         errorMsg["sender_id"] = "Server";
         import std.datetime;
-        errorMsg["time"] = core.stdc.time.time(null);
+        errorMsg["time"] =  to!string(core.stdc.time.time(null));
         errorMsg["request"] = "error";
         errorMsg["status"] = "error";
         errorMsg["error"] = "Unknown request type";

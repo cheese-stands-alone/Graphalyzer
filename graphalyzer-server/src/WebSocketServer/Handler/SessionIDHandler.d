@@ -10,12 +10,12 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
 class SessionIDHandler : HandlerInterface {
     void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json;
+    	import std.json, vibe.data.json, std.conv;
         Json[string] json;
         json["message_id"] = generateMessageID(16);
         json["sender_id"] = "server";
         import std.datetime;
-        json["time"] = core.stdc.time.time(null);
+        json["time"] =  to!string(core.stdc.time.time(null));
         json["request"] = "response";
         json["status"] = "success";
         json["error"] = "";
