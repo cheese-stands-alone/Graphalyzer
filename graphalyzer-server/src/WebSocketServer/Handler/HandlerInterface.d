@@ -9,4 +9,5 @@ import vibe.http.websockets;
  ***********************************************/
 interface HandlerInterface {
     void handle(string payload, scope WebSocket socket);
+    void clean();
 }

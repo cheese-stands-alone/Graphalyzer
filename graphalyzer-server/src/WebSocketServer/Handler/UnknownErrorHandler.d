@@ -23,5 +23,14 @@ class UnknownErrorHandler : HandlerInterface {
         errorMsg["payload"] = "";
         errorMsg["message"] = "";
         socket.send(serializeToJsonString(errorMsg));
+        clean();
+    }
+    
+    void clean() {
+    	foreach(number; 0..2) {
+    		import core.memory;
+    		GC.minimize();
+    		GC.collect();
+    	}
     }
 }

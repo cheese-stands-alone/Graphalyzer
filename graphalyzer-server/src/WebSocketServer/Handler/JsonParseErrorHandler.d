@@ -8,7 +8,7 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
  * Date: October 23, 2015
  ***********************************************/
 class JsonParseErrorHandler : HandlerInterface {
-    void handle(string payload, scope WebSocket socket)
+    override void handle(string payload, scope WebSocket socket)
     {
     	import std.json, vibe.data.json;
         Json[string] errorMsg;
@@ -23,5 +23,14 @@ class JsonParseErrorHandler : HandlerInterface {
         errorMsg["payload"] = "";
         errorMsg["message"] = "";
         socket.send(serializeToJsonString(errorMsg));
+        clean();
+    }
+    
+    void clean() {
+    	foreach(number; 0..2) {
+    		import core.memory;
+    		GC.minimize();
+    		GC.collect();
+    	}
     }
 }

@@ -23,5 +23,14 @@ class SessionIDHandler : HandlerInterface {
         json["payload"] = generateMessageID();
         json["message"] = "";
         socket.send(serializeToJsonString(json));
+        clean();
+    }
+    
+    void clean() {
+    	foreach(number; 0..2) {
+    		import core.memory;
+    		GC.minimize();
+    		GC.collect();
+    	}
     }
 }
