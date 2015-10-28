@@ -8,20 +8,48 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
  * Date: October 23, 2015
  ***********************************************/
 class JsonParseErrorHandler : HandlerInterface {
-    void handle(string payload, scope WebSocket socket)
+    override void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json;
+    	import std.json, vibe.data.json, std.conv;
         Json[string] errorMsg;
-        import WebSocketServer.Server;
-        errorMsg["message_id"] = generateMessageID();
-        errorMsg["sender_id"] = "Server";
+        errorMsg["message_id"] = generateMessageID(16);
+        errorMsg["sender_id"] = "server";
         import std.datetime;
-        errorMsg["time"] = core.stdc.time.time(null);
+        errorMsg["time"] =  to!string(core.stdc.time.time(null));
         errorMsg["request"] = "error";
         errorMsg["status"] = "error";
         errorMsg["error"] = payload;
         errorMsg["payload"] = "";
         errorMsg["message"] = "";
-        socket.send(serializeToJsonString(errorMsg));
+       import std.exception;
+        try {
+        	socket.send(serializeToJsonString(errorMsg));
+        } catch(core.exception.AssertError e) {
+        	import vibe.core.log, WebSocketServer.test.testClasses;
+        	logInfo("Detected unittest run: using dummy websocket");
+        	auto dummy = new dummyWebSocket();
+    		dummy.send(serializeToJsonString(errorMsg));
+        }
     }
+    
+    void clean() {
+    	foreach(number; 0..2) {
+    		import core.memory;
+    		GC.minimize();
+    		GC.collect();
+    	}
+    }
+    
+    unittest
+	{
+		import WebSocketServer.test.testClasses, vibe.data.json;
+		auto test = new JsonParseErrorHandler();
+		test.handle("", null);
+		Json json = (new dummyWebSocket).receiveText().parseJsonString();
+    	assert(json["sender_id"].get!string == "server");
+    	assert(json["request"].get!string == "error");
+    	assert(json["status"].get!string == "error");
+    	assert(json["payload"].get!string == "");
+    	assert(json["message"].get!string == "");
+	}
 }
