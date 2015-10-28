@@ -13,8 +13,7 @@ class UnknownRequestHandler : HandlerInterface {
     {
     	import std.json, vibe.data.json;
         Json[string] errorMsg;
-        import WebSocketServer.Server;
-        errorMsg["message_id"] = generateMessageID();
+        errorMsg["message_id"] = generateMessageID(16);
         errorMsg["sender_id"] = "Server";
         import std.datetime;
         errorMsg["time"] = core.stdc.time.time(null);
