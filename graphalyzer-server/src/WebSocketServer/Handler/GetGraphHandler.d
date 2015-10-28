@@ -44,7 +44,7 @@ class GetGraphHandler : HandlerInterface {
         jsonMsg["message_id"] = generateMessageID(16);
         jsonMsg["sender_id"] = "Server";
         jsonMsg["time"] = to!string(core.stdc.time.time(null));
-        jsonMsg["request"] = "responce";
+        jsonMsg["request"] = "response";
         jsonMsg["status"] = "success";
         jsonMsg["error"] = "";
         jsonMsg["payload"] = graph.serializeToJson();
