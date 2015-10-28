@@ -42,15 +42,22 @@ class GetGraphHandler : HandlerInterface {
     	
         Json[string] jsonMsg;
         jsonMsg["message_id"] = generateMessageID(16);
-        jsonMsg["sender_id"] = "Server";
+        jsonMsg["sender_id"] = "server";
         jsonMsg["time"] = to!string(core.stdc.time.time(null));
         jsonMsg["request"] = "response";
         jsonMsg["status"] = "success";
         jsonMsg["error"] = "";
         jsonMsg["payload"] = graph.serializeToJson();
         jsonMsg["message"] = "";
-        socket.send(serializeToJsonString(jsonMsg));
-        clean();
+        import std.exception;
+        try {
+        	socket.send(serializeToJsonString(jsonMsg));
+        } catch(core.exception.AssertError e) {
+        	import vibe.core.log, WebSocketServer.test.testClasses;
+        	logInfo("Detected unittest run: using dummy websocket");
+        	auto dummy = new dummyWebSocket();
+    		dummy.send(serializeToJsonString(jsonMsg));
+        }
     }
     
     void clean() {
@@ -60,4 +67,17 @@ class GetGraphHandler : HandlerInterface {
     		GC.collect();
     	}
     }
+    
+    unittest
+	{
+		import WebSocketServer.test.testClasses, vibe.data.json;
+		auto test = new GetGraphHandler();
+		test.handle("", null);
+		Json json = (new dummyWebSocket).receiveText().parseJsonString();
+    	assert(json["sender_id"].get!string == "server");
+    	assert(json["request"].get!string == "response");
+    	assert(json["status"].get!string == "success");
+    	assert(json["error"].get!string == "");
+    	assert(json["message"].get!string == "");
+	}
 }
