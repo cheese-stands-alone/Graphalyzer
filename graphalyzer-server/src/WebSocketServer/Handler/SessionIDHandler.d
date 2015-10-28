@@ -10,18 +10,46 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
 class SessionIDHandler : HandlerInterface {
     void handle(string payload, scope WebSocket socket)
     {
-    	import std.json, vibe.data.json;
+    	import std.json, vibe.data.json, std.conv;
         Json[string] json;
-        import WebSocketServer.Server;
-        json["message_id"] = generateMessageID();
+        json["message_id"] = generateMessageID(16);
         json["sender_id"] = "server";
         import std.datetime;
-        json["time"] = core.stdc.time.time(null);
+        json["time"] =  to!string(core.stdc.time.time(null));
         json["request"] = "response";
         json["status"] = "success";
         json["error"] = "";
-        json["payload"] = generateMessageID();
+        json["payload"] = generateMessageID(16);
         json["message"] = "";
-        socket.send(serializeToJsonString(json));
+        import std.exception;
+        try {
+        	socket.send(serializeToJsonString(json));
+        } catch(core.exception.AssertError e) {
+        	import vibe.core.log, WebSocketServer.test.testClasses;
+        	logInfo("Detected unittest run: using dummy websocket");
+        	auto dummy = new dummyWebSocket();
+    		dummy.send(serializeToJsonString(json));
+        }
     }
+    
+    void clean() {
+    	foreach(number; 0..2) {
+    		import core.memory;
+    		GC.minimize();
+    		GC.collect();
+    	}
+    }
+    
+    unittest
+	{
+		import WebSocketServer.test.testClasses, vibe.data.json;
+		auto test = new SessionIDHandler();
+		test.handle("", null);
+		Json json = (new dummyWebSocket).receiveText().parseJsonString();
+    	assert(json["sender_id"].get!string == "server");
+    	assert(json["request"].get!string == "response");
+    	assert(json["status"].get!string == "success");
+    	assert(json["error"].get!string == "");
+    	assert(json["message"].get!string == "");
+	}
 }
