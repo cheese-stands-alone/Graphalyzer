@@ -12,15 +12,14 @@ class SessionIDHandler : HandlerInterface {
     {
     	import std.json, vibe.data.json;
         Json[string] json;
-        import WebSocketServer.Server;
-        json["message_id"] = generateMessageID();
+        json["message_id"] = generateMessageID(16);
         json["sender_id"] = "server";
         import std.datetime;
         json["time"] = core.stdc.time.time(null);
         json["request"] = "response";
         json["status"] = "success";
         json["error"] = "";
-        json["payload"] = generateMessageID();
+        json["payload"] = generateMessageID(16);
         json["message"] = "";
         socket.send(serializeToJsonString(json));
         clean();

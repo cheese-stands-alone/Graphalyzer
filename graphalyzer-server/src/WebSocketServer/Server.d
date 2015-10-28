@@ -4,22 +4,6 @@ import vibe.web.web;
 import vibe.http.websockets;
 
 /************************************************
- * Creates a string of random alphanumeric chars
- * Returns: string of 16 random characters
- * Authors: Richard White, rwhite22@iastate.edu
- * Date: October 20, 2015
- ***********************************************/
-public string generateMessageID() {
-    import std.algorithm, std.ascii, std.base64, std.conv, std.random,
-        std.range;
-
-    auto rndNums = rndGen().map!(a => cast(ubyte) a)().take(16);
-    auto result = appender!string();
-    Base64.encode(rndNums, result);
-    return result.data.filter!isAlphaNum().to!string();
-}
-
-/************************************************
  * Handles websocket connections and parses the json messages.
  * Returns: Responds to websocket client but does not return a value
  * Authors: Richard White, rwhite22@iastate.edu
@@ -58,9 +42,14 @@ public void handleWebsocket(scope WebSocket socket) {
 
                     auto handler = new SessionIDHandler();
                     handler.handle(payload, socket);
+                    handler.clean();
                     break;
-                case "asdfsdf":
-                    int b;
+                case "listgraphs":
+                    import WebSocketServer.Handler.ListGraphHandler;
+
+                    auto handler = new ListGraphHandler();
+                    handler.handle(payload, socket);
+                    handler.clean();
                     break;
                 case "sdfsdf":
                     int c;
