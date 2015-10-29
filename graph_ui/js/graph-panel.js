@@ -3,7 +3,5 @@
  */
 
 (function() {
-  var app = angular.module('graph-panel', []);
-
-  // TODO
+  var app = angular.module('graphPanel', ['ngVis']);
 })();
