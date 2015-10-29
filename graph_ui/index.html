@@ -14,24 +14,18 @@
 <!-- Controller should probably be the search function  -->
 <body>
 <div ng-app class="container-fluid">
-  <div class="row">
-    <div class="search-box text-right">
+  <div class="graph-panel col-lg-9">
+    <div ng-controller="GraphController">
+      <vis-network data="data" options="options" height="100%"></vis-network>
+    </div>
+  </div>
+  <div class="col-lg-3 side-panel">
+    <div class="search-box text-center row">
       <label>Search: </label>
       <input type="text" ng-model="query" placeholder="Enter your search query">
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8">
-      <div class="graph-panel" ng-app="graphPanel" ng-controller="GraphController">
-        <div ng-controller="GraphController">
-          <vis-network data="data" options="options" height="100%"></vis-network>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="node-panel">
-        <h1>{{query}}</h1>
-      </div>
+    <div class="node-panel row">
+      <h1>{{query}}</h1>
     </div>
   </div>
 </div> <!-- container -->
