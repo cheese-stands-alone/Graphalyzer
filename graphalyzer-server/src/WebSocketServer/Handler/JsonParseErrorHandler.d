@@ -46,7 +46,7 @@ class JsonParseErrorHandler : HandlerInterface {
 		auto test = new JsonParseErrorHandler();
 		auto dummy = new dummyWebSocket();
 		test.handle("somestring", dummy);
-		Json json = dummy.receiveText().parseJsonString();;
+		Json json = dummy.receiveText().parseJsonString();
     	assert(json["sender_id"].get!string == "server");
     	assert(json["request"].get!string == "error");
     	assert(json["status"].get!string == "error");
