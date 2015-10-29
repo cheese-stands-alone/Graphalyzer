@@ -8,7 +8,7 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
  * Date: October 23, 2015
  ***********************************************/
 class JsonParseErrorHandler : HandlerInterface {
-    override void handle(string payload, scope WebSocket socket)
+    public void handle(T)(string payload, scope T socket)
     {
     	import std.json, vibe.data.json, std.conv;
         Json[string] errorMsg;
@@ -44,12 +44,14 @@ class JsonParseErrorHandler : HandlerInterface {
 	{
 		import WebSocketServer.test.testClasses, vibe.data.json;
 		auto test = new JsonParseErrorHandler();
-		test.handle("", null);
-		Json json = (new dummyWebSocket).receiveText().parseJsonString();
+		auto dummy = new dummyWebSocket();
+		test.handle("somestring", dummy);
+		Json json = dummy.receiveText().parseJsonString();;
     	assert(json["sender_id"].get!string == "server");
     	assert(json["request"].get!string == "error");
     	assert(json["status"].get!string == "error");
     	assert(json["payload"].get!string == "");
     	assert(json["message"].get!string == "");
+    	assert(json["error"].get!string == "somestring");
 	}
 }

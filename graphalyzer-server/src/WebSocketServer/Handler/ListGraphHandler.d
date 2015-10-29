@@ -7,7 +7,7 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
  * Date: October 28, 2015
  ***********************************************/
 class ListGraphHandler : HandlerInterface {
-    override void handle(string payload, scope WebSocket socket)
+    public void handle(T)(string payload, scope T socket)
     {
     	import std.json, vibe.data.json, std.datetime, std.conv;
     	string[] graphList;
@@ -50,8 +50,9 @@ class ListGraphHandler : HandlerInterface {
 	{
 		import WebSocketServer.test.testClasses, vibe.data.json;
 		auto test = new ListGraphHandler();
-		test.handle("", null);
-		Json json = (new dummyWebSocket).receiveText().parseJsonString();
+		auto dummy = new dummyWebSocket();
+		test.handle("", dummy);
+		Json json = dummy.receiveText().parseJsonString();
     	assert(json["sender_id"].get!string == "server");
     	assert(json["request"].get!string == "response");
     	assert(json["status"].get!string == "success");

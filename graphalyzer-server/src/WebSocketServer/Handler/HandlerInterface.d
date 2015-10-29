@@ -8,7 +8,7 @@ import vibe.http.websockets;
  * Date: October 23, 2015
  ***********************************************/
 interface HandlerInterface {
-    void handle(string payload, scope WebSocket socket);
+    void handle(T)(string payload, scope T socket);
     void clean();
 }
 

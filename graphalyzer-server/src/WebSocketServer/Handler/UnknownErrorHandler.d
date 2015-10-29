@@ -8,12 +8,12 @@ import WebSocketServer.Handler.HandlerInterface, vibe.http.websockets;
  * Date: October 23, 2015
  ***********************************************/
 class UnknownErrorHandler : HandlerInterface {
-    void handle(string payload, scope WebSocket socket)
+    public void handle(T)(string payload, scope T socket)
     {
     	import std.json, vibe.data.json, std.conv;
         Json[string] errorMsg;
         errorMsg["message_id"] = generateMessageID(16);
-        errorMsg["sender_id"] = "Server";
+        errorMsg["sender_id"] = "server";
         import std.datetime;
         errorMsg["time"] =  to!string(core.stdc.time.time(null));
         errorMsg["request"] = "error";
@@ -44,9 +44,10 @@ class UnknownErrorHandler : HandlerInterface {
 	{
 		import WebSocketServer.test.testClasses, vibe.data.json;
 		auto test = new UnknownErrorHandler();
-		test.handle("", null);
-		Json json = (new dummyWebSocket).receiveText().parseJsonString();
-    	assert(json["sender_id"].get!string == "Server");
+		auto dummy = new dummyWebSocket();
+		test.handle("", dummy);
+		Json json = dummy.receiveText().parseJsonString();
+    	assert(json["sender_id"].get!string == "server");
     	assert(json["request"].get!string == "error");
     	assert(json["status"].get!string == "error");
     	assert(json["error"].get!string == "Unknown Error: Error Supresses");
