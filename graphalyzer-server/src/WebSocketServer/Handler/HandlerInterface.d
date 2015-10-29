@@ -21,10 +21,11 @@ interface HandlerInterface {
 public string generateMessageID(int i) {
     import std.algorithm, std.ascii, std.base64, std.conv, std.random,
         std.range;
-	auto rnd = Random(unpredictableSeed);
+
+    auto rnd = Random(unpredictableSeed);
     auto rndNums = rnd.map!(a => cast(ubyte) a)().take(i);
     auto result = appender!string();
     Base64.encode(rndNums, result);
-    
+
     return result.data.filter!isAlphaNum().to!string();
 }

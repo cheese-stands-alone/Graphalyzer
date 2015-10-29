@@ -12,7 +12,7 @@ import vibe.http.websockets;
 public void handleWebsocket(scope WebSocket socket) {
     import vibe.core.log, std.json, vibe.data.json;
 
-    logInfo("Got new web socket connection.");
+    logDebug("Got new web socket connection.");
     // Loop to keep socket alive.
     while (socket.connected()) {
         // Make sure there is data
@@ -34,6 +34,7 @@ public void handleWebsocket(scope WebSocket socket) {
                 string error = json["error"].get!string;
                 string payload = json["payload"].get!string;
                 string message = json["message"].get!string;
+
                 // Switch statement for request types to create the 
                 // corresponding objects to handle them.
                 switch (request) {
@@ -58,8 +59,7 @@ public void handleWebsocket(scope WebSocket socket) {
                     handler.handle(payload, socket);
                     handler.clean();
                     break;
-                    // Run if request type is not found above.    
-                default:
+                default: // Run if request type is not found above.
                     import WebSocketServer.Handler.UnknownRequestHandler;
 
                     auto handler = new UnknownRequestHandler();
@@ -69,21 +69,21 @@ public void handleWebsocket(scope WebSocket socket) {
             }
             // Json parsing exception.
             catch (JSONException e) {
-                logError(e.msg);
                 import WebSocketServer.Handler.JsonParseErrorHandler;
 
+                logError(e.msg);
                 auto handler = new JsonParseErrorHandler();
                 handler.handle(e.msg, socket);
             }
             // All other exceptions.
             catch (Exception e) {
-                logError(e.msg);
                 import WebSocketServer.Handler.UnknownErrorHandler;
 
+                logError(e.msg);
                 auto handler = new UnknownErrorHandler();
                 handler.handle(e.msg, socket);
             }
         }
     }
-    logInfo("Client disconnected.");
+    logDebug("Client disconnected.");
 }
