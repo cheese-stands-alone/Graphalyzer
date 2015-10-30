@@ -1,17 +1,19 @@
 {
-	"name" : "graphalyzer-server",
-	"description" : "May1618 server backend.",
-	"dependencies": {
-		"vibe-d": "~>0.7.26-beta.1"
-	},
-	"configurations": [
+    "name":"graphalyzer-server",
+    "description":"May1618 server backend.",
+    "dependencies":{
+        "vibe-d":"~>0.7.26-beta.1"
+    },
+    "configurations":[
         {
-            "name": "application",
-            "targetType": "executable",
-            "versions": ["VibeDefaultMain"]
+            "name":"application",
+            "targetType":"executable",
+            "versions":[
+                "VibeDefaultMain"
+            ]
         },
         {
-            "name": "library"
+            "name":"library"
         }
     ]
 }
