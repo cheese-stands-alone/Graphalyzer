@@ -1,7 +1,7 @@
 graphalyzer-server/public/
-graphalyzer-server/views/
 graphalyzer-server/dub.selections.json
 graphalyzer-server/graphalyzer-server
+graphalyzer-server/dir/*
 __*
 .metadata*
 *.orig
