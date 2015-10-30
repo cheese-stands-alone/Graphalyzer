@@ -1,3 +1,4 @@
+module first;
 import vibe.d;
 
 /************************************************
@@ -10,7 +11,7 @@ shared static this() {
     import vibe.http.router, WebSocketServer.Server;
 
     auto router = new URLRouter;
-    router.get("/ws", handleWebSockets(&handleWebsocket));
+    router.get("/ws", handleWebSockets(&handleWebsocket!WebSocket));
 
     auto settings = new HTTPServerSettings;
     settings.port = 1618;

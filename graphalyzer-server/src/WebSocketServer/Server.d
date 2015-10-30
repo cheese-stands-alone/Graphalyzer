@@ -9,7 +9,7 @@ import vibe.http.websockets;
  * Authors: Richard White, rwhite22@iastate.edu
  * Date: October 20, 2015
  ***********************************************/
-public void handleWebsocket(scope WebSocket socket) {
+public void handleWebsocket(T)(scope T socket) {
     import vibe.core.log, std.json, vibe.data.json;
 
     logDebug("Got new web socket connection.");
@@ -21,9 +21,6 @@ public void handleWebsocket(scope WebSocket socket) {
                 // Retreve message and parse to json.
                 string messageString = socket.receiveText();
                 Json json = messageString.parseJsonString();
-
-                // Log json
-                logInfo(serializeToPrettyJson(json));
 
                 // Extract strings from json object in accorcance to api.
                 string message_id = json["message_id"].get!string;
@@ -44,27 +41,27 @@ public void handleWebsocket(scope WebSocket socket) {
                     auto handler = new SessionIDHandler();
                     handler.handle(payload, socket);
                     handler.clean();
-                    break;
+                    return;
                 case "listgraphs":
                     import WebSocketServer.Handler.ListGraphHandler;
 
                     auto handler = new ListGraphHandler();
                     handler.handle(payload, socket);
                     handler.clean();
-                    break;
+                    return;
                 case "getgraph":
                     import WebSocketServer.Handler.GetGraphHandler;
 
                     auto handler = new GetGraphHandler();
                     handler.handle(payload, socket);
                     handler.clean();
-                    break;
+                    return;
                 default: // Run if request type is not found above.
                     import WebSocketServer.Handler.UnknownRequestHandler;
 
                     auto handler = new UnknownRequestHandler();
                     handler.handle(request, socket);
-                    break;
+                    return;
                 }
             }
             // Json parsing exception.
@@ -74,6 +71,7 @@ public void handleWebsocket(scope WebSocket socket) {
                 logError(e.msg);
                 auto handler = new JsonParseErrorHandler();
                 handler.handle(e.msg, socket);
+                return;
             }
             // All other exceptions.
             catch (Exception e) {
@@ -82,8 +80,131 @@ public void handleWebsocket(scope WebSocket socket) {
                 logError(e.msg);
                 auto handler = new UnknownErrorHandler();
                 handler.handle(e.msg, socket);
+                return;
             }
         }
     }
     logDebug("Client disconnected.");
+}
+
+//json parse error test
+unittest {
+    import WebSocketServer.test.testClasses, vibe.data.json,
+        WebSocketServer.Handler.HandlerInterface;
+
+    Json[string] jsonMsg;
+    jsonMsg["message_id"] = generateMessageID(16);
+    jsonMsg["sender_id"] = "client";
+    jsonMsg["time"] = to!string(core.stdc.time.time(null));
+    jsonMsg["request"] = "newid";
+    jsonMsg["status"] = "initrequest";
+    jsonMsg["error"] = "";
+    jsonMsg["payload"] = "";
+    jsonMsg["message"] = "";
+    auto dummy = new dummyWebSocket(serializeToJsonString(jsonMsg) ~ "test");
+    handleWebsocket(dummy);
+    Json json = dummy.receiveText().parseJsonString();
+    assert(json["sender_id"].get!string == "server");
+    assert(json["request"].get!string == "error");
+    assert(json["status"].get!string == "error");
+    assert(json["error"].get!string == "(1): Error: Expected end of string after JSON value.");
+    assert(json["message"].get!string == "");
+    assert(json["payload"].get!string == "");
+}
+
+//unknown request test
+unittest {
+    import WebSocketServer.test.testClasses, vibe.data.json,
+        WebSocketServer.Handler.HandlerInterface;
+
+    Json[string] jsonMsg;
+    jsonMsg["message_id"] = generateMessageID(16);
+    jsonMsg["sender_id"] = "client";
+    jsonMsg["time"] = to!string(core.stdc.time.time(null));
+    jsonMsg["request"] = "something";
+    jsonMsg["status"] = "dfsf";
+    jsonMsg["error"] = "";
+    jsonMsg["payload"] = "sadfdsf";
+    jsonMsg["message"] = "sadfsdf";
+    auto dummy = new dummyWebSocket(serializeToJsonString(jsonMsg));
+    handleWebsocket(dummy);
+    Json json = dummy.receiveText().parseJsonString();
+    assert(json["sender_id"].get!string == "server");
+    assert(json["request"].get!string == "error");
+    assert(json["status"].get!string == "error");
+    assert(json["error"].get!string == "Unknown request type");
+    assert(json["message"].get!string == "");
+    assert(json["payload"].get!string == "something");
+}
+
+//new id test
+unittest {
+    import WebSocketServer.test.testClasses, vibe.data.json,
+        WebSocketServer.Handler.HandlerInterface;
+
+    Json[string] jsonMsg;
+    jsonMsg["message_id"] = generateMessageID(16);
+    jsonMsg["sender_id"] = "client";
+    jsonMsg["time"] = to!string(core.stdc.time.time(null));
+    jsonMsg["request"] = "newid";
+    jsonMsg["status"] = "initrequest";
+    jsonMsg["error"] = "";
+    jsonMsg["payload"] = "";
+    jsonMsg["message"] = "";
+    auto dummy = new dummyWebSocket(serializeToJsonString(jsonMsg));
+    handleWebsocket(dummy);
+    Json json = dummy.receiveText().parseJsonString();
+    assert(json["sender_id"].get!string == "server");
+    assert(json["request"].get!string == "response");
+    assert(json["status"].get!string == "success");
+    assert(json["error"].get!string == "");
+    assert(json["message"].get!string == "");
+}
+
+//list graph test
+unittest {
+    import WebSocketServer.test.testClasses, vibe.data.json,
+        WebSocketServer.Handler.HandlerInterface;
+
+    Json[string] jsonMsg;
+    jsonMsg["message_id"] = generateMessageID(16);
+    jsonMsg["sender_id"] = "client";
+    jsonMsg["time"] = to!string(core.stdc.time.time(null));
+    jsonMsg["request"] = "listgraphs";
+    jsonMsg["status"] = "initrequest";
+    jsonMsg["error"] = "";
+    jsonMsg["payload"] = "";
+    jsonMsg["message"] = "";
+    auto dummy = new dummyWebSocket(serializeToJsonString(jsonMsg));
+    handleWebsocket(dummy);
+    Json json = dummy.receiveText().parseJsonString();
+    assert(json["sender_id"].get!string == "server");
+    assert(json["request"].get!string == "response");
+    assert(json["status"].get!string == "success");
+    assert(json["error"].get!string == "");
+    assert(json["message"].get!string == "");
+}
+
+//get graph test
+unittest {
+    import WebSocketServer.test.testClasses, vibe.data.json,
+        WebSocketServer.Handler.HandlerInterface;
+
+    Json[string] jsonMsg;
+    jsonMsg["message_id"] = generateMessageID(16);
+    jsonMsg["sender_id"] = "client";
+    jsonMsg["time"] = to!string(core.stdc.time.time(null));
+    jsonMsg["request"] = "getgraph";
+    jsonMsg["status"] = "initrequest";
+    jsonMsg["error"] = "";
+    jsonMsg["payload"] = "something";
+    jsonMsg["message"] = "";
+    auto dummy = new dummyWebSocket(serializeToJsonString(jsonMsg));
+    handleWebsocket(dummy);
+    Json json = dummy.receiveText().parseJsonString();
+    assert(json["sender_id"].get!string == "server");
+    assert(json["request"].get!string == "response");
+    assert(json["status"].get!string == "success");
+    assert(json["error"].get!string == "");
+    assert(json["message"].get!string == "");
 }

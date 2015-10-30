@@ -1,8 +1,17 @@
 {
 	"name" : "graphalyzer-server",
-	"description" : "Hello World - A minimal DUB bundle.",
+	"description" : "May1618 server backend.",
 	"dependencies": {
-		"vibe-d": "~>0.7.23"
+		"vibe-d": "~>0.7.26-beta.1"
 	},
-	"versions": ["VibeDefaultMain"]
+	"configurations": [
+        {
+            "name": "application",
+            "targetType": "executable",
+            "versions": ["VibeDefaultMain"]
+        },
+        {
+            "name": "library"
+        }
+    ]
 }
