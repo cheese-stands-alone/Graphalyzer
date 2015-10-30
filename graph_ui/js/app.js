@@ -1,7 +1,8 @@
 /**
  * Main entry point for web client JS
+ * 
+ * @author Andrew Bowler
  */
-
 (function() {
   'use strict';
   angular
