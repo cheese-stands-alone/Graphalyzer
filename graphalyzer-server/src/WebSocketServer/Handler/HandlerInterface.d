@@ -1,6 +1,6 @@
 module WebSocketServer.Handler.HandlerInterface;
 
-import vibe.http.websockets;
+import vibe.http.websockets, vibe.data.json;
 
 /************************************************
  * Handler interface for all hadlers.
@@ -28,4 +28,21 @@ public string generateMessageID(int i) {
     Base64.encode(rndNums, result);
 
     return result.data.filter!isAlphaNum().to!string();
+}
+
+/************************************************
+ * Send and recieve message to neo4j server
+ * Returns: json return message
+ * Authors: Richard White, rwhite22@iastate.edu
+ * Date: November 2, 2015
+ ***********************************************/
+public Json sendToNeo4J(Json msg) {
+    import std.net.curl, first;
+
+    string content = cast(string) post(NEO4J_URL ~ "/db/data/transaction",
+        serializeToJsonString(msg));
+
+    Json json = content.parseJsonString();
+
+    return json;
 }

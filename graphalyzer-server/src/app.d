@@ -5,10 +5,10 @@ import vibe.d;
 * Here wll be the config options parsed from some config file
 * They are hard coded for now.
 */
-
 immutable ushort PORT;
 immutable int MAX_REST_SIZE;
 immutable string UPLOAD_LOCATION;
+immutable string NEO4J_URL;
 
 /************************************************
  * Handles Main entrypoint for server as opposed to void main()
@@ -16,7 +16,6 @@ immutable string UPLOAD_LOCATION;
  * Date: October 20, 2015
  ***********************************************/
 shared static this() {
-
     import vibe.http.router, WebSocketServer.Server;
 
     /*
@@ -27,6 +26,7 @@ shared static this() {
     PORT = 1618;
     MAX_REST_SIZE = 1 * 1024 * 1024 * 1024;
     UPLOAD_LOCATION = "./dir";
+    NEO4J_URL = "http://localhost:7474";
 
     auto router = new URLRouter;
 

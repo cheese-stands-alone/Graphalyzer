@@ -12,6 +12,20 @@ class ListGraphHandler : HandlerInterface {
 
         string[] graphList;
 
+        // Create JSon request for neo4J
+        Json statementArr = Json.emptyArray();
+        Json[string] firstStmt;
+        firstStmt["statement"] = "MATCH n RETURN DISTINCT LABELS(n)";
+        statementArr ~= firstStmt;
+        Json statements = Json.emptyObject();
+        statements["statements"] = statementArr;
+
+        // Send and revieve request.
+        Json response = statements.sendToNeo4J();
+        import vibe.core.log;
+
+        logInfo(response.toPrettyString(2));
+
         // Generate a random ammount of random names for now.
         foreach (number; 0 .. uniform(5, 20)) {
             graphList ~= "name-" ~ generateMessageID(8) ~ "-" ~ SysTime(Clock.currStdTime())
