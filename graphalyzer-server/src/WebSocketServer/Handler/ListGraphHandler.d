@@ -21,10 +21,12 @@ class ListGraphHandler : HandlerInterface {
         statements["statements"] = statementArr;
 
         // Send and revieve request.
-        Json response = statements.sendToNeo4J();
-        import vibe.core.log;
+        Json response = sendToNeo4J(statements);
+        if (response == null) {
+            import vibe.core.log;
 
-        logInfo(response.toPrettyString(2));
+            logInfo(response.toPrettyString(2));
+        }
 
         // Generate a random ammount of random names for now.
         foreach (number; 0 .. uniform(5, 20)) {

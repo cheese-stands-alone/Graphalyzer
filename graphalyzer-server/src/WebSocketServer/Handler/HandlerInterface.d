@@ -37,12 +37,22 @@ public string generateMessageID(int i) {
  * Date: November 2, 2015
  ***********************************************/
 public Json sendToNeo4J(Json msg) {
-    import std.net.curl, first;
+    import std.net.curl, first, std.conv;
 
-    string content = cast(string) post(NEO4J_URL ~ "/db/data/transaction",
-        serializeToJsonString(msg));
+    Json response = null;
 
-    Json json = content.parseJsonString();
-
-    return json;
+    try {
+        auto http = HTTP(NEO4J_URL ~ "/db/data/transaction");
+        http.setPostData(serializeToJsonString(msg), "application/json");
+        http.onReceive = (ubyte[] data) {
+            Json response = to!string(data).parseJsonString();
+            return data.length;
+        };
+        http.perform();
+        while (response == null) {
+        }
+    }
+    catch (Exception e) {
+    }
+    return response;
 }
