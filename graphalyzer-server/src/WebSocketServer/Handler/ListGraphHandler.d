@@ -22,7 +22,7 @@ class ListGraphHandler : HandlerInterface {
 
         // Send and revieve request.
         Json response = sendToNeo4J(statements);
-        if (response == null) {
+        if (response != null) {
             import vibe.core.log;
 
             logInfo(response.toPrettyString(2));
