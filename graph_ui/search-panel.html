@@ -1,5 +1,15 @@
 <div class="search-box text-center row">
-  <label>Search: </label>
-  <input type="text" ng-model="query" placeholder="Enter your search query">
+  <div class="row">
+    <label>Graph Name:</label>
+    <input type="text" ng-model="query" placeholder="Graph Name">
+  </div>
+  <div class="row">
+    <label>Node Name:</label>
+    <input type="text" ng-model="query" placeholder="Node Name">
+  </div>
+  <div class="row">
+    <label>N-Degrees:</label>
+    <input type="text" ng-model="query" placeholder="Number of degrees through connection">
+  </div>
   <button type="button" class="btn btn-primary" ng-click="graphSearchHandler.search()">Search</button>
 </div>
