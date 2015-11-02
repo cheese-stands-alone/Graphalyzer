@@ -6,7 +6,7 @@
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis'])
+    .module('graphalyzer', ['ngVis', 'searchDirective'])
     .controller('GraphController', GraphController);
 
   GraphController.$inject['$scope', 'VisDataSet'];
