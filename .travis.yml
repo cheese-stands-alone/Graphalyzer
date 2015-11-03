@@ -2,7 +2,7 @@ language: d
 d:
   - dmd
   - ldc
-  - gdc
+    #  - gdc
 sudo: false
 env:
   - SERVER_DIR=graphalyzer-server
