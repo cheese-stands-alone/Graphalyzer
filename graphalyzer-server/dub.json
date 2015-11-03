@@ -4,6 +4,7 @@
     "dependencies":{
         "vibe-d":"~>0.7.26-rc.1"
     },
+    "libs": ["curl"],
     "configurations":[
         {
             "name":"application",

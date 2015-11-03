@@ -8,6 +8,7 @@ Senior Design Project
 2. Open up the client locally on your machine.
 
 ### Running backend (for development)
+curl/libcurl/libcurl-devel/etc are required.
 1. Go into the graphalyzer-server directory
 2. 'dub build' to build.
 3. 'dub test' to run unittests.
