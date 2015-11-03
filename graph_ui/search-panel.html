@@ -1,15 +1,15 @@
-<div class="search-box text-center row">
+<div class="search-box text-center row" searchQuery={{query}}>
   <div class="row">
     <label>Graph Name:</label>
-    <input type="text" ng-model="query" placeholder="Graph Name">
+    <input type="text" ng-model="query.graphName" placeholder="Graph Name">
   </div>
   <div class="row">
     <label>Node Name:</label>
-    <input type="text" ng-model="query" placeholder="Node Name">
+    <input type="text" ng-model="query.nodeName" placeholder="Node Name">
   </div>
   <div class="row">
     <label>N-Degrees:</label>
-    <input type="text" ng-model="query" placeholder="Number of degrees through connection">
+    <input type="text" ng-model="query.degrees" placeholder="Number of degrees through connection">
   </div>
   <button type="button" class="btn btn-primary" ng-click="graphSearchHandler.search()">Search</button>
 </div>
