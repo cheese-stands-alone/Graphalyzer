@@ -34,8 +34,9 @@ class JsonParseErrorHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
 
+        write("Starting JsonParseErrorHandler test: ");
         auto test = new JsonParseErrorHandler();
         auto dummy = new dummyWebSocket();
         test.handle("somestring", dummy);
@@ -46,5 +47,6 @@ class JsonParseErrorHandler : HandlerInterface {
         assert(json["payload"].get!string == "");
         assert(json["message"].get!string == "");
         assert(json["error"].get!string == "somestring");
+        writeln("✓");
     }
 }

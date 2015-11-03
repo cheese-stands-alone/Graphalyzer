@@ -48,6 +48,8 @@ shared static this() {
     settings.maxRequestSize = MAX_REST_SIZE;
     listenHTTP(settings, router);
 
+    logInfo(""); // Space for format.
+
 }
 
 /************************************************

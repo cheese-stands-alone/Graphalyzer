@@ -35,8 +35,9 @@ class UnknownRequestHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
 
+        write("Starting UnknownResquestHandler: ");
         auto test = new UnknownRequestHandler();
         auto dummy = new dummyWebSocket();
         test.handle("", dummy);
@@ -46,5 +47,6 @@ class UnknownRequestHandler : HandlerInterface {
         assert(json["status"].get!string == "error");
         assert(json["error"].get!string == "Unknown request type");
         assert(json["message"].get!string == "");
+        writeln("✓");
     }
 }

@@ -66,8 +66,9 @@ class GetGraphHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
-
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
+        
+        write("Starting GetGraphHandler test: ");
         auto test = new GetGraphHandler();
         auto dummy = new dummyWebSocket();
         test.handle("", dummy);
@@ -77,5 +78,6 @@ class GetGraphHandler : HandlerInterface {
         assert(json["status"].get!string == "success");
         assert(json["error"].get!string == "");
         assert(json["message"].get!string == "");
+        writeln("✓");
     }
 }

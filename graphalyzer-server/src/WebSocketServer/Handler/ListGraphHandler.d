@@ -22,11 +22,6 @@ class ListGraphHandler : HandlerInterface {
 
         // Send and revieve request.
         Json response = sendToNeo4J(statements);
-        if (response != null) {
-            import vibe.core.log;
-
-            logInfo(response.toPrettyString(2));
-        }
 
         // Generate a random ammount of random names for now.
         foreach (number; 0 .. uniform(5, 20)) {
@@ -57,8 +52,9 @@ class ListGraphHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
 
+        write("Starting ListGraphHandler: ");
         auto test = new ListGraphHandler();
         auto dummy = new dummyWebSocket();
         test.handle("", dummy);
@@ -68,5 +64,6 @@ class ListGraphHandler : HandlerInterface {
         assert(json["status"].get!string == "success");
         assert(json["message"].get!string == "");
         assert(json["error"].get!string == "");
+        writeln("✓");
     }
 }

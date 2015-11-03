@@ -37,25 +37,27 @@ public string generateMessageID(int i) {
  * Date: November 2, 2015
  ***********************************************/
 public Json sendToNeo4J(Json msg) {
-    import std.net.curl, first, std.conv;
+    import std.net.curl, first, std.conv, std.exception;
 
     Json response = null;
-    bool done = false;
+    bool done = true;
 
     try {
         auto http = HTTP(NEO4J_URL ~ "/db/data/transaction/commit");
         http.setPostData(serializeToJsonString(msg), "application/json");
         http.onReceive = (ubyte[] data) {
-            Json response = to!string(data).parseJsonString();
-            done = true;
+            response = (cast(string) data).parseJsonString();
+            done = false;
             return data.length;
         };
         http.perform();
         while (done) {
         }
     }
-    catch (std.net.curl.CurlException e) {
-
+    catch (Exception e) {
+        import vibe.core.log;
+        
+        logError(e.toString());
     }
     return response;
 }

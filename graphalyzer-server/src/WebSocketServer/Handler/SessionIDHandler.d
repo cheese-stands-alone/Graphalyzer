@@ -34,8 +34,9 @@ class SessionIDHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
 
+        write("Starting SessionIDHandler test: ");
         auto test = new SessionIDHandler();
         auto dummy = new dummyWebSocket();
         test.handle("", dummy);
@@ -45,5 +46,6 @@ class SessionIDHandler : HandlerInterface {
         assert(json["status"].get!string == "success");
         assert(json["error"].get!string == "");
         assert(json["message"].get!string == "");
+        writeln("✓");
     }
 }

@@ -34,8 +34,9 @@ class UnknownErrorHandler : HandlerInterface {
     }
 
     unittest {
-        import WebSocketServer.test.testClasses, vibe.data.json;
+        import WebSocketServer.test.testClasses, vibe.data.json, std.stdio;
 
+        write("Starting UnknownErrorHandler test: ");
         auto test = new UnknownErrorHandler();
         auto dummy = new dummyWebSocket();
         test.handle("", dummy);
@@ -46,5 +47,6 @@ class UnknownErrorHandler : HandlerInterface {
         assert(json["error"].get!string == "Unknown Error: Error Supresses");
         assert(json["payload"].get!string == "");
         assert(json["message"].get!string == "");
+        writeln("✓");
     }
 }
