@@ -5,10 +5,6 @@ import vibe.d;
 * Here wll be the config options parsed from some config file
 * They are hard coded for now.
 */
-immutable ushort PORT;
-immutable int MAX_REST_SIZE;
-immutable string UPLOAD_LOCATION;
-immutable string NEO4J_URL;
 
 /************************************************
  * Handles Main entrypoint for server as opposed to void main()
@@ -16,7 +12,7 @@ immutable string NEO4J_URL;
  * Date: October 20, 2015
  ***********************************************/
 shared static this() {
-    import vibe.http.router, WebSocketServer.Server;
+    import vibe.http.router, WebSocketServer.Server, config.config;
 
     /*
     * Here wll be the config options parsed from some config file
@@ -58,6 +54,8 @@ shared static this() {
  * Date: October 30, 2015
  ***********************************************/
 void uploadFile(scope HTTPServerRequest req, scope HTTPServerResponse res) {
+    import config.config;
+    
     foreach (pf; req.files) {
         try
             moveFile(pf.tempPath, Path(UPLOAD_LOCATION) ~ pf.filename);

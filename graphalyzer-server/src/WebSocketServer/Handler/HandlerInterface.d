@@ -37,7 +37,7 @@ public string generateMessageID(int i) {
  * Date: November 2, 2015
  ***********************************************/
 public Json sendToNeo4J(Json msg) {
-    import std.net.curl, first, std.conv, std.exception;
+    import std.net.curl, std.conv, std.exception, config.config;
 
     Json response = null;
     bool done = true;
