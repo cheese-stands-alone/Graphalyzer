@@ -37,6 +37,7 @@ class GetGraphHandler : HandlerInterface {
     		edges ~= json.serializeToJsonString();
     	}
     	
+    	import std.string;
     	graph["nodes"] = nodes.serializeToJson();
     	graph["edges"] = edges.serializeToJson();
     	
@@ -51,7 +52,8 @@ class GetGraphHandler : HandlerInterface {
         jsonMsg["message"] = "";
         import std.exception;
         try {
-        	socket.send(serializeToJsonString(jsonMsg));
+        	import std.string;
+        	socket.send(removechars(serializeToJsonString(jsonMsg), "\\"));
         } catch(core.exception.AssertError e) {
         	import vibe.core.log, WebSocketServer.test.testClasses;
         	logInfo("Detected unittest run: using dummy websocket");
