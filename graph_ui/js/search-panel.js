@@ -1,3 +1,9 @@
+/**
+ * Search Panel directive. Executes a search query based on the 
+ * input fields by sending a request to the server over WebSocket.
+ * 
+ * @author Andrew Bowler
+ */
 (function() {
   'use strict';
 
