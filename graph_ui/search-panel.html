@@ -12,4 +12,5 @@
     <input type="text" ng-model="query.degrees" placeholder="Number of degrees through connection">
   </div>
   <button type="button" class="btn btn-primary" ng-click="graphSearchHandler.search()">Search</button>
+  <p ng-show="searchErr">You must input a graph name.</p>
 </div>

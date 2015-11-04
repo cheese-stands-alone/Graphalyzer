@@ -7,12 +7,7 @@
   'use strict';
   angular
     .module('graphalyzer', ['ngVis', 'searchDirective'])
-    .controller('GraphController', GraphController)
-    .factory('WebSocketService', function() {
-      return {
-        ws: new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
-      };
-    });
+    .controller('GraphController', GraphController);
 
   GraphController.$inject['$scope', 'VisDataSet'];
 
@@ -20,8 +15,6 @@
     $scope.options = {
       autoResize: true
     };
-
-    $scope.ws = WebSocketService.ws;
     
     $scope.data = {
       "nodes": [
