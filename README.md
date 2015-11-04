@@ -5,6 +5,7 @@ Senior Design Project
 
 ### Running web client (for development)
 1. `npm install` to load all packages from `package.json`
+2. Download `angular-vis.js` to `graph_ui/js/` (this is temporary until a build tool is completed)
 2. Open up the client locally on your machine.
 
 ### Running backend (for development)

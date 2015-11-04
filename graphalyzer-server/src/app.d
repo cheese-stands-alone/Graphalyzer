@@ -14,7 +14,6 @@ shared static this() {
 
     auto settings = new HTTPServerSettings;
     settings.port = 1618;
-    settings.bindAddresses = ["::1", "127.0.0.1"];
     listenHTTP(settings, router);
 
 }
