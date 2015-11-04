@@ -6,8 +6,17 @@
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis'])
-    .controller('GraphController', GraphController);
+    .module('graphalyzer', ['ngVis', 'searchDirective'])
+    .controller('GraphController', GraphController)
+    .run(function($rootScope) {
+      // WebSocket service
+
+      $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
+
+      $rootScope.ws.onmessage = function(event) {
+        console.log(event.data);
+      }
+    });
 
   GraphController.$inject['$scope', 'VisDataSet'];
 
