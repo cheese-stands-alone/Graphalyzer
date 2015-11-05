@@ -3,13 +3,15 @@
  *
  * @author Taylor Welter - tdwelter
  */
-(function()
+(function() {
   'use strict';
   angular
-    .module('nodeproperties', ['ngVis'])
+    .module('nodeProperties', ['ngVis'])
     .controller('NodeInfoController', NodeInfoController);
 
-    function NodeInfoController() 
+    NodeInfoController.$inject['$scope', 'VisDataSet'];
+
+    function NodeInfoController($scope)
     {
       var nodeInfo = [];
       // However this vis selectNode function is invoked
@@ -22,35 +24,22 @@
           nodeInfo.push(key);
           nodeInfo.push(node[key]);
         }
+        // This structures the array as {property1, entry1, property2, entry2 ... propertyN, entryN}
       }
     }
 
     function onSelectNode(nodeInfo)
     {
+      // Sanity check, REMOVE
+      alert("Did you select a node?");
       // Push the HTML to list the information, RE: nodeInfo array
     }
 
     function onDeselectNode()
     {
+      // Sanity check, REMOVE
+      alert("Did you deselect a node?");
       // Remove the HTML to list the information, get ready for them to click another node
       // Possibly resize the window pane
     }
 })();
-
-/***********************************TemporaryPsuedocode************************************
- * Function: displayNodeInformation
- * 
- *   // probably using select node
- *   while a node is selected:
- *     display the information from the nodes on info panel
- * 
- *     for each attribute of the node:  
- *       // Display everything for now, cull information later
- *       display the associated information
- * 
- *       // Q: Where do I receive this information?
- *       // A: Seems like the return of the selectNode
- *    otherwise: // on deselectNode
- *      the panel should probably not be visible 
- *      // or display helpful generic information or something
- ******************************************************************************************

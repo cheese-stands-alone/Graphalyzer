@@ -9,6 +9,7 @@
     <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/search-panel.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/node-info.js"></script>
 
     <link type="text/css" rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
     <link type="text/css" rel="stylesheet" href="css/style.css"></link>
@@ -24,6 +25,8 @@
         <search-panel></search-panel>
         <div class="node-panel row">
           <h1>{{query}}</h1>
+          <div ng-controller="NodeInfoController">
+          </div>
         </div>
       </div>
     </div>

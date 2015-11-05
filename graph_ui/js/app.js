@@ -6,7 +6,7 @@
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis', 'searchDirective'])
+    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties'])
     .controller('GraphController', GraphController)
     .run(function($rootScope) {
       // WebSocket service
