@@ -15,6 +15,7 @@
         },
         templateUrl: 'node-panel.html',
         controller: function($scope, selectedNodeService) {
+          
 
         },
         controllerAs: 'NodePanelController'
