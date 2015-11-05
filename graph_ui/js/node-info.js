@@ -7,7 +7,20 @@
   'use strict';
   angular
     .module('nodeProperties', ['ngVis'])
+    .directive('nodePanel', nodePanel)
     .controller('NodeInfoController', NodeInfoController);
+
+    function nodePanel() {
+      return {
+        restrict: 'E',
+        scope: {
+          selectedNode: '='
+        },
+        templateUrl: 'node-panel.html',
+        controller: NodeInfoController,
+        controllerAs: 'NodePanelController'
+      };
+    }
 
     NodeInfoController.$inject['$scope', 'VisDataSet'];
 
