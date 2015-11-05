@@ -12,8 +12,10 @@
 
 .node-panel {
   border: solid;
+  height: 47%;
 }
 
 .search-box {
   border: solid;
+  padding-left: 15px;
 }

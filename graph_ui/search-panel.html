@@ -1,0 +1,20 @@
+<div class="search-box row" searchQuery={{query}}>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <label class="text-left">Graph Name:</label>
+      <input class="form-control" type="text" ng-model="query.graphName" placeholder="Graph Name">
+    </li>
+    <li class="list-group-item">
+      <label class="text-left">Node Name (optional):</label>
+      <input class="form-control" type="text" ng-model="query.nodeName" placeholder="Node Name">      
+    </li>
+    <li class="list-group-item">
+      <label class="text-left">N-Degrees (optional):</label>
+      <input class="form-control" type="text" ng-model="query.degrees" placeholder="Number of degrees through connection">
+    </li>
+    <li class="list-group-item">
+      <button type="button" class="btn btn-primary" ng-click="graphSearchHandler.search()">Search</button>
+    </li>
+  </ul>
+  <div class="alert alert-danger" ng-show="searchErr">You must input a graph name.</div>
+</div>

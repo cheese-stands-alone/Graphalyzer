@@ -1,6 +1,5 @@
-
 <html ng-app="graphalyzer">
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
   <head>
     <meta name="author" content="Andrew Bowler, Alberto Gomez-Estrada">
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
@@ -8,12 +7,12 @@
     <script type="text/javascript" src="node_modules/vis/dist/vis.min.js"></script>
     <script type="text/javascript" src="js/angular-vis.js"></script>
     <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/search-panel.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
 
     <link type="text/css" rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
     <link type="text/css" rel="stylesheet" href="css/style.css"></link>
   </head>
-
   <body>
     <div ng-app class="container-fluid">
       <div class="graph-panel col-lg-9">
@@ -22,10 +21,7 @@
         </div>
       </div>
       <div class="col-lg-3 side-panel">
-        <div class="search-box text-center row">
-          <label>Search: </label>
-          <input type="text" ng-model="query" placeholder="Enter your search query">
-        </div>
+        <search-panel></search-panel>
         <div class="node-panel row">
           <h1>{{query}}</h1>
         </div>
@@ -33,5 +29,4 @@
     </div>
     <!-- container -->
   </body>
-
 </html>
