@@ -53,7 +53,7 @@ class GetGraphHandler : HandlerInterface {
         import std.exception;
         try {
         	import std.string;
-        	socket.send(removechars(serializeToJsonString(jsonMsg), "\\"));
+        	socket.send(serializeToJsonString(jsonMsg));
         } catch(core.exception.AssertError e) {
         	import vibe.core.log, WebSocketServer.test.testClasses;
         	logInfo("Detected unittest run: using dummy websocket");
