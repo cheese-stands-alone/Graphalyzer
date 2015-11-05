@@ -11,8 +11,8 @@ class GetGraphHandler : HandlerInterface {
     override void handle(string payload, scope WebSocket socket)
     {
     	import std.json, vibe.data.json, std.datetime, std.conv;
-    	string[] nodes;
-    	string[] edges;
+    	Json nodes = Json.emptyArray();
+    	Json edges = Json.emptyArray();
     	Json[string] graph;
     	
     	// Generate a random ammount of random names for now.
@@ -24,7 +24,7 @@ class GetGraphHandler : HandlerInterface {
     		Json[string] json;
     		json["id"] = numString;
     		json["label"] = "Node " ~ numString;
-    		nodes ~= json.serializeToJsonString();
+    		nodes ~= json;
     	}
     	
     	foreach (number; 0..n*2) { 
@@ -34,12 +34,12 @@ class GetGraphHandler : HandlerInterface {
     		Json[string] json;
     		json["from"] = from;
     		json["to"] = to;
-    		edges ~= json.serializeToJsonString();
+    		edges ~= json;
     	}
     	
     	import std.string;
-    	graph["nodes"] = nodes.serializeToJson();
-    	graph["edges"] = edges.serializeToJson();
+    	graph["nodes"] = nodes;
+    	graph["edges"] = edges;
     	
         Json[string] jsonMsg;
         jsonMsg["message_id"] = generateMessageID(16);
@@ -53,7 +53,7 @@ class GetGraphHandler : HandlerInterface {
         import std.exception;
         try {
         	import std.string;
-        	socket.send(removechars(serializeToJsonString(jsonMsg), "\\"));
+        	socket.send(serializeToJsonString(jsonMsg));
         } catch(core.exception.AssertError e) {
         	import vibe.core.log, WebSocketServer.test.testClasses;
         	logInfo("Detected unittest run: using dummy websocket");
