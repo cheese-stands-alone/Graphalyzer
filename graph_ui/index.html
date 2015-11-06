@@ -9,8 +9,6 @@
     <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/search-panel.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/node-panel.js"></script>
-   
     <link type="text/css" rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
     <link type="text/css" rel="stylesheet" href="css/style.css"></link>
   </head>
@@ -23,7 +21,9 @@
       </div>
       <div class="col-lg-3 side-panel">
         <search-panel></search-panel>
-        <node-panel></node-panel>
+        <div class="node-panel row">
+          <h3 ng-bind="fields.selectedNode.nodes"></h3>
+        </div>
       </div>
     </div>
     <!-- container -->

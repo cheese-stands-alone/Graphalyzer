@@ -1,12 +1,12 @@
 /*
  * Main entry point for web client JS
  * 
- * @author Andrew Bowler
+ * @author Andrew Bowler, Taylor Welter, Alberto Gomez-Estrada
  */
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties'])
+    .module('graphalyzer', ['ngVis', 'searchDirective'])
     .service('graphDataHandler', function() {
       var graphData = {};
 
@@ -20,21 +20,14 @@
         },
       };
     })
-    .service('selectedNodeService', function() {
-      var selectedNode = {};
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'graphDataHandler',
+      function($rootScope, $scope, VisDataSet, graphDataHandler, network) {
 
-      return {
-        getSelectedNode: function() {
-          return selectedNode;
-        },
-
-        setSelectedNode: function(newNode) {
-          selectedNode = newNode;
-        }
+      // App-level properties
+      $rootScope.fields = {
+        selectedNode: {}
       };
-    })
-    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'selectedNodeService', 'graphDataHandler',
-      function($rootScope, $scope, VisDataSet, selectedNodeService, graphDataHandler, network) {
+
       $scope.options = {
         autoResize: true
       };
@@ -42,20 +35,27 @@
       // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
       $scope.data = null;
   
-      function update(){
-      $scope.data = $rootScope.data;
-      VisDataSet.Draw($scope.data, $scope.options);
-}
+      function update() {
+        $scope.data = $rootScope.data;
+        VisDataSet.Draw($scope.data, $scope.options);
+      }
+
       $rootScope.update = update;
 
       $scope.events = {
+        // get the network object
         onload: function(network) {
           network.on('selectNode', function(node) {
-            selectedNodeService.setSelectedNode(node);
-         });
+            $rootScope.$apply(function() {
+              $rootScope.fields.selectedNode = node;
+            });
+          });
 
           network.on('deselectNode', function(node) {
-            selectedNodeService.setSelectedNode({});
+            $rootScope.$apply(function() {
+              // Empty string if no node was selected
+              $rootScope.fields.selectedNode = '';
+            });
           });
         }
       };
