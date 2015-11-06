@@ -6,7 +6,9 @@
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties'])
+    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties', 'dataHandler'])
+    .service('graphDataHandler', function() {
+})
     .service('selectedNodeService', function() {
       var selectedNode = {};
 
