@@ -1,4 +1,4 @@
-/**
+/*
  * Main entry point for web client JS
  * 
  * @author Andrew Bowler
@@ -17,7 +17,7 @@
 
         setGraphData: function(data) {
           graphData = data; // this needs to be $scope.data in the graph controller, whenever this changes, $scope.data has to be changed
-        }
+        },
       };
     })
     .service('selectedNodeService', function() {
@@ -33,18 +33,20 @@
         }
       };
     })
-    .controller('GraphController', ['$scope', 'VisDataSet', 'selectedNodeService', 'graphDataHandler', 
-      function($scope, VisDataSet, selectedNodeService, graphDataHandler) {
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'selectedNodeService', 'graphDataHandler',
+      function($rootScope, $scope, VisDataSet, selectedNodeService, graphDataHandler) {
       $scope.options = {
         autoResize: true
       };
       
       // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
-      $scope.data = JSON.stringify(graphDataHandler.getGraphData());
+      $scope.data = {};
   
       function update(){
-      $scope.data = JSON.stringify(graphDataHandler.getGraphData());
+      $scope.data = $rootScope.data;
+      VisDataSet.redraw();
 }
+      $rootScope.update = update;
 
       $scope.events = {
         onload: function(network) {
@@ -58,7 +60,7 @@
         }
       };
     }])
-    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler, graphController){
+    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler, GraphController){
       // WebSocket service
 
       $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
@@ -66,6 +68,8 @@
         var data = JSON.parse(event.data);
         var graphData = data.payload;
         graphDataHandler.setGraphData(graphData);
+        $rootScope.data = JSON.stringify(graphData);
+        $rootScope.update();
       }
     }]);
 })();
