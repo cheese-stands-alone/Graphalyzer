@@ -6,9 +6,20 @@
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties', 'dataHandler'])
+    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties'])
     .service('graphDataHandler', function() {
-})
+      var graphData = {};
+
+      return {
+        getGraphData: function() {
+          return graphData;
+        },
+
+        setGraphData: function(data) {
+          graphData = data; // this needs to be $scope.data in the graph controller, whenever this changes, $scope.data has to be changed
+        }
+      };
+    })
     .service('selectedNodeService', function() {
       var selectedNode = {};
 
@@ -22,26 +33,14 @@
         }
       };
     })
-    .controller('GraphController', ['$scope', 'VisDataSet', 'selectedNodeService', function($scope, VisDataSet, selectedNodeService) {
+    .controller('GraphController', ['$scope', 'VisDataSet', 'selectedNodeService', 'graphDataHandler', 
+      function($scope, VisDataSet, selectedNodeService, graphDataHandler) {
       $scope.options = {
         autoResize: true
       };
       
-      $scope.data = {
-        "nodes": [
-          {id: 1, label: 'Node 1'},
-          {id: 2, label: 'Node 2'},
-          {id: 3, label: 'Node 3'},
-          {id: 4, label: 'Node 4'},
-          {id: 5, label: 'Node 5'}
-        ],
-        "edges": [
-          {from: 1, to: 3},
-          {from: 1, to: 2},
-          {from: 2, to: 4},
-          {from: 2, to: 5}
-        ]
-      };
+      // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
+      $scope.data = {};
 
       $scope.events = {
         onload: function(network) {
@@ -55,13 +54,15 @@
         }
       };
     }])
-    .run(function($rootScope) {
+    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler) {
       // WebSocket service
 
       $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
 
       $rootScope.ws.onmessage = function(event) {
-        console.log(event.data);
+        var data = JSON.parse(event.data);
+        var graphData = data.payload;
+        graphDataHandler.setGraphData(graphData);
       }
-    });
+    }]);
 })();
