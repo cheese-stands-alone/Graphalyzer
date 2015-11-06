@@ -2,10 +2,9 @@ angular.module('ngVis', [])
 
     .factory('VisDataSet', function () {
         'use strict';
-        return function (data, options) {
-            // Create the new dataSets
+        return{ Draw: function (data, options) {
             return new vis.DataSet(data, options);
-        };
+        }};
     })
 
 /**
@@ -37,8 +36,10 @@ angular.module('ngVis', [])
                 var timeline = null;
 
                 scope.$watch('data', function () {
+                    
                     // Sanity check
                     if (scope.data == null) {
+                       
                         return;
                     }
 
@@ -123,7 +124,7 @@ angular.module('ngVis', [])
                 scope.$watch('data', function () {
                     // Sanity check
                     if (scope.data == null) {
-                        return;
+ 			return;
                     }
 
                     // If we've actually changed the data set, then recreate the graph
@@ -134,6 +135,8 @@ angular.module('ngVis', [])
 
                     // Create the graph2d object
                     network = new vis.Network(element[0], scope.data, scope.options);
+
+		    network.redraw();
 
                     // Attach an event handler if defined
                     angular.forEach(scope.events, function (callback, event) {
