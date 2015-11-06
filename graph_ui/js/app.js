@@ -1,13 +1,57 @@
 /**
  * Main entry point for web client JS
  * 
- * @author Andrew Bowler
+ * @author Andrew Bowler, Taylor Welter
  */
 (function() {
   'use strict';
   angular
     .module('graphalyzer', ['ngVis', 'searchDirective'])
-    .controller('GraphController', GraphController)
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', function($rootScope, $scope, VisDataSet) {
+
+      // App-level properties
+      $rootScope.fields = {
+        selectedNode: {}
+      };
+
+      $scope.options = {
+        autoResize: true
+      };
+      
+      $scope.data = {
+        "nodes": [
+          {id: 1, label: 'Node 1'},
+          {id: 2, label: 'Node 2'},
+          {id: 3, label: 'Node 3'},
+          {id: 4, label: 'Node 4'},
+          {id: 5, label: 'Node 5'}
+        ],
+        "edges": [
+          {from: 1, to: 3},
+          {from: 1, to: 2},
+          {from: 2, to: 4},
+          {from: 2, to: 5}
+        ]
+      };
+
+      $scope.events = {
+        // get the network object
+        onload: function(network) {
+          network.on('selectNode', function(node) {
+            $rootScope.$apply(function() {
+              $rootScope.fields.selectedNode = node;
+            });
+          });
+
+          network.on('deselectNode', function(node) {
+            $rootScope.$apply(function() {
+              // Empty string if no node was selected
+              $rootScope.fields.selectedNode = '';
+            });
+          });
+        }
+      };
+    }])
     .run(function($rootScope) {
       // WebSocket service
 
@@ -17,28 +61,4 @@
         console.log(event.data);
       }
     });
-
-  GraphController.$inject['$scope', 'VisDataSet'];
-
-  function GraphController($scope, VisDataSet) {
-    $scope.options = {
-      autoResize: true
-    };
-    
-    $scope.data = {
-      "nodes": [
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'}
-      ],
-      "edges": [
-        {from: 1, to: 3},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 5}
-      ]
-    };
-  }
 })();

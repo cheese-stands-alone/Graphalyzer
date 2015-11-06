@@ -17,13 +17,13 @@
     <div ng-app class="container-fluid">
       <div class="graph-panel col-lg-9">
         <div ng-controller="GraphController">
-          <vis-network data="data" options="options" height="100%"></vis-network>
+          <vis-network data="data" options="options" events="events" height="100%"></vis-network>
         </div>
       </div>
       <div class="col-lg-3 side-panel">
         <search-panel></search-panel>
         <div class="node-panel row">
-          <h1>{{query}}</h1>
+          <h3 ng-bind="fields.selectedNode.nodes"></h3>
         </div>
       </div>
     </div>
