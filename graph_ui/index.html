@@ -23,7 +23,9 @@
       </div>
       <div class="col-lg-3 side-panel">
         <search-panel></search-panel>
-        <node-panel></node-panel>
+        <div class="node-panel row" ng-controller="GraphController" selectedNode={{selectedNode}}>
+          <h3 ng-bind="fields.selectedNode.nodes"></h3>
+        </div>
       </div>
     </div>
     <!-- container -->

@@ -20,7 +20,7 @@
         }
       };
     })
-    .controller('GraphController', ['$scope', 'VisDataSet', 'selectedNodeService', function($scope, VisDataSet, selectedNodeService) {
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'selectedNodeService', function($rootScope, $scope, VisDataSet, selectedNodeService) {
       $scope.options = {
         autoResize: true
       };
@@ -41,10 +41,18 @@
         ]
       };
 
+      $rootScope.fields = {
+        selectedNode: {}
+      };
+
       $scope.events = {
         onload: function(network) {
           network.on('selectNode', function(node) {
             selectedNodeService.setSelectedNode(node);
+            $rootScope.$apply(function() {
+              $rootScope.fields.selectedNode = node;
+            });
+            console.log($rootScope.fields.selectedNode.nodes[0]);
           });
 
           network.on('deselectNode', function(node) {
