@@ -34,17 +34,17 @@
       };
     })
     .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'selectedNodeService', 'graphDataHandler',
-      function($rootScope, $scope, VisDataSet, selectedNodeService, graphDataHandler) {
+      function($rootScope, $scope, VisDataSet, selectedNodeService, graphDataHandler, network) {
       $scope.options = {
         autoResize: true
       };
       
       // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
-      $scope.data = {};
+      $scope.data = null;
   
       function update(){
       $scope.data = $rootScope.data;
-      VisDataSet.redraw();
+      VisDataSet.Draw($scope.data, $scope.options);
 }
       $rootScope.update = update;
 
@@ -52,7 +52,7 @@
         onload: function(network) {
           network.on('selectNode', function(node) {
             selectedNodeService.setSelectedNode(node);
-          });
+         });
 
           network.on('deselectNode', function(node) {
             selectedNodeService.setSelectedNode({});
@@ -68,7 +68,7 @@
         var data = JSON.parse(event.data);
         var graphData = data.payload;
         graphDataHandler.setGraphData(graphData);
-        $rootScope.data = JSON.stringify(graphData);
+        $rootScope.data = graphData;
         $rootScope.update();
       }
     }]);
