@@ -3,7 +3,10 @@ angular.module('ngVis', [])
     .factory('VisDataSet', function () {
         'use strict';
         return function (data, options) {
-            // Create the new dataSets
+            data = new vis.DataSet(data, options);
+            data.on('*', function(){
+            redraw();
+});
             return new vis.DataSet(data, options);
         };
     })

@@ -40,7 +40,11 @@
       };
       
       // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
-      $scope.data = {};
+      $scope.data = JSON.stringify(graphDataHandler.getGraphData());
+  
+      function update(){
+      $scope.data = JSON.stringify(graphDataHandler.getGraphData());
+}
 
       $scope.events = {
         onload: function(network) {
@@ -54,11 +58,10 @@
         }
       };
     }])
-    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler) {
+    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler, graphController){
       // WebSocket service
 
       $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
-
       $rootScope.ws.onmessage = function(event) {
         var data = JSON.parse(event.data);
         var graphData = data.payload;
