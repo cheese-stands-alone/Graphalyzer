@@ -1,15 +1,15 @@
-/**
+/*
  * Main entry point for web client JS
  * 
- * @author Andrew Bowler, Taylor Welter
+ * @author Andrew Bowler
  */
 (function() {
   'use strict';
   angular
     .module('graphalyzer', ['ngVis', 'searchDirective'])
-    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', function($rootScope, $scope, VisDataSet) {
-
-      // App-level properties
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'graphDataHandler',
+      function($rootScope, $scope, VisDataSet, graphDataHandler) {
+      
       $rootScope.fields = {
         selectedNode: {}
       };
@@ -18,21 +18,14 @@
         autoResize: true
       };
       
-      $scope.data = {
-        "nodes": [
-          {id: 1, label: 'Node 1'},
-          {id: 2, label: 'Node 2'},
-          {id: 3, label: 'Node 3'},
-          {id: 4, label: 'Node 4'},
-          {id: 5, label: 'Node 5'}
-        ],
-        "edges": [
-          {from: 1, to: 3},
-          {from: 1, to: 2},
-          {from: 2, to: 4},
-          {from: 2, to: 5}
-        ]
-      };
+      // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
+      $scope.data = null;
+  
+      function update(){
+      $scope.data = $rootScope.data;
+      VisDataSet.Draw($scope.data, $scope.options);
+}
+      $rootScope.update = update;
 
       $scope.events = {
         // get the network object
@@ -52,13 +45,29 @@
         }
       };
     }])
-    .run(function($rootScope) {
+    .service('graphDataHandler', function() {
+      var graphData = {};
+
+      return {
+        getGraphData: function() {
+          return graphData;
+        },
+
+        setGraphData: function(data) {
+          graphData = data; // this needs to be $scope.data in the graph controller, whenever this changes, $scope.data has to be changed
+        },
+      };
+    })    
+    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler, GraphController){
       // WebSocket service
 
       $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
-
       $rootScope.ws.onmessage = function(event) {
-        console.log(event.data);
+        var data = JSON.parse(event.data);
+        var graphData = data.payload;
+        graphDataHandler.setGraphData(graphData);
+        $rootScope.data = graphData;
+        $rootScope.update();
       }
-    });
+    }]);
 })();
