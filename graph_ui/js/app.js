@@ -1,26 +1,19 @@
 /**
  * Main entry point for web client JS
  * 
- * @author Andrew Bowler
+ * @author Andrew Bowler, Taylor Welter
  */
 (function() {
   'use strict';
   angular
-    .module('graphalyzer', ['ngVis', 'searchDirective', 'nodeProperties'])
-    .service('selectedNodeService', function() {
-      var selectedNode = {};
+    .module('graphalyzer', ['ngVis', 'searchDirective'])
+    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', function($rootScope, $scope, VisDataSet) {
 
-      return {
-        getSelectedNode: function() {
-          return selectedNode;
-        },
-
-        setSelectedNode: function(newNode) {
-          selectedNode = newNode;
-        }
+      // App-level properties
+      $rootScope.fields = {
+        selectedNode: {}
       };
-    })
-    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'selectedNodeService', function($rootScope, $scope, VisDataSet, selectedNodeService) {
+
       $scope.options = {
         autoResize: true
       };
@@ -41,22 +34,20 @@
         ]
       };
 
-      $rootScope.fields = {
-        selectedNode: {}
-      };
-
       $scope.events = {
+        // get the network object
         onload: function(network) {
           network.on('selectNode', function(node) {
-            selectedNodeService.setSelectedNode(node);
             $rootScope.$apply(function() {
               $rootScope.fields.selectedNode = node;
             });
-            console.log($rootScope.fields.selectedNode.nodes[0]);
           });
 
           network.on('deselectNode', function(node) {
-            selectedNodeService.setSelectedNode({});
+            $rootScope.$apply(function() {
+              // Empty string if no node was selected
+              $rootScope.fields.selectedNode = '';
+            });
           });
         }
       };
