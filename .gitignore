@@ -6,3 +6,4 @@ __*
 .metadata*
 *.orig
 graph_ui/node_modules/
+graph_ui/build/
