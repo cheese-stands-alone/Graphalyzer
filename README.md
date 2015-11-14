@@ -4,9 +4,11 @@
 Senior Design Project
 
 ### Running web client (for development)
-1. `npm install` to load all packages from `package.json`
-2. Download `angular-vis.js` to `graph_ui/js/` (this is temporary until a build tool is completed)
-2. Open up the client locally on your machine.
+1. `npm install browserify -g` to install Browserify globally on your machine (skip this if you have done so before)
+2. `npm install` to load all packages from `package.json`
+3. Run `gulp` to compile the JavaScript
+4. Open up the client locally on your machine
+5. When adding changes, re-compile with `gulp`
 
 ### Running backend (for development)
 1. Go into the graphalyzer-server directory
