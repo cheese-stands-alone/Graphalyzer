@@ -6,6 +6,7 @@ import string
 
 
 class SessionIDHandler(HandleInterface):
+    # noinspection PyDictCreation
     def handle(self, socket: WebSocketServerProtocol):
         jsonmsg = {}
         jsonmsg["message_id"] = "".join(

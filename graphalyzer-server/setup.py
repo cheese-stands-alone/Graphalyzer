@@ -1,5 +1,4 @@
 from distutils.core import setup
-
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -34,5 +33,5 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires = ["autobahn[twisted]>=0.9.1"],
+    install_requires=["autobahn[twisted]>=0.9.1"],
 )

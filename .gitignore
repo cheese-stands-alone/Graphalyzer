@@ -1,6 +1,7 @@
 .metadata*
 *.orig
 graph_ui/node_modules/
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
