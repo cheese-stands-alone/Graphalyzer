@@ -1,10 +1,13 @@
-language: d
-d:
-  - dmd
-  - ldc
-  - gdc
+language: python
+python:
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "pypy"
 sudo: false
 env:
   - SERVER_DIR=graphalyzer-server
+install: 
+    cd $SERVER_DIR && pip install --user -r requirements.txt
 script: 
-    cd $SERVER_DIR && dub test --compiler=${DC} 
+    cd $SERVER_DIR
