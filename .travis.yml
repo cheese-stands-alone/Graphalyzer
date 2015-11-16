@@ -9,4 +9,4 @@ env:
 install: 
     cd $SERVER_DIR && pip install -r requirements.txt
 script: 
-    cd $SERVER_DIR && python -m unittest src/test/Test* 
+    python -m unittest src/test/Test* 
