@@ -34,9 +34,11 @@ var Graphalyzer = React.createClass({
   render: function() {
     return (
       <div>
-        <GraphPanel />
+        <GraphPanel 
+          graphData={this.state.graphData}
+        />
         <SearchPanel 
-          websocket = {this.props.websocket}
+          websocket={this.props.websocket}
         />
         <NodeInfoPanel />
       </div>
