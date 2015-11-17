@@ -5,7 +5,7 @@ Senior Design Project
 
 ### Running web client (for development)
 1. Go to `graph_ui/`
-2. `npm install browserify -g` to install Browserify globally on your machine (skip this if you have done so before)
+2. `npm install -g browserify gulp` to install Browserify and Gulp globally on your machine (skip this if you have done so before)
 3. `npm install` to load all packages from `package.json`
 4. Run `gulp` to compile the JavaScript
 5. Open up the client locally on your machine
