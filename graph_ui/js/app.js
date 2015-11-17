@@ -20,15 +20,15 @@ var Graphalyzer = React.createClass({
     };
   },
 
-  componentDidMount: function() {
-    this.websocket.onmessage = handleWSMessage;
-  },
-
   handleWSMessage: function(event) {
     var response = event.data;
     if (response !== null) {
       this.setState({graphData: response});
     }
+  },
+
+  componentDidMount: function() {
+    this.props.websocket.onmessage = this.handleWSMessage;
   },
 
   render: function() {
