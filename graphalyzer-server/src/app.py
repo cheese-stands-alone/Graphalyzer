@@ -1,7 +1,6 @@
 from websocketserver.SocketServer import *
 from autobahn.asyncio.websocket import WebSocketServerFactory
 from ServerConfig import *
-import threading
 
 
 def start_websocket_server():
@@ -26,8 +25,3 @@ def start_websocket_server():
         print("Server shutting down")
         server.close()
         loop.close()
-
-
-thread = threading.Thread(target=start_websocket_server,
-                          args=())
-thread.start()

@@ -1,8 +1,9 @@
 from distutils.core import setup
 from setuptools import setup, find_packages
-# To use a consistent encoding
-from codecs import open
 from os import path
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 here = path.abspath(path.dirname(__file__))
 
@@ -23,7 +24,7 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
 
-    packages=['src.websocketserver', 'src.websocketserver.handlers'],
+    packages=['src', 'src.websocketserver', 'src.websocketserver.handlers'],
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
