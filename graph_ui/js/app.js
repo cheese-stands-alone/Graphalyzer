@@ -2,9 +2,11 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var GraphalyzerPanel = require('react-bootstrap').Panel;
 var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodeInfoPanel = require('./NodeInfoPanel.js');
+
 
 var Graphalyzer = React.createClass({
   getDefaultProps: function() {
@@ -33,7 +35,7 @@ var Graphalyzer = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
         <GraphPanel 
           graphData={this.state.graphData}
         />
@@ -41,7 +43,7 @@ var Graphalyzer = React.createClass({
           websocket={this.props.websocket}
         />
         <NodeInfoPanel />
-      </div>
+      </ GraphalyzerPanel>
     );
   }
 });
