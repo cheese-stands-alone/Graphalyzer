@@ -5,6 +5,7 @@ var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Input = require('react-bootstrap').Input;
 var SubmitButton = require('react-bootstrap').Button;
+var Alert = require('react-bootstrap').Alert;
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
@@ -12,6 +13,8 @@ var SearchPanel = React.createClass({
       graphName: '',
       nodeName: '',
       degrees: '',
+      searchErr: false,
+      searchErrMessage: ''
     };
   },
 
@@ -23,8 +26,25 @@ var SearchPanel = React.createClass({
     });
   },
 
+  validateInput: function() {
+    if (!this.state.graphName) {
+      this.setState({
+        searchErr: true,
+        searchErrMessage: 'You must input a graph name.'
+      });
+      return false;
+    } else {
+      this.setState({
+        searchErr: false,
+        searchErrMessage: ''
+      });
+      return true;
+    }
+  },
+
   // TODO add logic for node and degrees when the respective backend logic is implemented
   search: function() {
+    if (!this.validateInput()) return;
     var self = this;
     var request = {  
       'message_id': '',
@@ -41,40 +61,52 @@ var SearchPanel = React.createClass({
   },
 
   render: function() {
+    var errPanel;
+    if (this.state.searchErr) errPanel = <SearchErrorPanel message={this.state.searchErrMessage} />;
+
     return (
-      <ListGroup>
-        <ListGroupItem>
-          <Input 
-            type='text' 
-            label='Graph Name' 
-            ref='graphName' 
-            value={this.state.graphName} 
-            onChange={this.updateFields}
-          />
-        </ListGroupItem>
-        <ListGroupItem>
-          <Input 
-            type='text' 
-            label='Node Name' 
-            ref='nodeName' 
-            value={this.state.nodeName} 
-            onChange={this.updateFields}
-          />
-        </ListGroupItem>
-        <ListGroupItem>
-          <Input 
-            type='text' 
-            label='Degrees' 
-            ref='degrees' 
-            value={this.state.degrees} 
-            onChange={this.updateFields}
-          />
-        </ListGroupItem>
-        <ListGroupItem>
-          <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
-        </ListGroupItem>
-      </ListGroup>
+      <div>
+        <ListGroup>
+          <ListGroupItem>
+            <Input 
+              type='text' 
+              label='Graph Name' 
+              ref='graphName' 
+              value={this.state.graphName} 
+              onChange={this.updateFields}
+            />
+          </ListGroupItem>
+          <ListGroupItem>
+            <Input 
+              type='text' 
+              label='Node Name' 
+              ref='nodeName' 
+              value={this.state.nodeName} 
+              onChange={this.updateFields}
+            />
+          </ListGroupItem>
+          <ListGroupItem>
+            <Input 
+              type='text' 
+              label='Degrees' 
+              ref='degrees' 
+              value={this.state.degrees} 
+              onChange={this.updateFields}
+            />
+          </ListGroupItem>
+          <ListGroupItem>
+            <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
+          </ListGroupItem>
+        </ListGroup>
+        {errPanel}
+      </div>
     );
+  }
+});
+
+var SearchErrorPanel = React.createClass({
+  render: function() {
+    return <Alert bsStyle='danger'>{this.props.message}</Alert>
   }
 });
 
