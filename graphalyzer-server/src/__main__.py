@@ -3,7 +3,7 @@ import threading
 from app import *
 
 
-def main(args=None):
+def main():
     thread = threading.Thread(target=start_websocket_server,
                               args=())
     thread.start()

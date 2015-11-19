@@ -1,5 +1,5 @@
-from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ErrorHandler import *
+from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ListGraphHandler import *
 from websocketserver.handlers.SessionIDHandler import *
 
@@ -24,7 +24,7 @@ class HandlerFactory(object):
             elif request == "listgraphs":
                 return ListGraphHandler()
             elif request == "newid":
-                return Ses
+                return SessionIDHandler()
             else:
                 return ErrorHandler("Error unknown request type", payload)
         except ValueError:
