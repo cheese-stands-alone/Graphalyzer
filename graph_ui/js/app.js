@@ -10,7 +10,6 @@ var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodeInfoPanel = require('./NodeInfoPanel.js');
 
-
 var Graphalyzer = React.createClass({
 
   getDefaultProps: function() {
@@ -29,8 +28,16 @@ var Graphalyzer = React.createClass({
   handleWSMessage: function(event) {
     var response = event.data;
     if (response !== null) {
-      this.setState({graphData: response});
+      var responseJSON = JSON.parse(response);
+      var data = responseJSON.payload;
+      console.log(Object.keys(data).length);
+      console.log(data);
+      this.setState({graphData: data});
     }
+  },
+
+  updateSelectedNode: function(node) {
+    this.setState({selectedNode: node});
   },
 
   componentDidMount: function() {
@@ -43,11 +50,13 @@ var Graphalyzer = React.createClass({
         <Col lg={12}>
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel graphData={this.state.graphData} />
+              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode}/>
             </Col>
             <Col lg={3}>
               <Row>
                 <SearchPanel websocket={this.props.websocket} />
+              </Row>
+              <Row>
                 <NodeInfoPanel />
               </Row>
             </Col>
