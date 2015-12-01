@@ -14,7 +14,7 @@ var paths = {
   build: './build'
 };
 
-gulp.task('build', function () {
+gulp.task('production', function () {
   browserify("js/app.js")
   .transform('babelify', {
     presets: ['es2015', 'react']
@@ -26,6 +26,17 @@ gulp.task('build', function () {
   .pipe(livereload());
 });
 
+gulp.task('dev', function() {
+  browserify("js/app.js")
+  .transform('babelify', {
+    presets: ['es2015', 'react']
+  })
+  .bundle()
+  .pipe(source('bundle.js'))
+  .pipe(gulp.dest(paths.build))
+  .pipe(livereload());
+});
+
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   livereload.listen();
@@ -33,4 +44,4 @@ gulp.task('watch', function() {
 });
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['watch', 'build']);
+gulp.task('default', ['watch', 'dev']);
