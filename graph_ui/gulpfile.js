@@ -40,7 +40,7 @@ gulp.task('dev', function() {
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch(files.js, ['build']);
+  gulp.watch(files.js, ['dev']);
 });
 
 // The default task (called when you run `gulp` from cli)
