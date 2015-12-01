@@ -1,20 +1,24 @@
-from websocketserver.handlers.HandlerInterface import *
-import random
-import json
-import time
-import string
+from websocketserver.handlers.ErrorHandler import *
+from py2neo import Graph
 
 
 class ListGraphHandler(HandleInterface):
     def handle(self, socket: WebSocketServerProtocol):
         nodes = "["
         jsonmsg = {}
+        graph = Graph()
 
-        n = random.randint(1, 20)
-        for number in range(0, n):
-            nodes += "{\"Graph\":\" Graph " + str(number) + "\"},"
-        nodes = nodes[:-1]
-        nodes += "]"
+        # noinspection PyBroadException
+        try:
+            for record in graph.cypher.execute("START n=node(*) RETURN DISTINCT"
+                                               " n.graphid"):
+                nodes += "{\"Graph\":\"" + record[0] + "\"},"
+            nodes = nodes[:-1]
+            nodes += "]"
+        except Exception:
+            print("Unable to connect to neo4j")
+            ErrorHandler("Unable to connect to neo4j", "").handle(socket)
+            return
 
         jsonmsg["message_id"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in
@@ -24,7 +28,7 @@ class ListGraphHandler(HandleInterface):
         jsonmsg["request"] = "response"
         jsonmsg["status"] = "success"
         jsonmsg["error"] = ""
-        jsonmsg["payload"] = json.load(nodes)
+        jsonmsg["payload"] = json.loads(nodes)
         jsonmsg["message"] = ""
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))

@@ -30,8 +30,10 @@ def start_websocket_server():
 
 def load_edges(graphlocation: str, graphid: str):
     from py2neo import Graph
+    from py2neo.packages.httpstream import http
+    http.socket_timeout = 9999
 
-    query = ("USING PERIODIC COMMIT LOAD CSV  WITH HEADERS FROM 'file://" +
+    query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file://" +
              graphlocation + "' AS line " +
              "MERGE (child:node {id:line.childid, graphid:\"" +
              graphid + "\"}) " +
@@ -44,10 +46,13 @@ def load_edges(graphlocation: str, graphid: str):
         graph = Graph()
         graph.cypher.execute(query)
     except Exception:
+        print("Edges failed")
         print("Unable to connect to neo4j")
 
 
 def load_prop(graphlocation: str, graphid: str):
+    from py2neo.packages.httpstream import http
+    http.socket_timeout = 9999
     # noinspection PyBroadException
     try:
         from py2neo import Graph
@@ -59,7 +64,7 @@ def load_prop(graphlocation: str, graphid: str):
         count = 0
         tx = graph.cypher.begin()
         for row in iterator:
-            if count >= 500:
+            if count >= 1000:
                 tx.process()
                 count = 0
             query = ("MATCH (n { id:'" + row[0] + "', graphid:'" + graphid +

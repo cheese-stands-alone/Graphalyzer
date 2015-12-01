@@ -1,4 +1,3 @@
-from websocketserver.handlers.ErrorHandler import *
 from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ListGraphHandler import *
 from websocketserver.handlers.SessionIDHandler import *
