@@ -7,6 +7,7 @@ var Grid = require('react-bootstrap').Grid;
 var Col = require('react-bootstrap').Col;
 var Row = require('react-bootstrap').Row;
 var GraphPanel = require('./GraphPanel.js');
+var Graph = require('./Graph.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodeInfoPanel = require('./NodeInfoPanel.js');
 
@@ -29,9 +30,9 @@ var Graphalyzer = React.createClass({
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
+      console.log(responseJSON);
       var data = responseJSON.payload;
-      console.log(Object.keys(data).length);
-      console.log(data);
+      Graph.updateGraph(data);
       this.setState({graphData: data});
     }
   },
