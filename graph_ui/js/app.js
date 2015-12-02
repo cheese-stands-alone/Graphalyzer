@@ -51,7 +51,7 @@ var Graphalyzer = React.createClass({
         <Col lg={12}>
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode}/>
+              <GraphPanel />
             </Col>
             <Col lg={3}>
               <Row>

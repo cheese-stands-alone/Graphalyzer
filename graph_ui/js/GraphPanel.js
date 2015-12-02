@@ -2,12 +2,6 @@ var React = require('react');
 var Vis = require('vis');
 
 var GraphPanel = React.createClass({
-  getDefaultProps: function() {
-    return {
-      graphData: {}
-    };
-  },
-
   getInitialState: function() {
     return {
       panelMessage: <div id='graph'><p>Please load a graph.</p></div>
