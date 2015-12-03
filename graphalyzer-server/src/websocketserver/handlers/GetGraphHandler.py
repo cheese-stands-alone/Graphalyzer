@@ -3,6 +3,7 @@ from py2neo import Graph
 
 
 class GetGraphHandler(HandleInterface):
+    """Class to handle sending whole graph to client."""
     _payload = ""
 
     def __init__(self, payload):

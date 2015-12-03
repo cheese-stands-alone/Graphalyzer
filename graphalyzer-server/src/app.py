@@ -2,9 +2,11 @@ from autobahn.asyncio.websocket import WebSocketServerFactory
 
 from ServerConfig import *
 from websocketserver.SocketServer import *
+import sys
 
 
 def start_websocket_server():
+    """Function to start the websocket server."""
     import asyncio
 
     loop = asyncio.new_event_loop()
@@ -29,9 +31,12 @@ def start_websocket_server():
 
 
 def load_edges(graphlocation: str, graphid: str):
+    """Load edges cvs file into neo4j. graphlocation is string location of file
+        and graphid is the unique id for this graph"""
     from py2neo import Graph
     from py2neo.packages.httpstream import http
-    http.socket_timeout = 9999
+    # Increase timeout because it can take a really long time.
+    http.socket_timeout = sys.maxsize
 
     query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file://" +
              graphlocation + "' AS line " +
@@ -51,8 +56,11 @@ def load_edges(graphlocation: str, graphid: str):
 
 
 def load_prop(graphlocation: str, graphid: str):
+    """Load properties cvs file into neo4j. graphlocation is string location of file
+        and graphid is the unique id for this graph"""
     from py2neo.packages.httpstream import http
-    http.socket_timeout = 9999
+    # Increase timeout because it can take a really long time.
+    http.socket_timeout = sys.maxsize
     # noinspection PyBroadException
     try:
         from py2neo import Graph
@@ -63,6 +71,7 @@ def load_prop(graphlocation: str, graphid: str):
         next(iterator)
         count = 0
         tx = graph.cypher.begin()
+        # Loop each csv row so that the prop name can be included.
         for row in iterator:
             if count >= 1000:
                 tx.process()

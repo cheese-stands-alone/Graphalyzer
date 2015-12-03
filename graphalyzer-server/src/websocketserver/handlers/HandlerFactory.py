@@ -4,6 +4,7 @@ from websocketserver.handlers.SessionIDHandler import *
 
 
 class HandlerFactory(object):
+    """Factory class to handle the different websocket requests."""
     @staticmethod
     def makehandler(payload: json) -> HandleInterface:
         # noinspection PyBroadException

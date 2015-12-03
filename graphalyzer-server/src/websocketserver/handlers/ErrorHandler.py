@@ -6,6 +6,7 @@ import string
 
 
 class ErrorHandler(HandleInterface):
+    """Class to handle generic errors."""
     _error = ""
     _payload = ""
 

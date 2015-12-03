@@ -4,6 +4,7 @@ from py2neo import Graph
 
 class ListGraphHandler(HandleInterface):
     def handle(self, socket: WebSocketServerProtocol):
+        """Class to list available graps in neo4j."""
         nodes = "["
         jsonmsg = {}
         graph = Graph()
