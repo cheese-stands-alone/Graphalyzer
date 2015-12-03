@@ -7,6 +7,7 @@ var Grid = require('react-bootstrap').Grid;
 var Col = require('react-bootstrap').Col;
 var Row = require('react-bootstrap').Row;
 var GraphPanel = require('./GraphPanel.js');
+var Graph = require('./Graph.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodeInfoPanel = require('./NodeInfoPanel.js');
 
@@ -21,33 +22,18 @@ var Graphalyzer = React.createClass({
   getInitialState: function() {
     return {
       graphData: {},
-      selectedNode: {},
-      panelMessage: 'Please load a graph'
+      selectedNode: {}
     };
   },
 
   handleWSMessage: function(event) {
     var response = event.data;
-    if (response != null) {
+    if (response !== null) {
       var responseJSON = JSON.parse(response);
       console.log(responseJSON);
-      if (responseJSON.error) {
-        this.setState({
-          panelMessage: 'Graph could not be loaded. Error message: ' + responseJSON.error
-        });
-      } else {
-        var data = responseJSON.payload;
-        if (data.nodes) {      
-          this.setState({
-            panelMessage: '',
-            graphData: data
-          });
-        } else {
-          this.setState({
-            panelMessage: 'Please load a graph'
-          });
-        }
-      }
+      var data = responseJSON.payload;
+      Graph.updateGraph(data);
+      this.setState({graphData: data});
     }
   },
 
@@ -65,9 +51,7 @@ var Graphalyzer = React.createClass({
         <Col lg={12}>
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <div id='graph'>
-                <GraphPanel id='graph' panelMessage={this.state.panelMessage} graphData={this.state.graphData}/>
-              </div>
+              <GraphPanel />
             </Col>
             <Col lg={3}>
               <Row>
