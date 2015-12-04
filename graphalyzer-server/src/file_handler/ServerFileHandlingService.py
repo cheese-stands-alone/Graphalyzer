@@ -1,5 +1,6 @@
 from file_handler.file_handling.FileScanner import *
 from file_handler.local_storage.StorageFolderInit import *
+import time
 
 class ServerFileHandlingService(object):
 
@@ -10,7 +11,7 @@ class ServerFileHandlingService(object):
 
 
 	def startService(self, temp, backup):
-		storageFolderInit.intitializeStorageFolders(temp, backup)
+		self.storageFolderInit.intitializeStorageFolders(temp, backup)
 
 		# //TODO
 		# //parseConfig();
@@ -19,5 +20,5 @@ class ServerFileHandlingService(object):
 		# }
 
 		while 1:
-			time.sleep(waitTimeInMinutes * 60)
-			fileScanner.scanForNewFiles(temp, backup)
+			time.sleep(self.waitTimeInMinutes * 60)
+			self.fileScanner.scanForNewFiles(temp, backup)

@@ -1,8 +1,10 @@
-from file_handler.neo4j.Neo4JInteraction import *
-from file_handler.file_handling.PathManipulation import *
-import shutil
 import datetime
 import os
+import shutil
+
+from file_handler.file_handling.PathManipulation import *
+from file_handler.neo4j.Neo4JInteraction import *
+
 
 class FileHandler(object):
 
@@ -12,13 +14,13 @@ class FileHandler(object):
 		self.pathManipulation = pathManipulation
 
 	def moveFileToBackup(self, file, newFileName, temp, backup):
-		oldPath = pathManipulation.constructOldFilePath(file, temp)
+		oldPath = self.pathManipulation.constructOldFilePath(file, temp)
 
-		newPath = pathManipulation.constructNewFilePath(newFileName, backup)
+		newPath = self.pathManipulation.constructNewFilePath(newFileName, backup)
 		shutil.move(oldPath, newPath)
 
 	def addToNeo4J(self, file):
-		neo4JInteraction.addFileToDatabase(file)
+		self.neo4JInteraction.addFileToDatabase(file)
 
 	def handleNewFile(self, file, temp, backup):
 
@@ -31,6 +33,6 @@ class FileHandler(object):
 		newFileString = currentTimeString + file_extension
 		# //	writefln("%s", newFileString)
 
-		moveFileToBackup(file, newFileString, temp, backup)
+		self.moveFileToBackup(file, newFileString, temp, backup)
 
-		addToNeo4J(newFileString)
+		self.addToNeo4J(newFileString)

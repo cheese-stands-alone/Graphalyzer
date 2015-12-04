@@ -10,13 +10,13 @@ class SpringMock(object):
 	waitTimeInMinutes = 1
 
 	def getServerFileHandlingService(self):
-		fileScanner = getNewFileScanner()
-		storageFolderInit = StorageFolderInit()
-		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, waitTimeInMinutes)
+		fileScanner = self.getNewFileScanner()
+		storageFolderInit = self.StorageFolderInit()
+		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, self.waitTimeInMinutes)
 		return serverFileHandlingService
 
 	def getNewFileScanner(self):
-		fileHandler = getNewFileHandler()
+		fileHandler = self.getNewFileHandler()
 		fileScanner = FileScanner(fileHandler)
 		return fileScanner
 

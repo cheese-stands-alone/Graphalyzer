@@ -15,6 +15,6 @@ class FileScanner(object):
 			for d in dFiles:
 				# //			writefln("%s", d.name);
 				# //TODO - add file lock check
-				fileHandler.handleNewFile(d, temp, backup)
+				self.fileHandler.handleNewFile(d, temp, backup)
 		except:
 			print("Error scanning for files")
