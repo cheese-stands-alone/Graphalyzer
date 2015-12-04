@@ -1,5 +1,4 @@
 var React = require('react');
-var Vis = require('vis');
 var Graph = require('./Graph.js');
 
 var GraphPanel = React.createClass({
@@ -12,7 +11,7 @@ var GraphPanel = React.createClass({
   render: function() {
     return (
       <div>
-        <Graph />
+        <Graph graphData={this.props.graphData}/>
       </div>
     );
   }

@@ -2,32 +2,11 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Vis = require('vis');
 
-var updateGraph = function(data) {
-  if (Object.keys(data).length === 2 && typeof data === 'object') {
-    var identifier = document.getElementById('graph');
-    var options = {
-      edges: {
-        arrows: {
-          to: {
-            scaleFactor: 0.5
-          }
-        }
-      },
-      height: '100%',
-      interaction: {
-        dragNodes: false
-      },
-      width: '100%'
-    };
-    var network = new Vis.Network(identifier, data, options);
-  }
-};
-
 var Graph = React.createClass({
   componentDidMount: function() {
     var element = ReactDOM.findDOMNode(this);
     this.setState({
-      network: new Vis.Network(element, {}, this.props.options)
+      network: new Vis.Network(element, this.props.graphData, this.props.options)
     });
   },
 
