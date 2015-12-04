@@ -1,15 +1,15 @@
-import os
-from os import path
 from file_handler.file_handling.FileHandler import *
+from file_handler.os.OSWrapper import *
 
 class FileScanner(object):
 
-	def __init__(self, fileHandler):
+	def __init__(self, fileHandler, oSWrapper):
 		self.fileHandler = fileHandler
+		self.oSWrapper = oSWrapper
 
 	def scanForNewFiles(self, temp, backup):
 		try:
-			dFiles = filter(path.isfile, os.listdir(temp))
+			dFiles = self.oSWrapper.getFileListing(temp)
 
 
 			for d in dFiles:

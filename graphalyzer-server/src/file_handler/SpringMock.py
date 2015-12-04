@@ -11,17 +11,24 @@ class SpringMock(object):
 
 	def getServerFileHandlingService(self):
 		fileScanner = self.getNewFileScanner()
-		storageFolderInit = self.StorageFolderInit()
+		storageFolderInit = self.getNewStorageFolderInit()
 		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, self.waitTimeInMinutes)
 		return serverFileHandlingService
 
+	def getNewStorageFolderInit(self):
+		oSWrapper = OSWrapper()
+		storageFolderInit = StorageFolderInit(oSWrapper)
+		return storageFolderInit
+
 	def getNewFileScanner(self):
 		fileHandler = self.getNewFileHandler()
-		fileScanner = FileScanner(fileHandler)
+		oSWrapper = OSWrapper()
+		fileScanner = FileScanner(fileHandler, oSWrapper)
 		return fileScanner
 
 	def getNewFileHandler(self):
 		neo4JInteraction = Neo4JInteraction()
 		pathManipulation = PathManipulation()
-		fileHandler = FileHandler(neo4JInteraction, pathManipulation)
+		oSWrapper = OSWrapper()
+		fileHandler = FileHandler(neo4JInteraction, pathManipulation, oSWrapper)
 		return fileHandler

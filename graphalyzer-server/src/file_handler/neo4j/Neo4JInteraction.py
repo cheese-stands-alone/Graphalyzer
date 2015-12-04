@@ -4,7 +4,7 @@ class Neo4JInteraction:
 			self.loadEdges(fileName)
 		else:
 			self.loadProp(fileName)
-
+#TODO move to separate file
 	def loadEdges(graphlocation: str, graphid: str):
 		import py2neo
 
