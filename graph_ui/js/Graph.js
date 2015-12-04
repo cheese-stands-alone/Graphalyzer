@@ -10,6 +10,15 @@ var Graph = React.createClass({
     });
   },
 
+  componentDidUpdate: function() {
+    console.log('Setting data.');
+    this.state.network.setData({
+      nodes: this.props.graphData.nodes, 
+      edges: this.props.graphData.edges
+    });
+    console.log('New data set');
+  },
+
   getDefaultProps: function() {
     return {
       options: {
