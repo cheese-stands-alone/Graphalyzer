@@ -1,5 +1,6 @@
 var React = require('react');
 var Vis = require('vis');
+var Graph = require('./Graph.js');
 
 var GraphPanel = React.createClass({
   getInitialState: function() {
@@ -11,7 +12,7 @@ var GraphPanel = React.createClass({
   render: function() {
     return (
       <div>
-        {this.state.panelMessage || null}
+        <Graph />
       </div>
     );
   }
