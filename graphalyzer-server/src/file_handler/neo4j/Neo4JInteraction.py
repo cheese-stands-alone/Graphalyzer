@@ -1,22 +1,17 @@
-import sys
-class Neo4JInteraction:
-	def addFileToDatabase(self, graphFileLocation, graphID):
-		#//TODO change upload name and graph property
-		try:
-			print("here")
-			if "edge" in graphID or "Edge" in graphID:
-				self.loadEdges(graphFileLocation, graphID)
-			else:
-				self.loadProp(graphFileLocation, graphID)
-		except:
-			print("Problem uploading to Neo4J", sys.exc_info()[0])
+import sys, traceback
+class Neo4JInteraction(object):
 
-#TODO move to separate file
+	def __init__(self, oSWrapper):
+		self.oSWrapper = oSWrapper
+
 	def loadEdges(self, graphlocation: str, graphid: str):
 		import py2neo
 		print("graph location: " + graphlocation + " graphid: " + graphid)
+
+		fileURI = self.oSWrapper.getFileURI(graphlocation)
+
 		query = ("USING PERIODIC COMMIT LOAD CSV WITH HEADERS FROM 'file:" +
-		graphlocation + "' AS line " +
+		fileURI + "' AS line " +
 		"MERGE (child:node {id:line.childid, graphid:\"" +
 		graphid + "\"}) " +
 		"MERGE (parent:node {id:line.parentid, graphid:\"" +
@@ -30,6 +25,7 @@ class Neo4JInteraction:
 			graph.cypher.execute(query)
 		except Exception:
 			print("Unable to connect to neo4j", sys.exc_info()[0])
+			traceback.print_exc(file=sys.stdout)
 
 	def loadProp(self, graphlocation: str, graphid: str):
 		# noinspection PyBroadException

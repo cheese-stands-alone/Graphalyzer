@@ -6,8 +6,8 @@ from file_handler.neo4j.Neo4JInteraction import *
 class FileHandler(object):
 
 
-	def __init__(self, neo4JInteraction, pathManipulation, oSWrapper):
-		self.neo4JInteraction = neo4JInteraction
+	def __init__(self, fileUpload, pathManipulation, oSWrapper):
+		self.fileUpload = fileUpload
 		self.pathManipulation = pathManipulation
 		self.oSWrapper = oSWrapper
 
@@ -18,7 +18,7 @@ class FileHandler(object):
 		self.oSWrapper.moveFile(oldPath, newPath)
 
 	def addToNeo4J(self, file, graphName):
-		self.neo4JInteraction.addFileToDatabase(file, graphName)
+		self.fileUpload.addFileToDatabase(file, graphName)
 
 	def handleNewFile(self, file, temp, backup):
 		try:

@@ -25,3 +25,20 @@ class OSWrapper(object):
 
 	def getCurrentUTCDate(self):
 		return datetime.datetime.utcnow().strftime("%a-%b-%d-%H-%M-%S-%Z-%Y")
+
+	def getOSPathHeader(self):
+		if self.oSIsWindows():
+			return "c:/"
+		else:
+			return "/"
+
+	def oSIsWindows(self):
+		return os.name is 'nt'
+
+	def getFileURI(self, graphLocation):
+		if self.oSIsWindows():
+			fileURI = "///" + graphLocation
+		else:
+			fileURI = "//" + graphLocation
+
+		return fileURI

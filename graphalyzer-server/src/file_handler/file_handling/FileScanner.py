@@ -4,18 +4,20 @@ import sys
 
 class FileScanner(object):
 
-	def __init__(self, fileHandler, oSWrapper):
+	def __init__(self, fileHandler, oSWrapper, tempDirectory, backupDirectory):
 		self.fileHandler = fileHandler
 		self.oSWrapper = oSWrapper
+		self.tempDirectory = tempDirectory
+		self.backupDirectory = backupDirectory
 
-	def scanForNewFiles(self, temp, backup):
+	def scanForNewFiles(self):
 		try:
-			dFiles = self.oSWrapper.getFileListing(temp)
+			dFiles = self.oSWrapper.getFileListing(self.tempDirectory)
 			print(dFiles)
 
 			for d in dFiles:
 				# //			writefln("%s", d.name);
 				# //TODO - add file lock check
-				self.fileHandler.handleNewFile(d, temp, backup)
+				self.fileHandler.handleNewFile(d, self.tempDirectory, self.backupDirectory)
 		except:
 			print("Error scanning for files ", sys.exc_info()[0])

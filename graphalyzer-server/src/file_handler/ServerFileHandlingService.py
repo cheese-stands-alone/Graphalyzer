@@ -10,8 +10,9 @@ class ServerFileHandlingService(object):
 		self.waitTimeInMinutes = waitTimeInMinutes
 
 
-	def startService(self, temp, backup):
-		self.storageFolderInit.intitializeStorageFolders(temp, backup)
+
+	def startService(self):
+		self.storageFolderInit.intitializeStorageFolders()
 
 		# //TODO
 		# //parseConfig();
@@ -20,4 +21,4 @@ class ServerFileHandlingService(object):
 		# }
 		while 1:
 			time.sleep(self.waitTimeInMinutes * 60)
-			self.fileScanner.scanForNewFiles(temp, backup)
+			self.fileScanner.scanForNewFiles()
