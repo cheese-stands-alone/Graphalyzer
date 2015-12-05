@@ -2,7 +2,6 @@ import os
 import datetime
 import shutil
 from os import path
-from file_handler.os.OSWrapper import *
 
 class OSWrapper(object):
 	def validPath(self, path):
@@ -12,13 +11,17 @@ class OSWrapper(object):
 		return os.makedirs(directoryName)
 
 	def getFileListing(self, directory):
-		return filter(path.isfile, os.listdir(directory))
+		files = [x for x in os.listdir(directory) if path.isfile(directory+os.sep+x)]
+		return files
 
 	def getFileExtension(self, file):
 		return os.path.splitext(file)
+
+	def getFileName(self, file):
+		return os.path.splitext(os.path.basename(file))[0]
 
 	def moveFile(self, oldFileLocation, newFileLocation):
 		shutil.move(oldFileLocation, newFileLocation)
 
 	def getCurrentUTCDate(self):
-		return datetime.utcnow()
+		return datetime.datetime.utcnow().strftime("%a-%b-%d-%H-%M-%S-%Z-%Y")

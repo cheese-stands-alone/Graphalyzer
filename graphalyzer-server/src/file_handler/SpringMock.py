@@ -7,7 +7,7 @@ from file_handler.neo4j.Neo4JInteraction import *
 
 class SpringMock(object):
 
-	waitTimeInMinutes = 1
+	waitTimeInMinutes = 0.1
 
 	def getServerFileHandlingService(self):
 		fileScanner = self.getNewFileScanner()

@@ -18,7 +18,6 @@ class ServerFileHandlingService(object):
 		# if 1/*result from parseConfig indicates use backup data*/:
 		# 	//parse backup files
 		# }
-
 		while 1:
 			time.sleep(self.waitTimeInMinutes * 60)
 			self.fileScanner.scanForNewFiles(temp, backup)
