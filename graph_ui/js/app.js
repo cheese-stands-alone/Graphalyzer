@@ -1,3 +1,9 @@
+/**
+ * app.js
+ * 
+ * @author Andrew Bowler, Alberto Gomez-Estrada, Taylor Welter
+ */
+
 'use strict';
 
 var React = require('react');
@@ -9,7 +15,7 @@ var Col = require('react-bootstrap').Col;
 var Row = require('react-bootstrap').Row;
 var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
-var NodeInfoPanel = require('./NodeInfoPanel.js');
+var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 
 var Graphalyzer = React.createClass({
 
@@ -60,7 +66,7 @@ var Graphalyzer = React.createClass({
                 <SearchPanel websocket={this.props.websocket} />
               </Row>
               <Row>
-                <NodeInfoPanel selectedNode={this.state.selectedNode} />
+                <NodePropertiesPanel selectedNode={this.state.selectedNode} />
               </Row>
             </Col>
           </GraphalyzerPanel>

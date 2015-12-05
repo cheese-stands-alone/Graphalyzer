@@ -1,8 +1,15 @@
+/**
+ * SearchPanel.js
+ *
+ * @author Andrew Bowler
+ */
+
 'use strict';
 
 var React = require('react');
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
+var Panel = require('react-bootstrap').Panel;
 var Input = require('react-bootstrap').Input;
 var SubmitButton = require('react-bootstrap').Button;
 var Alert = require('react-bootstrap').Alert;
@@ -66,39 +73,41 @@ var SearchPanel = React.createClass({
 
     return (
       <div>
-        <ListGroup>
-          <ListGroupItem>
-            <Input 
-              type='text' 
-              label='Graph Name' 
-              ref='graphName' 
-              value={this.state.graphName} 
-              onChange={this.updateFields}
-            />
-          </ListGroupItem>
-          <ListGroupItem>
-            <Input 
-              type='text' 
-              label='Node Name' 
-              ref='nodeName' 
-              value={this.state.nodeName} 
-              onChange={this.updateFields}
-            />
-          </ListGroupItem>
-          <ListGroupItem>
-            <Input 
-              type='text' 
-              label='Degrees' 
-              ref='degrees' 
-              value={this.state.degrees} 
-              onChange={this.updateFields}
-            />
-          </ListGroupItem>
-          <ListGroupItem>
-            <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
-          </ListGroupItem>
-        </ListGroup>
-        {errPanel}
+        <Panel header='Search' bsStyle='primary'>
+          <ListGroup fill>
+            <ListGroupItem>
+              <Input 
+                type='text' 
+                label='Graph Name' 
+                ref='graphName' 
+                value={this.state.graphName} 
+                onChange={this.updateFields}
+              />
+            </ListGroupItem>
+            <ListGroupItem>
+              <Input 
+                type='text' 
+                label='Node Name' 
+                ref='nodeName' 
+                value={this.state.nodeName} 
+                onChange={this.updateFields}
+              />
+            </ListGroupItem>
+            <ListGroupItem>
+              <Input 
+                type='text' 
+                label='Degrees' 
+                ref='degrees' 
+                value={this.state.degrees} 
+                onChange={this.updateFields}
+              />
+            </ListGroupItem>
+            <ListGroupItem>
+              <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
+            </ListGroupItem>
+          </ListGroup>
+          {errPanel}
+        </Panel>
       </div>
     );
   }
