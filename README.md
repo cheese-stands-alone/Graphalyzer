@@ -9,7 +9,6 @@ Senior Design Project
 3. `npm install` to load all packages from `package.json`
 4. Run `gulp` to compile the JavaScript for development environment, or `gulp production` for minified code
 5. Open up the client locally on your machine
-6. When adding changes, re-compile with `gulp`
 
 ### Running backend (for development)
 1. Go into the graphalyzer-server directory
