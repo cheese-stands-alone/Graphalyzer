@@ -10,13 +10,21 @@ var Graph = React.createClass({
     });
   },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return this.props.graphData != nextProps.graphData;
+  },
+
   componentDidUpdate: function() {
-    console.log('Setting data.');
     this.state.network.setData({
       nodes: this.props.graphData.nodes, 
       edges: this.props.graphData.edges
     });
-    console.log('New data set');
+
+    this.state.network.on('selectNode', function(event) {
+      var nodeID = event.nodes[0];
+      var node = this.state.network.body.data.nodes.get(nodeID);
+      this.props.updateSelectedNode(node);
+    }.bind(this));
   },
 
   getDefaultProps: function() {

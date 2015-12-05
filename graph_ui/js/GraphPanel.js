@@ -11,7 +11,7 @@ var GraphPanel = React.createClass({
   render: function() {
     return (
       <div>
-        <Graph graphData={this.props.graphData}/>
+        <Graph graphData={this.props.graphData} updateSelectedNode={this.props.updateSelectedNode}/>
       </div>
     );
   }

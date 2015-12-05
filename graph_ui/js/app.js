@@ -35,7 +35,6 @@ var Graphalyzer = React.createClass({
         nodes: new Vis.DataSet(data.nodes),
         edges: new Vis.DataSet(data.edges)
       };
-      console.log(dataSet);
       this.setState({graphData: dataSet});
     }
   },
@@ -54,14 +53,14 @@ var Graphalyzer = React.createClass({
         <Col lg={12}>
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel graphData={this.state.graphData}/>
+              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode} />
             </Col>
             <Col lg={3}>
               <Row>
                 <SearchPanel websocket={this.props.websocket} />
               </Row>
               <Row>
-                <NodeInfoPanel />
+                <NodeInfoPanel selectedNode={this.state.selectedNode} />
               </Row>
             </Col>
           </GraphalyzerPanel>
