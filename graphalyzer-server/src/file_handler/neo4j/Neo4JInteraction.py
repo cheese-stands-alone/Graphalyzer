@@ -1,4 +1,6 @@
 import sys, traceback
+from py2neo.packages.httpstream import http
+
 class Neo4JInteraction(object):
 
 	def __init__(self, oSWrapper):
@@ -6,6 +8,8 @@ class Neo4JInteraction(object):
 
 	def loadEdges(self, graphlocation: str, graphid: str):
 		import py2neo
+		http.socket_timeout = sys.maxsize
+
 		print("graph location: " + graphlocation + " graphid: " + graphid)
 
 		fileURI = self.oSWrapper.getFileURI(graphlocation)
@@ -29,6 +33,9 @@ class Neo4JInteraction(object):
 
 	def loadProp(self, graphlocation: str, graphid: str):
 		# noinspection PyBroadException
+
+		http.socket_timeout = sys.maxsize
+
 		try:
 			import py2neo
 			import csv
