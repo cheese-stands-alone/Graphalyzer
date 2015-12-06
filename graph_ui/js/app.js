@@ -1,75 +1,82 @@
-/*
- * Main entry point for web client JS
+/**
+ * app.js
  * 
- * @author Andrew Bowler, Taylor Welter, Alberto Gomez-Estrada
+ * @author Andrew Bowler, Alberto Gomez-Estrada, Taylor Welter
  */
-(function() {
-  'use strict';
-  angular
-    .module('graphalyzer', ['ngVis', 'searchDirective'])
-    .service('graphDataHandler', function() {
-      var graphData = {};
 
-      return {
-        getGraphData: function() {
-          return graphData;
-        },
+'use strict';
 
-        setGraphData: function(data) {
-          graphData = data; // this needs to be $scope.data in the graph controller, whenever this changes, $scope.data has to be changed
-        },
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Vis = require('vis');
+var GraphalyzerPanel = require('react-bootstrap').Panel;
+var Grid = require('react-bootstrap').Grid;
+var Col = require('react-bootstrap').Col;
+var Row = require('react-bootstrap').Row;
+var GraphPanel = require('./GraphPanel.js');
+var SearchPanel = require('./SearchPanel.js');
+var NodePropertiesPanel = require('./NodePropertiesPanel.js');
+
+var Graphalyzer = React.createClass({
+
+  getDefaultProps: function() {
+    return {
+      websocket: new WebSocket('ws://rwhite226.duckdns.org:1618/ws')
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      graphData: {},
+      selectedNode: {}
+    };
+  },
+
+  handleWSMessage: function(event) {
+    var response = event.data;
+    if (response !== null) {
+      var responseJSON = JSON.parse(response);
+      var data = responseJSON.payload;
+      var dataSet = {
+        nodes: new Vis.DataSet(data.nodes),
+        edges: new Vis.DataSet(data.edges)
       };
-    })
-    .controller('GraphController', ['$rootScope', '$scope', 'VisDataSet', 'graphDataHandler',
-      function($rootScope, $scope, VisDataSet, graphDataHandler, network) {
+      this.setState({graphData: dataSet});
+    }
+  },
 
-      // App-level properties
-      $rootScope.fields = {
-        selectedNode: {}
-      };
+  updateSelectedNode: function(node) {
+    this.setState({selectedNode: node});
+  },
 
-      $scope.options = {
-        autoResize: true
-      };
-      
-      // This is initially empty and should be changed whenever the graphDataHandler service's graphData is changed
-      $scope.data = null;
-  
-      function update() {
-        $scope.data = $rootScope.data;
-        VisDataSet.Draw($scope.data, $scope.options);
-      }
+  componentDidMount: function() {
+    this.props.websocket.onmessage = this.handleWSMessage;
+  },
 
-      $rootScope.update = update;
+  render: function() {
+    return (
+      <Grid>
+        <Col lg={12}>
+          <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
+            <Col lg={9}>
+              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode} />
+            </Col>
+            <Col lg={3}>
+              <Row>
+                <SearchPanel websocket={this.props.websocket} />
+              </Row>
+              <Row>
+                <NodePropertiesPanel selectedNode={this.state.selectedNode} />
+              </Row>
+            </Col>
+          </GraphalyzerPanel>
+        </Col>
+      </Grid>
+    );
+  }
+});
 
-      $scope.events = {
-        // get the network object
-        onload: function(network) {
-          network.on('selectNode', function(node) {
-            $rootScope.$apply(function() {
-              $rootScope.fields.selectedNode = node;
-            });
-          });
-
-          network.on('deselectNode', function(node) {
-            $rootScope.$apply(function() {
-              // Empty string if no node was selected
-              $rootScope.fields.selectedNode = '';
-            });
-          });
-        }
-      };
-    }])
-    .run(['$rootScope', 'graphDataHandler', function($rootScope, graphDataHandler, GraphController){
-      // WebSocket service
-
-      $rootScope.ws = new WebSocket("ws://rwhite226.duckdns.org:1618/ws");
-      $rootScope.ws.onmessage = function(event) {
-        var data = JSON.parse(event.data);
-        var graphData = data.payload;
-        graphDataHandler.setGraphData(graphData);
-        $rootScope.data = graphData;
-        $rootScope.update();
-      }
-    }]);
-})();
+ReactDOM.render(
+  <Graphalyzer />,
+  document.getElementById('main')
+);

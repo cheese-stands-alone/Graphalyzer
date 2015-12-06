@@ -1,31 +1,11 @@
-<html ng-app="graphalyzer">
+<html>
   <meta charset="UTF-8">
   <head>
     <meta name="author" content="Andrew Bowler, Alberto Gomez-Estrada">
-    <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
-    <script type="text/javascript" src="node_modules/vis/dist/vis.min.js"></script>
-    <script type="text/javascript" src="js/angular-vis.js"></script>
-    <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/search-panel.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <link type="text/css" rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
-    <link type="text/css" rel="stylesheet" href="css/style.css"></link>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
   </head>
   <body>
-    <div ng-app class="container-fluid">
-      <div class="graph-panel col-lg-9">
-        <div ng-controller="GraphController">
-          <vis-network data="data" options="options" events="events" height="100%"></vis-network>
-        </div>
-      </div>
-      <div class="col-lg-3 side-panel">
-        <search-panel></search-panel>
-        <div class="node-panel row">
-          <h3 ng-bind="fields.selectedNode.nodes"></h3>
-        </div>
-      </div>
-    </div>
-    <!-- container -->
+    <div class="container" id="main" />
+    <script src="build/bundle.js"></script>
   </body>
 </html>
