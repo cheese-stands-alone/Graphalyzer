@@ -12,7 +12,7 @@ class ServerFileHandlingService(object):
 
 
 	def startService(self):
-		self.storageFolderInit.intitializeStorageFolders()
+		self.storageFolderInit.initializeStorageFolders()
 
 		# //TODO
 		# //parseConfig();

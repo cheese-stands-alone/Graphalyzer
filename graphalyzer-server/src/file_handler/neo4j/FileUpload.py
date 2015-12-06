@@ -8,7 +8,6 @@ class FileUpload(object):
 	def addFileToDatabase(self, graphFileLocation, graphID):
 		#//TODO change upload name and graph property
 		try:
-			print("here")
 			if "edge" in graphID or "Edge" in graphID:
 				self.neo4JInteraction.loadEdges(graphFileLocation, graphID)
 			else:

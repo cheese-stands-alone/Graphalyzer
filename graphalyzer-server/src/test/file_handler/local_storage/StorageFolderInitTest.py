@@ -1,20 +1,33 @@
 import unittest
+from unittest.mock import *
+from file_handler.local_storage.StorageFolderInit import *
 
 
-class StorageFolerInitTest(unittest.TestCase):
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+class StorageFolderInitTest(unittest.TestCase):
+    def test_initializeStorageFolders_calledTwiceForCreatingNonExistentDirectories(self):
+        tempDirectory = "dir"
+        backupDirectory = "dir"
+        oSWrapper = Mock()
+        oSWrapper.validPath.return_value = False
 
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
+        storageFolderInit = StorageFolderInit(oSWrapper, tempDirectory, backupDirectory)
 
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+
+        storageFolderInit.initializeStorageFolders()
+        self.assertTrue(oSWrapper.makeDirectory.call_count is 2)
+
+    def test_initializeStorageFolders_calledZeroTimesForCreatingAlreadyExistentDirectories(self):
+        tempDirectory = "dir"
+        backupDirectory = "dir"
+        oSWrapper = Mock()
+        oSWrapper.validPath.return_value = True
+
+        storageFolderInit = StorageFolderInit(oSWrapper, tempDirectory, backupDirectory)
+
+
+        storageFolderInit.initializeStorageFolders()
+        self.assertTrue(oSWrapper.makeDirectory.call_count is 0)
+
 
 
 if __name__ == '__main__':

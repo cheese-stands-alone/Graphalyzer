@@ -7,7 +7,7 @@ class StorageFolderInit(object):
 		self.tempDirectory = tempDirectory
 		self.backupDirectory = backupDirectory
 
-	def intitializeStorageFolders(self):
+	def initializeStorageFolders(self):
 		if not self.oSWrapper.validPath(self.tempDirectory):
 			self.oSWrapper.makeDirectory(self.tempDirectory)
 
