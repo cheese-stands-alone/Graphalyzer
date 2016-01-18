@@ -6,6 +6,7 @@ import string
 
 
 class SessionIDHandler(HandleInterface):
+    """Class to register client."""
     # noinspection PyDictCreation
     def handle(self, socket: WebSocketServerProtocol):
         jsonmsg = {}

@@ -5,6 +5,7 @@ from file_handler.InitFileService import *
 
 
 def main():
+    """Main method to start program."""
     thread = threading.Thread(target=start_websocket_server,
                               args=())
     thread.start()

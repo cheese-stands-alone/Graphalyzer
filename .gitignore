@@ -1,6 +1,9 @@
+# Client-side
+graph_ui/node_modules/
+graph_ui/build/
+
 .metadata*
 *.orig
-graph_ui/node_modules/
 .idea
 *.iml
 

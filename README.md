@@ -4,12 +4,14 @@
 Senior Design Project
 
 ### Running web client (for development)
-1. `npm install` to load all packages from `package.json`
-2. Download `angular-vis.js` to `graph_ui/js/` (this is temporary until a build tool is completed)
-2. Open up the client locally on your machine.
+1. Go to `graph_ui/`
+2. `npm install -g browserify gulp` to install Browserify and Gulp globally on your machine (skip this if you have done so before)
+3. `npm install` to load all packages from `package.json`
+4. Run `gulp` to compile the JavaScript for development environment, or `gulp production` for minified code
+5. Open up the client locally on your machine
 
 ### Running backend (for development)
 1. Go into the graphalyzer-server directory
-2. 'dub build' to build.
-3. 'dub test' to run unittests.
-4. 'dub run' to run server.
+2. Run package.sh.
+3. This will greate a file called ServerApp.
+4. Run python[3] ./ServerApp

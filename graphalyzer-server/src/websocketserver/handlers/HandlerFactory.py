@@ -1,10 +1,10 @@
-from websocketserver.handlers.ErrorHandler import *
 from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ListGraphHandler import *
 from websocketserver.handlers.SessionIDHandler import *
 
 
 class HandlerFactory(object):
+    """Factory class to handle the different websocket requests."""
     @staticmethod
     def makehandler(payload: json) -> HandleInterface:
         # noinspection PyBroadException
