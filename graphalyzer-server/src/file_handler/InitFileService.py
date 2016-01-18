@@ -1,4 +1,7 @@
+import threading
+
 from file_handler.SpringMock import *
+
 
 class InitFileService:
 
@@ -7,6 +10,11 @@ class InitFileService:
 
 	def initMain(self):
 		springMock = SpringMock()
+
+		initRestService = springMock.getInitRestService()
+		initRestServiceThread = threading.Thread(target=initRestService.startService, args=())
+		initRestServiceThread.start()
+
 		serverFileHandlingService = springMock.getServerFileHandlingService()
 		serverFileHandlingService.startService()
 

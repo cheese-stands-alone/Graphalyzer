@@ -1,7 +1,7 @@
 import threading
 
-from file_handler.InitFileService import *
 from app import *
+from file_handler.InitFileService import *
 
 
 def main():
@@ -11,6 +11,7 @@ def main():
 
     fileHandlingThread = threading.Thread(target=InitFileService.initMain, args=())
     fileHandlingThread.start()
+
 
 
 if __name__ == "__main__":
