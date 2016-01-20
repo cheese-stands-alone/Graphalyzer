@@ -5,6 +5,7 @@ from file_handler.file_handling.PathManipulation import *
 from file_handler.local_storage.StorageFolderInit import *
 from file_handler.neo4j.Neo4JInteraction import *
 from file_handler.neo4j.FileUpload import *
+from file_handler.rest_upload.InitRestService import *
 
 class SpringMock(object):
 
@@ -13,12 +14,19 @@ class SpringMock(object):
 	backupDirectory = "neo4j_file_handling/backup/"
 	logDirectory = "neo4j_file_handling/logs/"
 
-	def getServerFileHandlingService(self):
+	def __init__(self):
 		self.appendOSPathHeader()
+
+	def getServerFileHandlingService(self):
 		fileScanner = self.getNewFileScanner()
 		storageFolderInit = self.getNewStorageFolderInit()
 		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, self.waitTimeInMinutes)
 		return serverFileHandlingService
+
+	def getInitRestService(self):
+		initRestService = InitRestService(self.tempDirectory);
+		return initRestService
+
 
 	def getNewStorageFolderInit(self):
 		oSWrapper = OSWrapper()
