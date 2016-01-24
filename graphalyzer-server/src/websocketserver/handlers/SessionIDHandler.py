@@ -21,6 +21,6 @@ class SessionIDHandler(HandleInterface):
         jsonmsg["payload"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in
             range(0, 15))
-        jsonmsg["message"] = ""
+        jsonmsg["message"] = "newid"
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))

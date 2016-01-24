@@ -27,6 +27,6 @@ class ErrorHandler(HandleInterface):
         jsonmsg["status"] = "error"
         jsonmsg["error"] = self._error
         jsonmsg["payload"] = self._payload
-        jsonmsg["message"] = ""
+        jsonmsg["message"] = "error"
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))

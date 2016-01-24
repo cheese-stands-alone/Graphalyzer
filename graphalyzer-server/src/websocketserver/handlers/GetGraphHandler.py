@@ -72,7 +72,7 @@ class GetGraphHandler(HandleInterface):
         jsonmsg["status"] = "success"
         jsonmsg["error"] = ""
         jsonmsg["payload"] = graph
-        jsonmsg["message"] = ""
+        jsonmsg["message"] = "getgraph"
 
         socket.sendMessage(json.dumps(jsonmsg,
                                       separators=(',', ':')).encode('utf8'))

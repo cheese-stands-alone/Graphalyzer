@@ -30,6 +30,6 @@ class ListGraphHandler(HandleInterface):
         jsonmsg["status"] = "success"
         jsonmsg["error"] = ""
         jsonmsg["payload"] = json.loads(nodes)
-        jsonmsg["message"] = ""
+        jsonmsg["message"] = "listgraph"
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))
