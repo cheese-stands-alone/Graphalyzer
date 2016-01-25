@@ -15,3 +15,11 @@ Senior Design Project
 2. Run package.sh.
 3. This will greate a file called ServerApp.
 4. Run python[3] ./ServerApp
+
+### Running Jasmine (for testing)
+1. cd into the Graphalyzer directory
+2. 'npm install -g jasmine'
+3. 'jasmine init' to initialize jasmine for testing
+4. If you do not have the examples loaded on your machine, run 'jasmine examples' to seed the project with some examples. These tests will always return true
+5. 'jasmine' to run all tests. The tests will be defined in the /spec directory
+6. Jasmine is pretty thoroughly documented, this http://evanhahn.com/how-do-i-jasmine/ is a pretty concise tutorial on how to get started writing your own tests
