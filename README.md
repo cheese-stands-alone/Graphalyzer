@@ -13,7 +13,7 @@ Senior Design Project
 ### Running backend (for development)
 1. Go into the graphalyzer-server directory
 2. Run package.sh.
-3. This will greate a file called ServerApp.
+3. This will create a file called ServerApp.
 4. Run python[3] ./ServerApp
 
 ### Running Jasmine (for testing)
