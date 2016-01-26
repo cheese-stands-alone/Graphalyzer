@@ -20,15 +20,15 @@ class HandlerFactory(object):
             # message = jsonmsg["message"]
 
             if request == "getgraph":
-                return GetGraphHandler(payload)
+                return GetGraphHandler(request, payload)
             elif request == "listgraphs":
-                return ListGraphHandler()
+                return ListGraphHandler(request)
             elif request == "newid":
-                return SessionIDHandler()
+                return SessionIDHandler(request)
             else:
-                return ErrorHandler("Error unknown request type", payload)
+                return ErrorHandler(request, "Error unknown request type", payload)
         except ValueError:
-            return ErrorHandler("Error parsing JSON message", "")
+            return ErrorHandler(request, "Error parsing JSON message", "")
         except:  # catch *all* exceptions
-            return ErrorHandler(
+            return ErrorHandler(request,
                 "Required JSON field not found or unknown server error", "")

@@ -3,6 +3,11 @@ from py2neo import Graph
 
 
 class ListGraphHandler(HandleInterface):
+    _request = ""
+
+    def __init__(self, request):
+        self._request = request
+
     def handle(self, socket: WebSocketServerProtocol):
         """Class to list available graps in neo4j."""
         nodes = "["
@@ -18,7 +23,7 @@ class ListGraphHandler(HandleInterface):
             nodes += "]"
         except Exception:
             print("Unable to connect to neo4j")
-            ErrorHandler("Unable to connect to neo4j", "").handle(socket)
+            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
             return
 
         jsonmsg["message_id"] = "".join(
@@ -30,6 +35,8 @@ class ListGraphHandler(HandleInterface):
         jsonmsg["status"] = "success"
         jsonmsg["error"] = ""
         jsonmsg["payload"] = json.loads(nodes)
-        jsonmsg["message"] = "listgraph"
+        message = {}
+        message["client_request_type"] = self._request
+        jsonmsg["message"] = message
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))

@@ -9,10 +9,12 @@ class ErrorHandler(HandleInterface):
     """Class to handle generic errors."""
     _error = ""
     _payload = ""
+    _request = ""
 
-    def __init__(self, errormsg, payload):
+    def __init__(self, request, errormsg, payload):
         self._error = errormsg
         self._payload = payload
+        self._request = request
 
     # noinspection PyDictCreation
     def handle(self, socket: WebSocketServerProtocol):
@@ -27,6 +29,8 @@ class ErrorHandler(HandleInterface):
         jsonmsg["status"] = "error"
         jsonmsg["error"] = self._error
         jsonmsg["payload"] = self._payload
-        jsonmsg["message"] = "error"
+        message = {}
+        message["client_request_type"] = self._request
+        jsonmsg["message"] = message
 
         socket.sendMessage(json.dumps(jsonmsg).encode('utf8'))

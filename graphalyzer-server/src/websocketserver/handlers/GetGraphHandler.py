@@ -5,9 +5,11 @@ from py2neo import Graph
 class GetGraphHandler(HandleInterface):
     """Class to handle sending whole graph to client."""
     _payload = ""
+    _request = ""
 
-    def __init__(self, payload):
+    def __init__(self, request, payload):
         self._payload = payload
+        self._request = request
 
     def handle(self, socket: WebSocketServerProtocol):
         nodes = "["
@@ -54,7 +56,8 @@ class GetGraphHandler(HandleInterface):
             edges += "]"
         except Exception:
             print("Unable to connect to neo4j")
-            return
+            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
+        return
 
         if nodes == edges:
             ErrorHandler("Graph not found", graphid).handle(socket)
@@ -72,7 +75,9 @@ class GetGraphHandler(HandleInterface):
         jsonmsg["status"] = "success"
         jsonmsg["error"] = ""
         jsonmsg["payload"] = graph
-        jsonmsg["message"] = "getgraph"
+        message = {}
+        message["client_request_type"] = self._request
+        jsonmsg["message"] = message
 
         socket.sendMessage(json.dumps(jsonmsg,
                                       separators=(',', ':')).encode('utf8'))
