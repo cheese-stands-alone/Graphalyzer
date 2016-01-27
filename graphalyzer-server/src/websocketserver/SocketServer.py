@@ -10,7 +10,7 @@ class GraphalyzerServerProtocol(WebSocketServerProtocol):
     def onOpen(self):
         """Send register request on websocket open."""
         print("WebSocket connection open.")
-        response = SessionIDHandler()
+        response = SessionIDHandler("newid")
         response.handle(self)
 
     def onMessage(self, payload, isbinary):

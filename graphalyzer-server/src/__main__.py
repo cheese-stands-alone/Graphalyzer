@@ -1,7 +1,7 @@
 import threading
 
 from app import *
-from file_handler.InitFileService import *
+#from file_handler.InitFileService import *
 
 
 def main():
@@ -10,8 +10,8 @@ def main():
                               args=())
     thread.start()
 
-    fileHandlingThread = threading.Thread(target=InitFileService.initMain, args=())
-    fileHandlingThread.start()
+    #fileHandlingThread = threading.Thread(target=InitFileService.initMain, args=())
+    #fileHandlingThread.start()
 
 
 
