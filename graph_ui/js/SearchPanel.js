@@ -7,12 +7,15 @@
 'use strict';
 
 var React = require('react');
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Panel = require('react-bootstrap').Panel;
-var Input = require('react-bootstrap').Input;
-var SubmitButton = require('react-bootstrap').Button;
-var Alert = require('react-bootstrap').Alert;
+var ReactBootstrap = require('react-bootstrap'),
+    ListGroup = ReactBootstrap.ListGroup,
+    ListGroupItem = ReactBootstrap.ListGroupItem,
+    DropdownButton = ReactBootstrap.DropdownButton,
+    MenuItem = ReactBootstrap.MenuItem,
+    Panel = ReactBootstrap.Panel,
+    Input = ReactBootstrap.Input,
+    SubmitButton = ReactBootstrap.Button,
+    Alert = ReactBootstrap.Alert;
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
