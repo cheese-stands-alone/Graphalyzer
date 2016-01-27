@@ -27,21 +27,68 @@ var Graphalyzer = React.createClass({
 
   getInitialState: function() {
     return {
+      id: '',
+      graphList: [],
       graphData: {},
       selectedNode: {}
     };
+  },
+
+  initGraph: function(data) {
+    var dataSet = {
+      nodes: new Vis.DataSet(data.nodes),
+      edges: new Vis.DataSet(data.edges)
+    };
+    this.setState({graphData: dataSet});
+  },
+
+  waitForWS: function(ws, callback) {
+    var self = this;
+    setTimeout(
+      function () {
+        if (ws.readyState === 1) {
+          if(callback != null) callback();
+          return;
+        } else self.waitForWS(ws, callback);
+      }, 5); // wait 5 milisecond for the connection...
+  },
+
+  sendWebSocketMessage: function(request) {
+    var self = this;
+    this.waitForWS(self.props.websocket, function() {
+      self.props.websocket.send(JSON.stringify(request));
+    });
+  },
+
+  getGraphList: function(data) {
+    var request = {  
+      'message_id': '',
+      'sender_id': '',
+      'time': '',
+      'request': 'listgraphs',
+      'status': '',
+      'error': '',
+      'payload': '',
+      'message': ''
+    };
+
+    this.sendWebSocketMessage(request);
   },
 
   handleWSMessage: function(event) {
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
-      var data = responseJSON.payload;
-      var dataSet = {
-        nodes: new Vis.DataSet(data.nodes),
-        edges: new Vis.DataSet(data.edges)
-      };
-      this.setState({graphData: dataSet});
+      console.log(responseJSON);
+      var action = responseJSON.message.client_request_type;
+      if (action == 'error') return;
+      else if (action == 'getgraph') {
+        this.initGraph(responseJSON.payload);
+      } else if (action == 'listgraphs') {
+        this.setState({graphList: responseJSON.payload});
+      } else if (action == 'newid') {
+        this.setState({id: responseJSON.payload});
+      } else return;
     }
   },
 
