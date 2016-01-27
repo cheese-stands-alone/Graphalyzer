@@ -30,5 +30,5 @@ class HandlerFactory(object):
         except ValueError:
             return ErrorHandler("malformatted", "Error parsing JSON message", "")
         except:  # catch *all* exceptions
-            return ErrorHandler("malformatted" request,
+            return ErrorHandler("malformatted"
                 "Required JSON field not found or unknown server error", "")
