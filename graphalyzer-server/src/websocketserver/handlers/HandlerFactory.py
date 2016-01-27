@@ -28,7 +28,7 @@ class HandlerFactory(object):
             else:
                 return ErrorHandler(request, "Error unknown request type", payload)
         except ValueError:
-            return ErrorHandler(request, "Error parsing JSON message", "")
+            return ErrorHandler("malformatted", "Error parsing JSON message", "")
         except:  # catch *all* exceptions
-            return ErrorHandler(request,
+            return ErrorHandler("malformatted" request,
                 "Required JSON field not found or unknown server error", "")
