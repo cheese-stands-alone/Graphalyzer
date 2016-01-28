@@ -13,7 +13,8 @@ var ReactBootstrap = require('react-bootstrap'),
     GraphalyzerPanel = ReactBootstrap.Panel,
     Grid = ReactBootstrap.Grid,
     Col = ReactBootstrap.Col,
-    Row = ReactBootstrap.Row;
+    Row = ReactBootstrap.Row,
+    Alert = ReactBootstrap.Alert;
 var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
@@ -31,7 +32,8 @@ var Graphalyzer = React.createClass({
       id: '',
       graphList: [],
       graphData: {},
-      selectedNode: {}
+      selectedNode: {},
+      wsError: null
     };
   },
 
@@ -98,20 +100,25 @@ var Graphalyzer = React.createClass({
   },
 
   componentDidMount: function() {
+    var self = this;
     this.props.websocket.onmessage = this.handleWSMessage;
+    this.props.websocket.onerror = function(event) {
+      self.setState({wsError: <Alert bsStyle='danger'>There was a problem with the server. Check the console.</Alert>});
+    };
   },
 
   render: function() {
     return (
       <Grid>
         <Col lg={12}>
+          {this.state.wsError}
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
               <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode} />
             </Col>
             <Col lg={3}>
               <Row>
-                <SearchPanel websocket={this.props.websocket} />
+                <SearchPanel websocket={this.props.websocket} graphList={this.state.graphList} getGraphList={this.getGraphList}/>
               </Row>
               <Row>
                 <NodePropertiesPanel selectedNode={this.state.selectedNode} />
