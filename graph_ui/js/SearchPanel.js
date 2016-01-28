@@ -10,12 +10,14 @@ var React = require('react');
 var ReactBootstrap = require('react-bootstrap'),
     ListGroup = ReactBootstrap.ListGroup,
     ListGroupItem = ReactBootstrap.ListGroupItem,
+    ButtonGroup = ReactBootstrap.ButtonGroup,
     DropdownButton = ReactBootstrap.DropdownButton,
     MenuItem = ReactBootstrap.MenuItem,
     Panel = ReactBootstrap.Panel,
     Input = ReactBootstrap.Input,
-    SubmitButton = ReactBootstrap.Button,
-    Alert = ReactBootstrap.Alert;
+    Button = ReactBootstrap.Button,
+    Alert = ReactBootstrap.Alert,
+    Glyphicon = ReactBootstrap.Glyphicon;
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
@@ -74,9 +76,15 @@ var SearchPanel = React.createClass({
         <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
-              <DropdownButton onSelect={function(event, eventKey) {self.getGraph(eventKey)}} id={'dropdown-basic'} title="Select a graph">
-                {graphs}
-              </DropdownButton>
+              <ButtonGroup>
+                <DropdownButton
+                  onSelect={function(event, eventKey) {self.getGraph(eventKey);}} 
+                  id='bg-nested-dropdown' 
+                  title='Select a graph'>
+                  {graphs}
+                </DropdownButton>
+                <Button onClick={this.props.getGraphList}><Glyphicon glyph='refresh'/></Button>
+              </ButtonGroup>
             </ListGroupItem>
             <ListGroupItem>
               <Input 
@@ -95,9 +103,6 @@ var SearchPanel = React.createClass({
                 value={this.state.degrees} 
                 onChange={this.updateFields}
               />
-            </ListGroupItem>
-            <ListGroupItem>
-              <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
             </ListGroupItem>
           </ListGroup>
           {errPanel}
