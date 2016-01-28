@@ -20,7 +20,6 @@ var ReactBootstrap = require('react-bootstrap'),
 var SearchPanel = React.createClass({
   getInitialState: function() {
     return {
-      graphName: '',
       nodeName: '',
       degrees: '',
       searchErr: false,
@@ -28,64 +27,39 @@ var SearchPanel = React.createClass({
     };
   },
 
+  componentDidMount: function() {
+    this.props.getGraphList();
+  },
+
   updateFields: function() {
     this.setState({
-      graphName: this.refs.graphName.getValue(),
       nodeName: this.refs.nodeName.getValue(),
       degrees: this.refs.degrees.getValue()
     });
   },
 
-  validateInput: function() {
-    if (!this.state.graphName) {
-      this.setState({
-        searchErr: true,
-        searchErrMessage: 'You must input a graph name.'
-      });
-      return false;
-    } else {
-      this.setState({
-        searchErr: false,
-        searchErrMessage: ''
-      });
-      return true;
-    }
-  },
-
-  // TODO add logic for node and degrees when the respective backend logic is implemented
-  search: function() {
-    if (!this.validateInput()) return;
-    var self = this;
-    var request = {  
-      'message_id': '',
-      'sender_id': '',
-      'time': '',
-      'request': 'getgraph',
-      'status': '',
-      'error': '',
-      'payload': self.state.graphName,
-      'message': ''
-    };
-
-    this.props.websocket.send(JSON.stringify(request));
-  },
-
   render: function() {
     var errPanel;
+    var graphDropdown;
+    var graphs = [];
     if (this.state.searchErr) errPanel = <SearchErrorPanel message={this.state.searchErrMessage} />;
+
+    if (this.props.graphList) {
+      for (var i = 0; i < this.props.graphList.length; i++) {
+        graphs.push(
+          <MenuItem eventKey={i} key={i}>{this.props.graphList[i].Graph}</MenuItem>
+        );
+      }
+    } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
 
     return (
       <div>
         <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
-              <Input 
-                type='text' 
-                label='Graph Name' 
-                ref='graphName' 
-                value={this.state.graphName} 
-                onChange={this.updateFields}
-              />
+              <DropdownButton id={'dropdown-basic'} title="Select a graph">
+                {graphs}
+              </DropdownButton>
             </ListGroupItem>
             <ListGroupItem>
               <Input 

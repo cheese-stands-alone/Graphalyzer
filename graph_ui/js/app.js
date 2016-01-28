@@ -82,7 +82,6 @@ var Graphalyzer = React.createClass({
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
-      console.log(responseJSON);
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
       else if (action == 'getgraph') {
