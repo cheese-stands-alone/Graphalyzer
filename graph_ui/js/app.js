@@ -117,7 +117,11 @@ var Graphalyzer = React.createClass({
             </Col>
             <Col lg={3}>
               <Row>
-                <SearchPanel websocket={this.props.websocket} graphList={this.state.graphList} getGraphList={this.getGraphList}/>
+                <SearchPanel 
+                  graphList={this.state.graphList} 
+                  getGraphList={this.getGraphList} 
+                  sendWebSocketMessage={this.sendWebSocketMessage}
+                />
               </Row>
               <Row>
                 <NodePropertiesPanel selectedNode={this.state.selectedNode} />

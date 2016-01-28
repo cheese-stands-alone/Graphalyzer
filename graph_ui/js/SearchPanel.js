@@ -27,6 +27,22 @@ var SearchPanel = React.createClass({
     };
   },
 
+  getGraph: function(key) {
+    var self = this;
+    var request = {  
+      'message_id': '',
+      'sender_id': '',
+      'time': '',
+      'request': 'getgraph',
+      'status': '',
+      'error': '',
+      'payload': self.props.graphList[key].Graph,
+      'message': ''
+    };
+
+    self.props.sendWebSocketMessage(request);
+  },
+
   componentDidMount: function() {
     this.props.getGraphList();
   },
@@ -52,12 +68,13 @@ var SearchPanel = React.createClass({
       }
     } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
 
+    var self = this;
     return (
       <div>
         <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
-              <DropdownButton id={'dropdown-basic'} title="Select a graph">
+              <DropdownButton onSelect={function(event, eventKey) {self.getGraph(eventKey)}} id={'dropdown-basic'} title="Select a graph">
                 {graphs}
               </DropdownButton>
             </ListGroupItem>
