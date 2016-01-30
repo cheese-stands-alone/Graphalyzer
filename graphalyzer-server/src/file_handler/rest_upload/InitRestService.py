@@ -7,6 +7,7 @@ import uuid
 import json
 import subprocess
 import sys
+import zlib
 
 
 class InitRestService:

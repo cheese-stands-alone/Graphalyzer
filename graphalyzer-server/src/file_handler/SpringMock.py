@@ -3,6 +3,7 @@ from file_handler.file_handling.FileScanner import *
 from file_handler.file_handling.FileHandler import *
 from file_handler.file_handling.PathManipulation import *
 from file_handler.local_storage.StorageFolderInit import *
+from file_handler.os.OSWrapper import *
 from file_handler.neo4j.Neo4JInteraction import *
 from file_handler.neo4j.FileUpload import *
 from file_handler.rest_upload.InitRestService import *
