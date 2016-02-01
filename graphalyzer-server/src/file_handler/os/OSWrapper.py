@@ -10,6 +10,9 @@ class OSWrapper(object):
 	def makeDirectory(self, directoryName):
 		return os.makedirs(directoryName)
 
+	def makeFile(self, fileName):
+		open(fileName, 'w').close()
+
 	def getFileListing(self, directory):
 		files = [x for x in os.listdir(directory) if path.isfile(directory+os.sep+x)]
 		return files

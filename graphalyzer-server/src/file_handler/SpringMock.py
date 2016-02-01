@@ -7,13 +7,12 @@ from file_handler.os.OSWrapper import *
 from file_handler.neo4j.Neo4JInteraction import *
 from file_handler.neo4j.FileUpload import *
 from file_handler.rest_upload.InitRestService import *
+import logging
+from ServerConfig import *
 
 class SpringMock(object):
 
-	waitTimeInMinutes = 0.1
-	tempDirectory = "neo4j_file_handling/temp/"
-	backupDirectory = "neo4j_file_handling/backup/"
-	logDirectory = "neo4j_file_handling/logs/"
+
 
 	def __init__(self):
 		self.appendOSPathHeader()
@@ -21,7 +20,8 @@ class SpringMock(object):
 	def getServerFileHandlingService(self):
 		fileScanner = self.getNewFileScanner()
 		storageFolderInit = self.getNewStorageFolderInit()
-		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, self.waitTimeInMinutes)
+		serverFileHandlingService = ServerFileHandlingService(fileScanner, storageFolderInit, FOLDERSCANWAITTIMEINMINUTES)
+		self.setupLogger()
 		return serverFileHandlingService
 
 	def getInitRestService(self):
@@ -50,6 +50,25 @@ class SpringMock(object):
 
 	def appendOSPathHeader(self):
 		oSWrapper = OSWrapper()
-		self.tempDirectory = oSWrapper.getOSPathHeader() + self.tempDirectory
-		self.backupDirectory = oSWrapper.getOSPathHeader() + self.backupDirectory
-		self.logDirectory = oSWrapper.getOSPathHeader() + self.logDirectory
+		relativePathString = "."
+		if TEMPDIRECTORY.find(relativePathString) != 0:
+			self.tempDirectory = oSWrapper.getOSPathHeader() + TEMPDIRECTORY
+		if BACKUPDIRECTORY.find(relativePathString) != 0:
+			self.backupDirectory = oSWrapper.getOSPathHeader() + BACKUPDIRECTORY
+		if LOGDIRECTORY.find(relativePathString) != 0:
+			self.logDirectory = oSWrapper.getOSPathHeader() + LOGDIRECTORY
+
+	def setupLogger(self):
+		self.initLoggerFile()
+		self.setLoggerLevel()
+
+	def initLoggerFile(self):
+		oSWrapper = OSWrapper()
+		if not oSWrapper.validPath(self.logDirectory):
+			oSWrapper.makeDirectory(self.logDirectory)
+		if not oSWrapper.validPath(self.logDirectory + LOGFILE):
+			oSWrapper.makeFile(self.logDirectory + LOGFILE)
+
+	def setLoggerLevel(self):
+		logLocation = self.logDirectory + LOGFILE
+		logging.basicConfig(filename=logLocation, level=LOGGERLEVEL)
