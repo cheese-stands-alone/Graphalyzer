@@ -7,17 +7,21 @@
 'use strict';
 
 var React = require('react');
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Panel = require('react-bootstrap').Panel;
-var Input = require('react-bootstrap').Input;
-var SubmitButton = require('react-bootstrap').Button;
-var Alert = require('react-bootstrap').Alert;
+var ReactBootstrap = require('react-bootstrap'),
+    ListGroup = ReactBootstrap.ListGroup,
+    ListGroupItem = ReactBootstrap.ListGroupItem,
+    ButtonGroup = ReactBootstrap.ButtonGroup,
+    DropdownButton = ReactBootstrap.DropdownButton,
+    MenuItem = ReactBootstrap.MenuItem,
+    Panel = ReactBootstrap.Panel,
+    Input = ReactBootstrap.Input,
+    Button = ReactBootstrap.Button,
+    Alert = ReactBootstrap.Alert,
+    Glyphicon = ReactBootstrap.Glyphicon;
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
     return {
-      graphName: '',
       nodeName: '',
       degrees: '',
       searchErr: false,
@@ -25,33 +29,7 @@ var SearchPanel = React.createClass({
     };
   },
 
-  updateFields: function() {
-    this.setState({
-      graphName: this.refs.graphName.getValue(),
-      nodeName: this.refs.nodeName.getValue(),
-      degrees: this.refs.degrees.getValue()
-    });
-  },
-
-  validateInput: function() {
-    if (!this.state.graphName) {
-      this.setState({
-        searchErr: true,
-        searchErrMessage: 'You must input a graph name.'
-      });
-      return false;
-    } else {
-      this.setState({
-        searchErr: false,
-        searchErrMessage: ''
-      });
-      return true;
-    }
-  },
-
-  // TODO add logic for node and degrees when the respective backend logic is implemented
-  search: function() {
-    if (!this.validateInput()) return;
+  getGraph: function(key) {
     var self = this;
     var request = {  
       'message_id': '',
@@ -60,29 +38,53 @@ var SearchPanel = React.createClass({
       'request': 'getgraph',
       'status': '',
       'error': '',
-      'payload': self.state.graphName,
+      'payload': self.props.graphList[key].Graph,
       'message': ''
     };
 
-    this.props.websocket.send(JSON.stringify(request));
+    self.props.sendWebSocketMessage(request);
+  },
+
+  componentDidMount: function() {
+    this.props.getGraphList();
+  },
+
+  updateFields: function() {
+    this.setState({
+      nodeName: this.refs.nodeName.getValue(),
+      degrees: this.refs.degrees.getValue()
+    });
   },
 
   render: function() {
     var errPanel;
+    var graphDropdown;
+    var graphs = [];
     if (this.state.searchErr) errPanel = <SearchErrorPanel message={this.state.searchErrMessage} />;
 
+    if (this.props.graphList) {
+      for (var i = 0; i < this.props.graphList.length; i++) {
+        graphs.push(
+          <MenuItem eventKey={i} key={i}>{this.props.graphList[i].Graph}</MenuItem>
+        );
+      }
+    } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
+
+    var self = this;
     return (
       <div>
         <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
-              <Input 
-                type='text' 
-                label='Graph Name' 
-                ref='graphName' 
-                value={this.state.graphName} 
-                onChange={this.updateFields}
-              />
+              <ButtonGroup>
+                <DropdownButton
+                  onSelect={function(event, eventKey) {self.getGraph(eventKey);}} 
+                  id='bg-nested-dropdown' 
+                  title='Select a graph'>
+                  {graphs}
+                </DropdownButton>
+                <Button onClick={this.props.getGraphList}><Glyphicon glyph='refresh'/></Button>
+              </ButtonGroup>
             </ListGroupItem>
             <ListGroupItem>
               <Input 
@@ -101,9 +103,6 @@ var SearchPanel = React.createClass({
                 value={this.state.degrees} 
                 onChange={this.updateFields}
               />
-            </ListGroupItem>
-            <ListGroupItem>
-              <SubmitButton bsStyle='primary' onClick={this.search}>Search</SubmitButton>
             </ListGroupItem>
           </ListGroup>
           {errPanel}

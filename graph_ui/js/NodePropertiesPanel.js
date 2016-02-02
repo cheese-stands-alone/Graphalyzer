@@ -7,9 +7,10 @@
 'use strict';
 
 var React = require('react');
-var Panel = require('react-bootstrap').Panel;
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
+var ReactBootstrap = require('react-bootstrap'),
+    Panel = ReactBootstrap.Panel,
+    ListGroup = ReactBootstrap.ListGroup,
+    ListGroupItem = ReactBootstrap.ListGroupItem;
 
 var NodePropertiesPanel = React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {

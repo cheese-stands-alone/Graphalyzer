@@ -1,5 +1,3 @@
-from file_handler.file_handling.FileScanner import *
-from file_handler.local_storage.StorageFolderInit import *
 import time
 
 class ServerFileHandlingService(object):

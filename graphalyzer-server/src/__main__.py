@@ -10,7 +10,8 @@ def main():
                               args=())
     thread.start()
 
-    fileHandlingThread = threading.Thread(target=InitFileService.initMain, args=())
+    initFileService = InitFileService()
+    fileHandlingThread = threading.Thread(target=initFileService.initMain, args=())
     fileHandlingThread.start()
 
 
