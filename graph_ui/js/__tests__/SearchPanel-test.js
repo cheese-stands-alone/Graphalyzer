@@ -2,18 +2,21 @@ jest.dontMock('../SearchPanel');
 jest.dontMock('react');
 jest.dontMock('react-bootstrap');
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+var React = require('react/addons');
+var ReactDOM = require('react-dom');
+var TestUtils = React.addons.TestUtils;
 
 var SearchPanel = require('../SearchPanel');
 
 describe('getInitialState', function() {
   it('initializes the searchpanel with the correct values', function() {
+    // mock these functions and get rid of the nulls
+    var search = TestUtils.renderIntoDocument(
+      <SearchPanel graphList={null} getGraphList={null} sendWebSocketMessage={null}/>
+    );
 
-    // Call into the function we want to test
-    function getInitialState() {}
-    SearchPanel(getInitialState);
+    var nodeName = search.state.nodeName;
 
-    expect(searchErr).toBe(false);
+    expect(nodeName).toEqual('');
   });
 })
