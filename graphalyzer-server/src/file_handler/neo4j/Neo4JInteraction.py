@@ -3,16 +3,18 @@ from py2neo.packages.httpstream import http
 
 
 class Neo4JInteraction(object):
-	def __init__(self, oSWrapper):
+	def __init__(self, oSWrapper, logger):
 		self.oSWrapper = oSWrapper
+		self.logger = logger
 
 	def loadEdges(self, graphlocation: str, graphid: str):
+		self.logger.info("Uploading " + graphid + " to Neo4J")
 		"""Load edges cvs file into neo4j. graphlocation is string location of file
 			and graphid is the unique id for this graph"""
 		from py2neo import Graph
 		from py2neo.packages.httpstream import http
 		# Increase timeout because it can take a really long time.
-		http.socket_timeout = sys.maxsize
+		http.socket_timeout = 9999
 
 		query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file://" +
 		         graphlocation + "' AS line " +
@@ -20,22 +22,25 @@ class Neo4JInteraction(object):
 		         graphid + "\"}) " +
 		         "MERGE (parent:node {id:line.parentid, graphid:\"" +
 		         graphid + "\"}) " +
-		         "MERGE (child)-[edge:edge {id:line.edgeid, graphid:\"" +
-		         graphid + "\"}]-(parent)")
+		         "MERGE (parent)-[rel:edge {id:line.edgeid, graphid:\"" +
+                 graphid + "\"}]->(child)")
 		# noinspection PyBroadException
 		try:
 			graph = Graph()
+			graph.cypher.execute("CREATE CONSTRAINT ON (child:node) ASSERT child.id IS UNIQUE")
+			graph.cypher.execute("CREATE CONSTRAINT ON (parent:node) ASSERT parent.id IS UNIQUE")
+			graph.cypher.execute("CREATE CONSTRAINT ON (rel:edge) ASSERT rel.id IS UNIQUE")
 			graph.cypher.execute(query)
 		except Exception:
-			print("Edges failed")
-			print("Unable to connect to neo4j")
+			self.logger.error("Edges failed. Unable to connect to neo4j.")
 
 	def loadProp(self, graphlocation: str, graphid: str):
+		self.logger.info("Uploading " + graphid + " to Neo4J")
 		"""Load properties cvs file into neo4j. graphlocation is string location of file
 			and graphid is the unique id for this graph"""
 		from py2neo.packages.httpstream import http
 		# Increase timeout because it can take a really long time.
-		http.socket_timeout = sys.maxsize
+		http.socket_timeout = 9999
 		# noinspection PyBroadException
 		try:
 			from py2neo import Graph
@@ -51,11 +56,10 @@ class Neo4JInteraction(object):
 				if count >= 1000:
 					tx.process()
 					count = 0
-				query = ("MATCH (n { id:'" + row[0] + "', graphid:'" + graphid +
-				         "'}) SET n." + row[1] + " = '" + row[2] + "'")
+				query = ("MATCH (pnode:node { id:'" + row[0] + "', graphid:'" + graphid +
+                     "'}) SET pnode." + row[1] + " = '" + row[2] + "'")
 				tx.append(query)
 				count += 1
 			tx.commit()
 		except Exception:
-			print("Prop failed")
-			print("Unable to connect to neo4j")
+			self.logger.error("Properties failed. Unable to connect to neo4j.")
