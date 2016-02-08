@@ -32,4 +32,4 @@ class FileHandler(object):
 
 			self.addToNeo4J(backup + newFileString, self.oSWrapper.getFileName(newFileString))
 		except:
-			self.logger.error("Error handling file " + str(sys.exc_info()[0]))
+			self.logger.error("Error handling file " + str(sys.exc_info()))
