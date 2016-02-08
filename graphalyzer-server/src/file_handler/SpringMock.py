@@ -25,7 +25,7 @@ class SpringMock(object):
 		return serverFileHandlingService
 
 	def getInitRestService(self):
-		initRestService = InitRestService(self.tempDirectory, self.logger.getChild("InitRestService.py"));
+		initRestService = InitRestService(self.tempDirectory, self.logger.getChild("InitRestService.py"), self.logger.getChild("RestUploadService.py"));
 		return initRestService
 
 

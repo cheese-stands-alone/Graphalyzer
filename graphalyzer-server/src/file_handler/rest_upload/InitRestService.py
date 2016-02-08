@@ -13,14 +13,15 @@ import zlib
 class InitRestService:
 
 
-	def __init__(self, tempDirectory, logger):
+	def __init__(self, tempDirectory, logger, restUploadServiceLogger):
 		self.tempDirectory = tempDirectory
 		self.logger = logger
+		self.restUploadServiceLogger = restUploadServiceLogger
 
 	def startService(self):
 		app = Flask(__name__)
 		app.config['UPLOADDIR'] = self.tempDirectory
-		app.config['LOGGER'] = self.logger.getChild("RestUploadService.py")
+		app.config['LOGGER'] = self.restUploadServiceLogger
 		app.register_blueprint(uploadAPI)
 		self.logger.info("Starting Flask with upload directory: " + self.tempDirectory)
 		app.run(threaded=True)
