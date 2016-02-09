@@ -19,7 +19,7 @@ var Graph = React.createClass({
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    return this.props.graphData != nextProps.graphData;
+    return this.props.totalChunks == nextProps.currentChunk;
   },
 
   componentDidUpdate: function() {

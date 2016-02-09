@@ -31,18 +31,31 @@ var Graphalyzer = React.createClass({
     return {
       id: '',
       graphList: [],
-      graphData: {},
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      totalChunks: 0,
+      currentChunk: 0,
       selectedNode: {},
-      wsError: null
+      wsError: null,
+      statusMessage: 'Welcome to Graphalyzer!'
     };
   },
 
-  initGraph: function(data) {
-    var dataSet = {
-      nodes: new Vis.DataSet(data.nodes),
-      edges: new Vis.DataSet(data.edges)
-    };
-    this.setState({graphData: dataSet});
+  addDataToGraph: function(data) {
+    // Now we can use setState for keeping track of data chunks
+    this.setState({
+      currentChunk: data.currentChunk,
+      totalChunks: data.totalChunks,
+      statusMessage: this.state.statusMessage 
+        + data.currentChunk 
+        + ' chunk(s) out of '
+        + data.totalChunks + ' parsed.'
+    }.bind(this), function() {
+      this.state.graphData.nodes.add(data.nodes);
+      this.state.graphData.edges.add(data.edges);
+    }.bind(this));
   },
 
   waitForWS: function(ws, callback) {
@@ -76,6 +89,7 @@ var Graphalyzer = React.createClass({
     };
 
     this.sendWebSocketMessage(request);
+    this.updateStatusMessage('Requesting graphs from server...')
   },
 
   handleWSMessage: function(event) {
@@ -85,9 +99,13 @@ var Graphalyzer = React.createClass({
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
       else if (action == 'getgraph') {
-        this.initGraph(responseJSON.payload);
+        this.setState({statusMessage: 'Loading data into graph...'});
+        this.addDataToGraph(responseJSON.payload);
       } else if (action == 'listgraphs') {
-        this.setState({graphList: responseJSON.payload});
+        this.setState({
+          graphList: responseJSON.payload,
+          statusMessage: 'Graph list updated.'
+        });
       } else if (action == 'newid') {
         this.setState({id: responseJSON.payload});
       } else return;
@@ -96,6 +114,10 @@ var Graphalyzer = React.createClass({
 
   updateSelectedNode: function(node) {
     this.setState({selectedNode: node});
+  },
+
+  updateStatusMessage: function(message) {
+    this.setState({statusMessage: message});
   },
 
   componentDidMount: function() {
@@ -113,7 +135,12 @@ var Graphalyzer = React.createClass({
           {this.state.wsError}
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode} />
+              <GraphPanel 
+                graphData={this.state.graphData} 
+                currentChunk={this.state.currentChunk} 
+                totalChunks={this.state.totalChunks} 
+                updateSelectedNode={this.updateSelectedNode} 
+              />
             </Col>
             <Col lg={3}>
               <Row>
@@ -127,6 +154,7 @@ var Graphalyzer = React.createClass({
                 <NodePropertiesPanel selectedNode={this.state.selectedNode} />
               </Row>
             </Col>
+            {this.state.statusMessage}
           </GraphalyzerPanel>
         </Col>
       </Grid>
