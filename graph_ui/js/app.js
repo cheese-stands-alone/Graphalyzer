@@ -45,6 +45,20 @@ var Graphalyzer = React.createClass({
     this.setState({graphData: dataSet});
   },
 
+  logger: function(message) {
+    var date = new Date();
+    console.log('[' + 
+      date.getUTCFullYear() + '-' + 
+      date.getUTCMonth() + '-' + 
+      date.getUTCDate() + ' ' + 
+      date.getUTCHours() + ':' + 
+      date.getUTCMinutes() + ':' + 
+      date.getUTCSeconds() + ':' + 
+      date.getUTCMilliseconds() + 
+      message + 
+    ']');
+  },
+
   waitForWS: function(ws, callback) {
     var self = this;
     setTimeout(
