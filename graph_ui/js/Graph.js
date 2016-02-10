@@ -33,6 +33,11 @@ var Graph = React.createClass({
       var node = this.state.network.body.data.nodes.get(nodeID);
       this.props.updateSelectedNode(node);
     }.bind(this));
+
+    // Called when Vis is finished drawing the graph
+    this.state.network.on('release', function(event) {
+      this.props.logger('Graph finished drawing');
+    }.bind(this));
   },
 
   getDefaultProps: function() {
