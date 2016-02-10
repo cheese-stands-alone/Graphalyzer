@@ -55,9 +55,9 @@ var Graphalyzer = React.createClass({
       date.getUTCHours() + ':' + 
       date.getUTCMinutes() + ':' + 
       date.getUTCSeconds() + ':' + 
-      date.getUTCMilliseconds() + ' ====== ' + 
-      message + 
-    ']');
+      date.getUTCMilliseconds() + ']  ' + 
+      message
+    );
   },
 
   waitForWS: function(ws, callback) {
