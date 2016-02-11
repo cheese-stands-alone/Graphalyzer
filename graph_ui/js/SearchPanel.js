@@ -42,7 +42,11 @@ var SearchPanel = React.createClass({
       'message': ''
     };
 
-    self.props.sendWebSocketMessage(request);
+    this.props.logger(
+      'Requesting graph ' 
+      + '\'' + this.props.graphList[key].Graph + '\''
+    );
+    this.props.sendWebSocketMessage(request);
   },
 
   componentDidMount: function() {

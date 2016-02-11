@@ -35,7 +35,7 @@ var Graph = React.createClass({
     }.bind(this));
 
     // Called when Vis is finished drawing the graph
-    this.state.network.on('release', function(event) {
+    this.state.network.on('afterDrawing', function(event) {
       this.props.logger('Graph finished drawing');
     }.bind(this));
   },

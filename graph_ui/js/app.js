@@ -38,7 +38,6 @@ var Graphalyzer = React.createClass({
   },
 
   initGraph: function(data) {
-    this.logger('Initializing graph');
     var dataSet = {
       nodes: new Vis.DataSet(data.nodes),
       edges: new Vis.DataSet(data.edges)
@@ -98,13 +97,16 @@ var Graphalyzer = React.createClass({
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
-      var action = responseJSON.message.client_request_type;
-      if (action == 'error') {
+      if (responseJSON.error) {
         this.logger('Server returned error: ' + responseJSON.error);
         return;
-      } else if (action == 'getgraph') {
+      }
+      var action = responseJSON.message.client_request_type;
+      if (action == 'getgraph') {
+        this.logger('Begin drawing graph');
         this.initGraph(responseJSON.payload);
       } else if (action == 'listgraphs') {
+        this.logger('List of graphs received');
         this.setState({graphList: responseJSON.payload});
       } else if (action == 'newid') {
         this.logger('New ID received from server');
