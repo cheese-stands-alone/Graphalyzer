@@ -49,7 +49,7 @@ class OSWrapper(object):
 			return "c:/"
 		else:
 			self.logger.debug("OS is Linux. Returning path header '/'")
-			return "/"
+			return ""
 
 	def oSIsWindows(self):
 		return os.name is 'nt'

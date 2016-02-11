@@ -1,6 +1,7 @@
 from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ListGraphHandler import *
 from websocketserver.handlers.SessionIDHandler import *
+from websocketserver.handlers.GetGraphChunkHandler import *
 
 
 class HandlerFactory(object):
@@ -23,6 +24,8 @@ class HandlerFactory(object):
                 return GetGraphHandler(request, payload)
             elif request == "listgraphs":
                 return ListGraphHandler(request)
+            elif request == "getgraphchunk":
+                return GetGraphChunkHandler(request, payload)
             elif request == "newid":
                 return SessionIDHandler(request)
             else:

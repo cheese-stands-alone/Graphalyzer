@@ -1,5 +1,6 @@
 from websocketserver.handlers.ErrorHandler import *
 from py2neo import Graph
+import logging
 
 
 class ListGraphHandler(HandleInterface):
@@ -22,7 +23,7 @@ class ListGraphHandler(HandleInterface):
             nodes = nodes[:-1]
             nodes += "]"
         except Exception:
-            print("Unable to connect to neo4j")
+            logging.error("Unable to connect to neo4j")
             ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
             return
 
