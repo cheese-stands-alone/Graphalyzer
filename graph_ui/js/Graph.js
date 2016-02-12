@@ -43,20 +43,26 @@ var Graph = React.createClass({
   getDefaultProps: function() {
     return {
       options: {
+        nodes: {
+          shape: 'dot',
+          fixed: true
+        },
         edges: {
           arrows: {
             to: {
               scaleFactor: 0.5
             }
+          },
+          smooth: {
+            type: 'continuous'
           }
         },
-        height: '100%',
+        physics: false,
         interaction: {
-          dragNodes: false
-        },
-        width: '100%'
+          dragNodes: false,
+        }
       }
-    };
+    }
   },
 
   getInitialState: function() {
