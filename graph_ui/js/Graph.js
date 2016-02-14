@@ -23,8 +23,20 @@ var Graph = React.createClass({
   },
 
   componentDidUpdate: function() {
+
+        // var nodes = this.props.graphData.nodes;
+        alert("hi");
+        for (var i = 0; i < this.props.graphData.nodes.length; i++) {
+          if(this.props.graphData.nodes[i] != undefined){
+            this.props.graphData.nodes[i].color = 'red';
+          }
+
+
+        }
+        // this.props.graphData.nodes = nodes;
+
     this.state.network.setData({
-      nodes: this.props.graphData.nodes, 
+      nodes: this.props.graphData.nodes,
       edges: this.props.graphData.edges
     });
 
@@ -39,6 +51,7 @@ var Graph = React.createClass({
     return {
       options: {
         edges: {
+          color: {inherit: 'from'},
           arrows: {
             to: {
               scaleFactor: 0.5

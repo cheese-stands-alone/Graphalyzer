@@ -1,6 +1,6 @@
 /**
  * GraphPanel.js
- * 
+ *
  * @author Andrew Bowler, Alberto Gomez-Estrada
  */
 
