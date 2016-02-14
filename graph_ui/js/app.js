@@ -39,23 +39,45 @@ var Graphalyzer = React.createClass({
       currentChunk: 0,
       selectedNode: {},
       wsError: null,
-      statusMessage: 'Welcome to Graphalyzer!'
     };
   },
 
   addDataToGraph: function(data) {
-    // Now we can use setState for keeping track of data chunks
-    this.setState({
-      currentChunk: data.currentChunk,
-      totalChunks: data.totalChunks,
-      statusMessage: this.state.statusMessage 
-        + data.currentChunk 
-        + ' chunk(s) out of '
-        + data.totalChunks + ' parsed.'
-    }.bind(this), function() {
-      this.state.graphData.nodes.add(data.nodes);
-      this.state.graphData.edges.add(data.edges);
-    }.bind(this));
+    var self = this;
+    console.log(data);
+    var newNodeSet, newEdgeSet, totalNodes, totalEdges;
+    if (data.message.currchunk && data.message.totalchunk) {
+      newState.currentChunk = data.message.currchunk;
+      newState.totalChunks = data.message.totalchunk;
+      if (data.payload.nodes) {
+        newNodeSet = data.payload.nodes;
+        totalNodes = this.state.graphData.nodes;
+        totalNodes.push(newNodeSet);
+      }
+      if (data.payload.edges) {
+        newEdgeSet = data.payload.edges;
+        totalEdges = this.state.graphData.edges;
+        totalEdges.push(newEdgeSet);
+      }
+      this.setState({
+        graphData: {
+          nodes: totalNodes,
+          edges: totalEdges
+        },
+        currentChunk: data.message.currchunk,
+        totalChunks: data.message.totalchunk,
+      }, function() {
+        self.state.graphData.nodes.add(data.payload.nodes);
+        self.state.graphData.edges.add(data.payload.edges);
+      });
+    } else {
+      this.setState({
+        graphData: {
+          nodes: data.payload.nodes,
+          edges: data.payload.edges
+        }
+      });
+    }
   },
 
   waitForWS: function(ws, callback) {
@@ -89,7 +111,6 @@ var Graphalyzer = React.createClass({
     };
 
     this.sendWebSocketMessage(request);
-    this.updateStatusMessage('Requesting graphs from server...')
   },
 
   handleWSMessage: function(event) {
@@ -99,12 +120,10 @@ var Graphalyzer = React.createClass({
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
       else if (action == 'getgraph') {
-        this.setState({statusMessage: 'Loading data into graph...'});
-        this.addDataToGraph(responseJSON.payload);
+        this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
         this.setState({
-          graphList: responseJSON.payload,
-          statusMessage: 'Graph list updated.'
+          graphList: responseJSON.payload
         });
       } else if (action == 'newid') {
         this.setState({id: responseJSON.payload});
@@ -114,10 +133,6 @@ var Graphalyzer = React.createClass({
 
   updateSelectedNode: function(node) {
     this.setState({selectedNode: node});
-  },
-
-  updateStatusMessage: function(message) {
-    this.setState({statusMessage: message});
   },
 
   componentDidMount: function() {
@@ -154,7 +169,6 @@ var Graphalyzer = React.createClass({
                 <NodePropertiesPanel selectedNode={this.state.selectedNode} />
               </Row>
             </Col>
-            {this.state.statusMessage}
           </GraphalyzerPanel>
         </Col>
       </Grid>
