@@ -14,6 +14,7 @@ var GraphPanel = React.createClass({
     return (
       <div>
         <Graph 
+          filter={this.props.filter}
           graphData={this.props.graphData} 
           logger={this.props.logger} 
           updateSelectedNode={this.props.updateSelectedNode}

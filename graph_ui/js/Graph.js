@@ -18,19 +18,25 @@ var Graph = React.createClass({
     });
   },
 
+  hasFilterOptions: function() {
+    if (this.props.filter) {
+      return this.props.filter.property && this.props.filter.option && this.props.filter.value;
+    } else return false;
+  },
+
   shouldComponentUpdate: function(nextProps, nextState) {
     return this.props.graphData != nextProps.graphData;
   },
 
   componentDidUpdate: function() {
 
-        // var nodes = this.props.graphData.nodes;
-        for (var i = 0; i < this.props.graphData.nodes.length; i++) {
-          if(this.props.graphData.nodes[i] != undefined){
-            this.props.graphData.nodes[i].color = 'red';
-          }
-        }
-        // this.props.graphData.nodes = nodes;
+    // var nodes = this.props.graphData.nodes;
+    for (var i = 0; i < this.props.graphData.nodes.length; i++) {
+      if(this.props.graphData.nodes[i] != undefined){
+        this.props.graphData.nodes[i].color = 'red';
+      }
+    }
+    // this.props.graphData.nodes = nodes;
 
     this.state.network.setData({
       nodes: this.props.graphData.nodes,
