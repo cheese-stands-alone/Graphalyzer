@@ -25,13 +25,10 @@ var Graph = React.createClass({
   componentDidUpdate: function() {
 
         // var nodes = this.props.graphData.nodes;
-        alert("hi");
         for (var i = 0; i < this.props.graphData.nodes.length; i++) {
           if(this.props.graphData.nodes[i] != undefined){
             this.props.graphData.nodes[i].color = 'red';
           }
-
-
         }
         // this.props.graphData.nodes = nodes;
 
