@@ -2,16 +2,17 @@ import time
 
 class ServerFileHandlingService(object):
 
-	def __init__(self, fileScanner, storageFolderInit, waitTimeInMinutes):
+	def __init__(self, fileScanner, storageFolderInit, waitTimeInMinutes, logger):
 		self.fileScanner = fileScanner
 		self.storageFolderInit = storageFolderInit
 		self.waitTimeInMinutes = waitTimeInMinutes
+		self.logger = logger
 
 
 
 	def startService(self):
 		self.storageFolderInit.initializeStorageFolders()
-
+		self.logger.info("Service starting.")
 		# //TODO
 		# //parseConfig();
 		# if 1/*result from parseConfig indicates use backup data*/:

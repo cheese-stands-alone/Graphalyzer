@@ -45,6 +45,20 @@ var Graphalyzer = React.createClass({
     this.setState({graphData: dataSet});
   },
 
+  logger: function(message) {
+    var date = new Date();
+    console.log('[' + 
+      date.getUTCFullYear() + '-' + 
+      date.getUTCMonth() + '-' + 
+      date.getUTCDate() + ' ' + 
+      date.getUTCHours() + ':' + 
+      date.getUTCMinutes() + ':' + 
+      date.getUTCSeconds() + ':' + 
+      date.getUTCMilliseconds() + ']  ' + 
+      message
+    );
+  },
+
   waitForWS: function(ws, callback) {
     var self = this;
     setTimeout(
@@ -74,21 +88,28 @@ var Graphalyzer = React.createClass({
       'payload': '',
       'message': ''
     };
-
+    this.logger('Requesting list of graphs');
     this.sendWebSocketMessage(request);
   },
 
   handleWSMessage: function(event) {
+    this.logger('Message received from server');
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
+      if (responseJSON.error) {
+        this.logger('Server returned error: ' + responseJSON.error);
+        return;
+      }
       var action = responseJSON.message.client_request_type;
-      if (action == 'error') return;
-      else if (action == 'getgraph') {
+      if (action == 'getgraph') {
+        this.logger('Begin drawing graph');
         this.initGraph(responseJSON.payload);
       } else if (action == 'listgraphs') {
+        this.logger('List of graphs received');
         this.setState({graphList: responseJSON.payload});
       } else if (action == 'newid') {
+        this.logger('New ID received from server');
         this.setState({id: responseJSON.payload});
       } else return;
     }
@@ -113,18 +134,26 @@ var Graphalyzer = React.createClass({
           {this.state.wsError}
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel graphData={this.state.graphData} updateSelectedNode={this.updateSelectedNode} />
+              <GraphPanel 
+                graphData={this.state.graphData} 
+                logger={this.logger} 
+                updateSelectedNode={this.updateSelectedNode} 
+              />
             </Col>
             <Col lg={3}>
               <Row>
                 <SearchPanel 
-                  graphList={this.state.graphList} 
-                  getGraphList={this.getGraphList} 
+                  graphList={this.state.graphList}
+                  getGraphList={this.getGraphList}
+                  logger={this.logger}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
               <Row>
-                <NodePropertiesPanel selectedNode={this.state.selectedNode} />
+                <NodePropertiesPanel 
+                  logger={this.logger}
+                  selectedNode={this.state.selectedNode} 
+                />
               </Row>
             </Col>
           </GraphalyzerPanel>

@@ -14,9 +14,8 @@ uploadAPI = Blueprint('uploadAPI', __name__)
 def uploadFile():
 	if request.method == 'POST':
 		file = request.files['file']
-		# fileName = os.path.splitext(file.filename)[0]
-		# extension = os.path.splitext(file.filename)[1]
-
 		f_name = str(uuid.uuid4()) + "-" + file.filename
+		logger = current_app.config['LOGGER']
+		logger.info("Received file upload: " + f_name)
 		file.save(os.path.join(current_app.config['UPLOADDIR'], f_name))
 		return json.dumps({'filename': f_name})
