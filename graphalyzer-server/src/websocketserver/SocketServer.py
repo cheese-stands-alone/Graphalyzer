@@ -23,7 +23,10 @@ class GraphalyzerServerProtocol(WebSocketServerProtocol):
         else:
             # Use factory to determin request type and handle it.
             handler = HandlerFactory.makehandler(payload.decode('utf8'))
-            handler.handle(self)
+            try:
+                handler.handle(self)
+            except:
+                return 
             gc.collect()
 
     def onClose(self, wasclean, code, reason):
