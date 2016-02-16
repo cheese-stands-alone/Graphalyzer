@@ -19,7 +19,10 @@ var Graph = React.createClass({
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    return this.props.totalChunks == nextProps.currentChunk;
+    return (
+      this.props.totalChunks != nextProps.currentChunk 
+      || this.props.graphData != nextProps.graphData
+    );
   },
 
   componentDidUpdate: function() {
@@ -33,25 +36,36 @@ var Graph = React.createClass({
       var node = this.state.network.body.data.nodes.get(nodeID);
       this.props.updateSelectedNode(node);
     }.bind(this));
+
+    // Called when Vis is finished drawing the graph
+    this.state.network.on('afterDrawing', function(event) {
+      this.props.logger('Graph finished drawing');
+    }.bind(this));
   },
 
   getDefaultProps: function() {
     return {
       options: {
+        nodes: {
+          shape: 'dot',
+          fixed: true
+        },
         edges: {
           arrows: {
             to: {
               scaleFactor: 0.5
             }
+          },
+          smooth: {
+            type: 'continuous'
           }
         },
-        height: '100%',
+        physics: false,
         interaction: {
-          dragNodes: false
-        },
-        width: '100%'
+          dragNodes: false,
+        }
       }
-    };
+    }
   },
 
   getInitialState: function() {

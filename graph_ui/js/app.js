@@ -39,23 +39,61 @@ var Graphalyzer = React.createClass({
       currentChunk: 0,
       selectedNode: {},
       wsError: null,
-      statusMessage: 'Welcome to Graphalyzer!'
     };
   },
 
   addDataToGraph: function(data) {
-    // Now we can use setState for keeping track of data chunks
-    this.setState({
-      currentChunk: data.currentChunk,
-      totalChunks: data.totalChunks,
-      statusMessage: this.state.statusMessage 
-        + data.currentChunk 
-        + ' chunk(s) out of '
-        + data.totalChunks + ' parsed.'
-    }.bind(this), function() {
-      this.state.graphData.nodes.add(data.nodes);
-      this.state.graphData.edges.add(data.edges);
-    }.bind(this));
+    var self = this;
+    var newNodeSet, newEdgeSet, totalNodes, totalEdges;
+    if (data.message.currchunk && data.message.totalchunk) {
+      if (data.payload.nodes) {
+        newNodeSet = data.payload.nodes;
+        totalNodes = this.state.graphData.nodes;
+        totalNodes.push(newNodeSet);
+      }
+      if (data.payload.edges) {
+        newEdgeSet = data.payload.edges;
+        totalEdges = this.state.graphData.edges;
+        totalEdges.push(newEdgeSet);
+      }
+      this.logger(
+        data.message.currchunk + ' chunk(s) out of ' + 
+        data.message.totalchunk + 
+        ' received.'
+      );
+      this.setState({
+        graphData: {
+          nodes: totalNodes,
+          edges: totalEdges
+        },
+        currentChunk: data.message.currchunk,
+        totalChunks: data.message.totalchunk,
+      }, function() {
+        self.state.graphData.nodes.add(data.payload.nodes);
+        self.state.graphData.edges.add(data.payload.edges);
+      });
+    } else {
+      this.setState({
+        graphData: {
+          nodes: data.payload.nodes,
+          edges: data.payload.edges
+        }
+      });
+    }
+  },
+
+  logger: function(message) {
+    var date = new Date();
+    console.log('[' + 
+      date.getUTCFullYear() + '-' + 
+      date.getUTCMonth() + '-' + 
+      date.getUTCDate() + ' ' + 
+      date.getUTCHours() + ':' + 
+      date.getUTCMinutes() + ':' + 
+      date.getUTCSeconds() + ':' + 
+      date.getUTCMilliseconds() + ']  ' + 
+      message
+    );
   },
 
   waitForWS: function(ws, callback) {
@@ -87,26 +125,31 @@ var Graphalyzer = React.createClass({
       'payload': '',
       'message': ''
     };
-
+    this.logger('Requesting list of graphs');
     this.sendWebSocketMessage(request);
-    this.updateStatusMessage('Requesting graphs from server...')
   },
 
   handleWSMessage: function(event) {
+    this.logger('Message received from server');
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
+      if (responseJSON.error) {
+        this.logger('Server returned error: ' + responseJSON.error);
+        return;
+      }
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
       else if (action == 'getgraph') {
-        this.setState({statusMessage: 'Loading data into graph...'});
-        this.addDataToGraph(responseJSON.payload);
+        this.logger('Begin drawing graph');
+        this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
+        this.logger('List of graphs received');
         this.setState({
-          graphList: responseJSON.payload,
-          statusMessage: 'Graph list updated.'
+          graphList: responseJSON.payload
         });
       } else if (action == 'newid') {
+        this.logger('New ID received from server');
         this.setState({id: responseJSON.payload});
       } else return;
     }
@@ -114,10 +157,6 @@ var Graphalyzer = React.createClass({
 
   updateSelectedNode: function(node) {
     this.setState({selectedNode: node});
-  },
-
-  updateStatusMessage: function(message) {
-    this.setState({statusMessage: message});
   },
 
   componentDidMount: function() {
@@ -139,22 +178,26 @@ var Graphalyzer = React.createClass({
                 graphData={this.state.graphData} 
                 currentChunk={this.state.currentChunk} 
                 totalChunks={this.state.totalChunks} 
+                logger={this.logger} 
                 updateSelectedNode={this.updateSelectedNode} 
               />
             </Col>
             <Col lg={3}>
               <Row>
                 <SearchPanel 
-                  graphList={this.state.graphList} 
-                  getGraphList={this.getGraphList} 
+                  graphList={this.state.graphList}
+                  getGraphList={this.getGraphList}
+                  logger={this.logger}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
               <Row>
-                <NodePropertiesPanel selectedNode={this.state.selectedNode} />
+                <NodePropertiesPanel 
+                  logger={this.logger}
+                  selectedNode={this.state.selectedNode} 
+                />
               </Row>
             </Col>
-            {this.state.statusMessage}
           </GraphalyzerPanel>
         </Col>
       </Grid>
