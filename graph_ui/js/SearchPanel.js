@@ -23,10 +23,9 @@ var SearchPanel = React.createClass({
   getInitialState: function() {
     return {
       nodeName: '',
-      degrees: '',
-	  filterOption: 'none',
-	  filterProperty: '',
-	  filterValue: '',
+      filterOption: 'none',
+      filterProperty: '',
+      filterValue: '',
       searchErr: false,
       searchErrMessage: ''
     };
@@ -59,10 +58,9 @@ var SearchPanel = React.createClass({
   updateFields: function() {
     this.setState({
       nodeName: this.refs.nodeName.getValue(),
-      degrees: this.refs.degrees.getValue(),
-	  filterOption: this.refs.filterOption.getValue(),
-	  filterProperty: this.refs.filterProperty.getValue(),
-	  filterValue: this.refs.filterValue.getValue()
+      filterOption: this.refs.filterOption.getValue(),
+      filterProperty: this.refs.filterProperty.getValue(),
+      filterValue: this.refs.filterValue.getValue()
     });
   },
 
@@ -108,27 +106,18 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                label='Degrees' 
-                ref='degrees' 
-                value={this.state.degrees} 
-                onChange={this.updateFields}
-              />
-            </ListGroupItem>
-			<ListGroupItem>
-              <Input 
-                type='text' 
                 label='Filter Property' 
                 ref='filterProperty' 
                 value={this.state.filterProperty} 
                 onChange={this.updateFields}
               />
-			<select ref='filterOption' onChange={this.change} value={this.state.filterOption}>
-				<option value="none">No Value</option>
-				<option value=">">&gt;</option>
-				<option value="<">&lt;</option>
-				<option value="=">=</option>
-			</select>
-			  <Input 
+              <select ref='filterOption' onChange={this.change} value={this.state.filterOption}>
+              	<option value="none">No Value</option>
+              	<option value=">">&gt;</option>
+              	<option value="<">&lt;</option>
+              	<option value="=">=</option>
+              </select>
+              <Input 
                 type='text' 
                 label='Filter Value' 
                 ref='filterValue' 
