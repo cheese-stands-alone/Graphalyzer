@@ -50,12 +50,12 @@ var Graphalyzer = React.createClass({
       if (data.payload.nodes) {
         newNodeSet = data.payload.nodes;
         totalNodes = this.state.graphData.nodes;
-        totalNodes.push(newNodeSet);
+        totalNodes.add(newNodeSet);
       }
       if (data.payload.edges) {
         newEdgeSet = data.payload.edges;
         totalEdges = this.state.graphData.edges;
-        totalEdges.push(newEdgeSet);
+        totalEdges.add(newEdgeSet);
       }
       this.logger(
         data.message.currchunk + ' chunk(s) out of ' + 
