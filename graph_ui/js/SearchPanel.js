@@ -56,11 +56,12 @@ var SearchPanel = React.createClass({
   },
 
   updateFields: function() {
+    var self = this;
     this.setState({
-      nodeName: this.refs.nodeName.getValue(),
-      filterOption: this.refs.filterOption.getValue(),
-      filterProperty: this.refs.filterProperty.getValue(),
-      filterValue: this.refs.filterValue.getValue()
+      nodeName: self.refs.nodeName.getValue(),
+      filterOption: self.refs.filterOption.getValue(),
+      filterProperty: self.refs.filterProperty.getValue(),
+      filterValue: self.refs.filterValue.getValue()
     });
   },
 
@@ -81,13 +82,13 @@ var SearchPanel = React.createClass({
     var self = this;
     return (
       <div>
-        <Panel header='Search' bsStyle='primary'>
+        <Panel header='Control Panel' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
               <ButtonGroup>
                 <DropdownButton
                   onSelect={function(event, eventKey) {self.getGraph(eventKey);}} 
-                  id='bg-nested-dropdown' 
+                  id='graph-list-dropdown' 
                   title='Select a graph'>
                   {graphs}
                 </DropdownButton>
@@ -97,7 +98,7 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                label='Node Name' 
+                placeholder='Node Name' 
                 ref='nodeName' 
                 value={this.state.nodeName} 
                 onChange={this.updateFields}
@@ -106,25 +107,32 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                label='Filter Property' 
+                placeholder='Filter Property' 
                 ref='filterProperty' 
                 value={this.state.filterProperty} 
                 onChange={this.updateFields}
               />
-              <select ref='filterOption' onChange={this.change} value={this.state.filterOption}>
-              	<option value="none">No Value</option>
-              	<option value=">">&gt;</option>
-              	<option value="<">&lt;</option>
-              	<option value="=">=</option>
-              </select>
+              <Input
+                type='select'
+                onChange={this.updateFields}
+                ref='filterOption'>
+                <option value=''>Equality Operator</option>
+                <option value='>'>&gt;</option>
+                <option value='<'>&lt;</option>
+                <option value='='>=</option>
+              </Input>
               <Input 
                 type='text' 
-                label='Filter Value' 
+                placeholder='Filter Value' 
                 ref='filterValue' 
                 value={this.state.filterValue} 
                 onChange={this.updateFields}
               />
-              <Button onClick={this.props.filter(this.state.filterProperty, this.state.filterOption, this.state.filterValue)}>Filter</Button>
+              <Button 
+                onClick={
+                  this.props.filter.bind(null, this.state.filterProperty, this.state.filterOption, this.state.filterValue)
+                }>Filter
+              </Button>
             </ListGroupItem>
           </ListGroup>
           {errPanel}

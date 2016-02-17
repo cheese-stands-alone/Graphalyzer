@@ -29,11 +29,7 @@ var Graphalyzer = React.createClass({
 
   getInitialState: function() {
     return {
-      filter: {
-        property: '',
-        option: '',
-        value: ''
-      },
+      filter: {},
       id: '',
       graphList: [],
       graphData: {},
