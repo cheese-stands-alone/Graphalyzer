@@ -43,6 +43,7 @@ var Graphalyzer = React.createClass({
   },
 
   addDataToGraph: function(data) {
+    console.log(data);
     var self = this;
     var newNodeSet, newEdgeSet, totalNodes, totalEdges;
     if (data.message.currchunk && data.message.totalchunk) {
@@ -140,7 +141,7 @@ var Graphalyzer = React.createClass({
       }
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
-      else if (action == 'getgraph') {
+      else if (action == 'getgraph' || action == 'getgraphchunk') {
         this.logger('Begin drawing graph');
         this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {

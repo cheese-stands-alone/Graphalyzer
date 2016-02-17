@@ -24,6 +24,7 @@ var SearchPanel = React.createClass({
     return {
       nodeName: '',
       degrees: '',
+      request_type: 'getgraph',
       searchErr: false,
       searchErrMessage: ''
     };
@@ -35,7 +36,7 @@ var SearchPanel = React.createClass({
       'message_id': '',
       'sender_id': '',
       'time': '',
-      'request': 'getgraph',
+      'request': self.state.request_type,
       'status': '',
       'error': '',
       'payload': self.props.graphList[key].Graph,
@@ -56,7 +57,8 @@ var SearchPanel = React.createClass({
   updateFields: function() {
     this.setState({
       nodeName: this.refs.nodeName.getValue(),
-      degrees: this.refs.degrees.getValue()
+      degrees: this.refs.degrees.getValue(),
+      request_type: this.refs.request_type.getValue()
     });
   },
 
@@ -79,6 +81,18 @@ var SearchPanel = React.createClass({
       <div>
         <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
+            <ListGroupItem>
+              <Input
+                type='select'
+                label='Graph Request Type'
+                ref='request_type'
+                value={this.state.request_type}
+                onChange={this.updateFields}
+              >
+                <option value='getgraph'>Normal</option>
+                <option value='getgraphchunk'>Chunked</option>
+              </Input>
+            </ListGroupItem>
             <ListGroupItem>
               <ButtonGroup>
                 <DropdownButton
