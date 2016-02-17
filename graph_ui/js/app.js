@@ -42,6 +42,10 @@ var Graphalyzer = React.createClass({
     };
   },
 
+  reset: function() {
+    this.setState(this.getInitialState());
+  },
+
   addDataToGraph: function(data) {
     var self = this;
     var newNodeSet, newEdgeSet, totalNodes, totalEdges;
@@ -181,6 +185,7 @@ var Graphalyzer = React.createClass({
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}
+                  reset={this.reset}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>

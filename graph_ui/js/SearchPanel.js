@@ -122,6 +122,9 @@ var SearchPanel = React.createClass({
                 onChange={this.updateFields}
               />
             </ListGroupItem>
+            <ListGroupItem>
+              <Button bsStyle='success' onClick={this.props.reset}>Reset</Button>
+            </ListGroupItem>
           </ListGroup>
           {errPanel}
         </Panel>
