@@ -48,7 +48,7 @@ var Graph = React.createClass({
       options: {
         nodes: {
           shape: 'dot',
-          fixed: true
+          size: 10
         },
         edges: {
           arrows: {
@@ -60,7 +60,12 @@ var Graph = React.createClass({
             type: 'continuous'
           }
         },
-        physics: false,
+        physics: {
+          repulsion: {
+            nodeDistance: 200,
+            springLength: 10
+          }
+        },
         interaction: {
           dragNodes: false,
         }
