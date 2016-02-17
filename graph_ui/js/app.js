@@ -43,7 +43,6 @@ var Graphalyzer = React.createClass({
   },
 
   addDataToGraph: function(data) {
-    console.log(data);
     var self = this;
     var newNodeSet, newEdgeSet, totalNodes, totalEdges;
     if (data.message.currchunk && data.message.totalchunk) {
@@ -63,15 +62,8 @@ var Graphalyzer = React.createClass({
         ' received.'
       );
       this.setState({
-        graphData: {
-          nodes: totalNodes,
-          edges: totalEdges
-        },
         currentChunk: data.message.currchunk,
         totalChunks: data.message.totalchunk,
-      }, function() {
-        self.state.graphData.nodes.add(data.payload.nodes);
-        self.state.graphData.edges.add(data.payload.edges);
       });
     } else {
       this.setState({
