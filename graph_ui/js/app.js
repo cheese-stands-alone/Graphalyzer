@@ -42,6 +42,10 @@ var Graphalyzer = React.createClass({
     };
   },
 
+  reset: function() {
+    this.setState(this.getInitialState());
+  },
+
   addDataToGraph: function(data) {
     var self = this;
     var newNodeSet, newEdgeSet, totalNodes, totalEdges;
@@ -49,12 +53,12 @@ var Graphalyzer = React.createClass({
       if (data.payload.nodes) {
         newNodeSet = data.payload.nodes;
         totalNodes = this.state.graphData.nodes;
-        totalNodes.push(newNodeSet);
+        totalNodes.add(newNodeSet);
       }
       if (data.payload.edges) {
         newEdgeSet = data.payload.edges;
         totalEdges = this.state.graphData.edges;
-        totalEdges.push(newEdgeSet);
+        totalEdges.add(newEdgeSet);
       }
       this.logger(
         data.message.currchunk + ' chunk(s) out of ' + 
@@ -62,15 +66,8 @@ var Graphalyzer = React.createClass({
         ' received.'
       );
       this.setState({
-        graphData: {
-          nodes: totalNodes,
-          edges: totalEdges
-        },
         currentChunk: data.message.currchunk,
         totalChunks: data.message.totalchunk,
-      }, function() {
-        self.state.graphData.nodes.add(data.payload.nodes);
-        self.state.graphData.edges.add(data.payload.edges);
       });
     } else {
       this.setState({
@@ -140,7 +137,7 @@ var Graphalyzer = React.createClass({
       }
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
-      else if (action == 'getgraph') {
+      else if (action == 'getgraph' || action == 'getgraphchunk') {
         this.logger('Begin drawing graph');
         this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
@@ -188,6 +185,7 @@ var Graphalyzer = React.createClass({
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}
+                  reset={this.reset}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
