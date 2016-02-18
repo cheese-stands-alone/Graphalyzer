@@ -24,24 +24,46 @@ var Graph = React.createClass({
     } else return false;
   },
 
+  /**
+   * If there are any filter options passed in, perform filtering. Otherwise do nothing.
+   */
+  doFilter: function() {
+    if(this.hasFilterOptions() && !this.isGraphEmpty()) {
+      var property = this.props.filter.property;
+      var nodeObjects = this.props.graphData.nodes;
+      console.log(nodeObjects);
+      var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
+      switch (this.props.filter.option) {
+        case '>':
+          for (var nodeID in nodeIDs) {
+            if (this.props.graphData.nodes.get(nodeID)[property] > this.props.filter.value) {
+              console.log(nodeObjects.get(nodeID));
+              nodeObjects.update({id: nodeID, color: 'red'});
+              console.log(nodeObjects.get(nodeID));
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  },
+
+  isGraphEmpty: function() {
+    return this.props.graphData.nodes.length == 0 && this.props.graphData.edges.length == 0;
+  },
+
   shouldComponentUpdate: function(nextProps, nextState) {
-    return this.props.graphData != nextProps.graphData;
+    return (this.props.graphData != nextProps.graphData) || (this.props.filter != nextProps.filter);
   },
 
   componentDidUpdate: function() {
-
-    // var nodes = this.props.graphData.nodes;
-    for (var i = 0; i < this.props.graphData.nodes.length; i++) {
-      if(this.props.graphData.nodes[i] != undefined){
-        this.props.graphData.nodes[i].color = 'red';
-      }
-    }
-    // this.props.graphData.nodes = nodes;
-
     this.state.network.setData({
       nodes: this.props.graphData.nodes,
       edges: this.props.graphData.edges
     });
+
+    this.doFilter();
 
     this.state.network.on('selectNode', function(event) {
       var nodeID = event.nodes[0];
@@ -63,7 +85,6 @@ var Graph = React.createClass({
           fixed: true
         },
         edges: {
-          color: {inherit: 'from'},
           arrows: {
             to: {
               scaleFactor: 0.5
