@@ -66,3 +66,8 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Logs
+graphalyzer-server/ServerApp
+graphalyzer-server/logs
+graphalyzer-server/neo4j_file_handling

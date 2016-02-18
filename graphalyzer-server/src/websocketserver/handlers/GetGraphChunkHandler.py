@@ -65,17 +65,17 @@ class GetGraphChunkHandler(HandleInterface):
 
     def __queryNeo4J(self, query):
         neo4j = Graph()
-        return neo4j.cypher.execute(query)
+        return neo4j.cypher.stream(query)
 
     def handle(self, socket: WebSocketServerProtocol):
         graphid = self._payload
-        chunksize = 17
+        chunksize = 100
 
         if graphid == "":
             ErrorHandler("No graph specified", "").handle(socket)
             return
 
-            # noinspection PyBroadException
+        # noinspection PyBroadException
         try:
             with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
                 # Get total number of nodes and edges in the graph.
