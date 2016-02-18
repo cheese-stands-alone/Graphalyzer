@@ -123,7 +123,7 @@ var SearchPanel = React.createClass({
               />
             </ListGroupItem>
             <ListGroupItem>
-              <Button bsStyle='success' onClick={this.props.reset}>Reset</Button>
+              <Button bsStyle='success' onClick={this.props.reset}>Reset Graph</Button>
             </ListGroupItem>
           </ListGroup>
           {errPanel}
