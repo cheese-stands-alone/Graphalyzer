@@ -26,7 +26,7 @@ class GraphalyzerServerProtocol(WebSocketServerProtocol):
             try:
                 handler.handle(self)
             except:
-                return 
+                return
             gc.collect()
 
     def onClose(self, wasclean, code, reason):
