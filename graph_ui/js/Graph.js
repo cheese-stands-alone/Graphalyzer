@@ -31,16 +31,15 @@ var Graph = React.createClass({
     if(this.hasFilterOptions() && !this.isGraphEmpty()) {
       var property = this.props.filter.property;
       var nodeObjects = this.props.graphData.nodes;
-      console.log(nodeObjects);
       var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
       switch (this.props.filter.option) {
         case '>':
           for (var nodeID in nodeIDs) {
-            if (this.props.graphData.nodes.get(nodeID)[property] > this.props.filter.value) {
-              console.log(nodeObjects.get(nodeID));
+            var propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+            if (parseInt(propertyToFilter) > this.props.filter.value)
               nodeObjects.update({id: nodeID, color: 'red'});
-              console.log(nodeObjects.get(nodeID));
-            }
+            else 
+              nodeObjects.update({id: nodeID, color: 'gray'});
           }
           break;
         default:
@@ -90,6 +89,7 @@ var Graph = React.createClass({
               scaleFactor: 0.5
             }
           },
+          color: '#848484',
           smooth: {
             type: 'continuous'
           }
