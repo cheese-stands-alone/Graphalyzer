@@ -43,7 +43,15 @@ var Graphalyzer = React.createClass({
   },
 
   reset: function() {
-    this.setState(this.getInitialState());
+    this.setState({
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      totalChunks: 0,
+      currentChunk: 0,
+      selectedNode: {}
+    });
   },
 
   addDataToGraph: function(data) {
