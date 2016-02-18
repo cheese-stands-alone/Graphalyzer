@@ -70,6 +70,10 @@ var Graph = React.createClass({
       this.props.updateSelectedNode(node);
     }.bind(this));
 
+    this.state.network.on('deselectNode', function(event) {
+      this.props.updateSelectedNode({});
+    }.bind(this));
+
     // Called when Vis is finished drawing the graph
     this.state.network.on('afterDrawing', function(event) {
       this.props.logger('Graph finished drawing');
