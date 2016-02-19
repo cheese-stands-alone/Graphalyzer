@@ -55,7 +55,7 @@ var Graph = React.createClass({
             if (parseInt(propertyToFilter) == this.props.filter.value)
               this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'gray'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
           }
           break;
         case '<':
@@ -64,7 +64,7 @@ var Graph = React.createClass({
             if (parseInt(propertyToFilter) < this.props.filter.value)
               this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'gray'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
           }
           break;
         default:
