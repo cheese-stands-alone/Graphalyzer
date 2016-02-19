@@ -40,7 +40,7 @@ var Graph = React.createClass({
             if (parseInt(propertyToFilter) > this.props.filter.value)
               nodeObjects.update({id: nodeID, color: 'red'});
             else 
-              nodeObjects.update({id: nodeID, color: 'gray'});
+              nodeObjects.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
           }
           break;
         case '=':
