@@ -29,12 +29,32 @@ var Graphalyzer = React.createClass({
 
   getInitialState: function() {
     return {
+      filter: {},
       id: '',
       graphList: [],
       graphData: {},
       selectedNode: {},
       wsError: null
     };
+  },
+
+  clearFiltering: function() {
+    if (this.state.graphData) {
+      var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
+      for (var nodeID in nodeIDs)
+        this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
+      this.setState({filter: {}});
+    }
+  },
+
+  filter: function(property, option, value) {
+    this.setState({
+      filter: {
+        property: property,
+        option: option,
+        value: value
+      }
+    });
   },
 
   initGraph: function(data) {
@@ -64,7 +84,7 @@ var Graphalyzer = React.createClass({
     setTimeout(
       function () {
         if (ws.readyState === 1) {
-          if(callback != null) callback();
+          if (callback != null) callback();
           return;
         } else self.waitForWS(ws, callback);
       }, 5); // wait 5 milisecond for the connection...
@@ -135,6 +155,7 @@ var Graphalyzer = React.createClass({
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
               <GraphPanel 
+                filter={this.state.filter}
                 graphData={this.state.graphData} 
                 logger={this.logger} 
                 updateSelectedNode={this.updateSelectedNode} 
@@ -143,6 +164,8 @@ var Graphalyzer = React.createClass({
             <Col lg={3}>
               <Row>
                 <SearchPanel 
+                  clearFiltering={this.clearFiltering}
+                  filter={this.filter}
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}

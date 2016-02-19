@@ -20,11 +20,13 @@ var NodePropertiesPanel = React.createClass({
   render: function() {
     var component = [];
     for (var nodeProp in this.props.selectedNode) {
-      component.push(
-        <ListGroupItem header={nodeProp}>
-          {this.props.selectedNode[nodeProp]}
-        </ListGroupItem>
-      );
+      if (nodeProp != 'color') {
+        component.push(
+          <ListGroupItem header={nodeProp}>
+            {this.props.selectedNode[nodeProp]}
+          </ListGroupItem>
+        );
+      }
     }
 
     var properties;
