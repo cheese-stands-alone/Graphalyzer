@@ -20,7 +20,7 @@ var Graph = React.createClass({
 
   hasFilterOptions: function() {
     if (this.props.filter) {
-      return this.props.filter.property && this.props.filter.option && this.props.filter.value;
+      return this.props.filter.property && this.props.filter.option;
     } else return false;
   },
 
@@ -34,6 +34,14 @@ var Graph = React.createClass({
       var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
       var propertyToFilter;
       switch (this.props.filter.option) {
+        case 'Remove Nodes Without':
+          console.log('here');
+          for (var nodeID in nodeIDs) {
+            if (this.props.graphData.nodes.get(nodeID)[property])
+              nodeObjects.update({id: nodeID, color: 'red'});
+            else 
+              nodeObjects.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+          }
         case '>':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];

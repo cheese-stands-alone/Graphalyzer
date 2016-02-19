@@ -116,7 +116,7 @@ var SearchPanel = React.createClass({
                 type='select'
                 onChange={this.updateFields}
                 ref='filterOption'>
-                <option value=''>Equality Operator</option>
+                <option value='Remove Nodes Without'>Remove Nodes Without</option>
                 <option value='>'>&gt;</option>
                 <option value='<'>&lt;</option>
                 <option value='='>=</option>
