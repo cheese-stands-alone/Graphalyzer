@@ -48,7 +48,7 @@ class OSWrapper(object):
 			self.logger.debug("OS is Windows. Returning path header 'c:/'")
 			return "c:/"
 		else:
-			self.logger.debug("OS is Linux. Returning no header. Logs being flaced in current directory.")
+			self.logger.debug("OS is Linux. Returning no header. Logs being placed in current directory.")
 			return ""
 
 	def oSIsWindows(self):
