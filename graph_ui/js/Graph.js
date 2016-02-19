@@ -28,45 +28,43 @@ var Graph = React.createClass({
    * If there are any filter options passed in, perform filtering. Otherwise do nothing.
    */
   doFilter: function() {
-    if(this.hasFilterOptions() && !this.isGraphEmpty()) {
+    if (this.hasFilterOptions() && !this.isGraphEmpty()) {
       var property = this.props.filter.property;
-      var nodeObjects = this.props.graphData.nodes;
       var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
       var propertyToFilter;
       switch (this.props.filter.option) {
         case 'Remove Nodes Without':
-          console.log('here');
           for (var nodeID in nodeIDs) {
             if (this.props.graphData.nodes.get(nodeID)[property])
-              nodeObjects.update({id: nodeID, color: 'red'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              nodeObjects.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
           }
         case '>':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
             if (parseInt(propertyToFilter) > this.props.filter.value)
-              nodeObjects.update({id: nodeID, color: 'red'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              nodeObjects.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
           }
           break;
         case '=':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
             if (parseInt(propertyToFilter) == this.props.filter.value)
-              nodeObjects.update({id: nodeID, color: 'red'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              nodeObjects.update({id: nodeID, color: 'gray'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'gray'});
           }
           break;
         case '<':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
             if (parseInt(propertyToFilter) < this.props.filter.value)
-              nodeObjects.update({id: nodeID, color: 'red'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
             else 
-              nodeObjects.update({id: nodeID, color: 'gray'});
+              this.props.graphData.nodes.update({id: nodeID, color: 'gray'});
           }
           break;
         default:

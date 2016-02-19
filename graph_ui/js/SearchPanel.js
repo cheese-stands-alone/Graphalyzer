@@ -128,11 +128,19 @@ var SearchPanel = React.createClass({
                 value={this.state.filterValue} 
                 onChange={this.updateFields}
               />
-              <Button 
-                onClick={
-                  this.props.filter.bind(null, this.state.filterProperty, this.state.filterOption, this.state.filterValue)
-                }>Filter
-              </Button>
+              <ButtonGroup>
+                <Button 
+                  bsStyle='success'
+                  onClick={
+                    this.props.filter.bind(null, this.state.filterProperty, this.state.filterOption, this.state.filterValue)
+                  }>Filter
+                </Button>
+                <Button 
+                  bsStyle='success' 
+                  onClick={this.props.clearFiltering
+                  }>Clear Filter
+                </Button>
+              </ButtonGroup>
             </ListGroupItem>
           </ListGroup>
           {errPanel}
