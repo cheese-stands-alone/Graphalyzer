@@ -3,12 +3,18 @@ from autobahn.asyncio.websocket import WebSocketServerFactory
 from ServerConfig import *
 from websocketserver.SocketServer import *
 import sys
+import logging
+import os
 
 
 def start_websocket_server():
     """Function to start the websocket server."""
     import asyncio
 
+    if not os.path.exists(LOGFOLDER):
+        os.makedirs(LOGFOLDER)
+    logging.basicConfig(filename=LOGFOLDER+ "/" + WEBSOCKETLOG,level=LOGLEVEL)
+    logging.info("Starting Server")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -20,11 +26,11 @@ def start_websocket_server():
     server = loop.run_until_complete(coro)
 
     try:
-        print("Server started")
+        logging.info("Server started")
         loop.run_forever()
     except KeyboardInterrupt:
         pass
     finally:
-        print("Server shutting down")
+        logging.info("Server shutting down")
         server.close()
         loop.close()

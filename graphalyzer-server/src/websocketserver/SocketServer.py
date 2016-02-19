@@ -1,15 +1,16 @@
 from websocketserver.handlers.HandlerFactory import *
 import gc
+import logging
 
 
 class GraphalyzerServerProtocol(WebSocketServerProtocol):
     """Class to represent websocket server."""
     def onConnect(self, request):
-        print("Client connecting: {}".format(request.peer))
+        logging.info("Client connecting: {}".format(request.peer))
 
     def onOpen(self):
         """Send register request on websocket open."""
-        print("WebSocket connection open.")
+        logging.info("WebSocket connection open.")
         response = SessionIDHandler("newid")
         response.handle(self)
 
@@ -22,8 +23,11 @@ class GraphalyzerServerProtocol(WebSocketServerProtocol):
         else:
             # Use factory to determin request type and handle it.
             handler = HandlerFactory.makehandler(payload.decode('utf8'))
-            handler.handle(self)
+            try:
+                handler.handle(self)
+            except:
+                return
             gc.collect()
 
     def onClose(self, wasclean, code, reason):
-        print("WebSocket connection closed: {}".format(reason))
+        logging.info("WebSocket connection closed: {}".format(reason))

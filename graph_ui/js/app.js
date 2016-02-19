@@ -32,9 +32,14 @@ var Graphalyzer = React.createClass({
       filter: {},
       id: '',
       graphList: [],
-      graphData: {},
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      totalChunks: 0,
+      currentChunk: 0,
       selectedNode: {},
-      wsError: null
+      wsError: null,
     };
   },
 
@@ -57,12 +62,49 @@ var Graphalyzer = React.createClass({
     });
   },
 
-  initGraph: function(data) {
-    var dataSet = {
-      nodes: new Vis.DataSet(data.nodes),
-      edges: new Vis.DataSet(data.edges)
-    };
-    this.setState({graphData: dataSet});
+  reset: function() {
+    this.setState({
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      totalChunks: 0,
+      currentChunk: 0,
+      selectedNode: {}
+    });
+  },
+
+  addDataToGraph: function(data) {
+    var self = this;
+    var newNodeSet, newEdgeSet, totalNodes, totalEdges;
+    if (data.message.currchunk && data.message.totalchunk) {
+      if (data.payload.nodes) {
+        newNodeSet = data.payload.nodes;
+        totalNodes = this.state.graphData.nodes;
+        totalNodes.add(newNodeSet);
+      }
+      if (data.payload.edges) {
+        newEdgeSet = data.payload.edges;
+        totalEdges = this.state.graphData.edges;
+        totalEdges.add(newEdgeSet);
+      }
+      this.logger(
+        data.message.currchunk + ' chunk(s) out of ' + 
+        data.message.totalchunk + 
+        ' received.'
+      );
+      this.setState({
+        currentChunk: data.message.currchunk,
+        totalChunks: data.message.totalchunk,
+      });
+    } else {
+      this.setState({
+        graphData: {
+          nodes: new Vis.DataSet(data.payload.nodes),
+          edges: new Vis.DataSet(data.payload.edges)
+        }
+      });
+    }
   },
 
   logger: function(message) {
@@ -122,12 +164,15 @@ var Graphalyzer = React.createClass({
         return;
       }
       var action = responseJSON.message.client_request_type;
-      if (action == 'getgraph') {
+      if (action == 'error') return;
+      else if (action == 'getgraph' || action == 'getgraphchunk') {
         this.logger('Begin drawing graph');
-        this.initGraph(responseJSON.payload);
+        this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
         this.logger('List of graphs received');
-        this.setState({graphList: responseJSON.payload});
+        this.setState({
+          graphList: responseJSON.payload
+        });
       } else if (action == 'newid') {
         this.logger('New ID received from server');
         this.setState({id: responseJSON.payload});
@@ -157,6 +202,8 @@ var Graphalyzer = React.createClass({
               <GraphPanel 
                 filter={this.state.filter}
                 graphData={this.state.graphData} 
+                currentChunk={this.state.currentChunk} 
+                totalChunks={this.state.totalChunks} 
                 logger={this.logger} 
                 updateSelectedNode={this.updateSelectedNode} 
               />
@@ -169,6 +216,7 @@ var Graphalyzer = React.createClass({
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}
+                  reset={this.reset}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
