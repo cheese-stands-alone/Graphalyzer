@@ -82,7 +82,7 @@ var SearchPanel = React.createClass({
     var self = this;
     return (
       <div>
-        <Panel header='Control Panel' bsStyle='primary'>
+        <Panel header='Search' bsStyle='primary'>
           <ListGroup fill>
             <ListGroupItem>
               <ButtonGroup>

@@ -84,7 +84,7 @@ var Graphalyzer = React.createClass({
     setTimeout(
       function () {
         if (ws.readyState === 1) {
-          if(callback != null) callback();
+          if (callback != null) callback();
           return;
         } else self.waitForWS(ws, callback);
       }, 5); // wait 5 milisecond for the connection...
