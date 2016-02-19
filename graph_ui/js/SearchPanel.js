@@ -23,7 +23,9 @@ var SearchPanel = React.createClass({
   getInitialState: function() {
     return {
       nodeName: '',
-      degrees: '',
+      filterOption: 'none',
+      filterProperty: '',
+      filterValue: '',
       request_type: 'getgraph',
       searchErr: false,
       searchErrMessage: ''
@@ -55,9 +57,12 @@ var SearchPanel = React.createClass({
   },
 
   updateFields: function() {
+    var self = this;
     this.setState({
+      filterOption: self.refs.filterOption.getValue(),
+      filterProperty: self.refs.filterProperty.getValue(),
+      filterValue: self.refs.filterValue.getValue(),
       nodeName: this.refs.nodeName.getValue(),
-      degrees: this.refs.degrees.getValue(),
       request_type: this.refs.request_type.getValue()
     });
   },
@@ -75,7 +80,7 @@ var SearchPanel = React.createClass({
         );
       }
     } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
-
+	
     var self = this;
     return (
       <div>
@@ -97,7 +102,7 @@ var SearchPanel = React.createClass({
               <ButtonGroup>
                 <DropdownButton
                   onSelect={function(event, eventKey) {self.getGraph(eventKey);}} 
-                  id='bg-nested-dropdown' 
+                  id='graph-list-dropdown' 
                   title='Select a graph'>
                   {graphs}
                 </DropdownButton>
@@ -107,7 +112,7 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                label='Node Name' 
+                placeholder='Node Name' 
                 ref='nodeName' 
                 value={this.state.nodeName} 
                 onChange={this.updateFields}
@@ -116,11 +121,40 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                label='Degrees' 
-                ref='degrees' 
-                value={this.state.degrees} 
+                placeholder='Filter Property' 
+                ref='filterProperty' 
+                value={this.state.filterProperty} 
                 onChange={this.updateFields}
               />
+              <Input
+                type='select'
+                onChange={this.updateFields}
+                ref='filterOption'>
+                <option value='Remove Nodes Without'>Remove Nodes Without</option>
+                <option value='>'>&gt;</option>
+                <option value='<'>&lt;</option>
+                <option value='='>=</option>
+              </Input>
+              <Input 
+                type='text' 
+                placeholder='Filter Value' 
+                ref='filterValue' 
+                value={this.state.filterValue} 
+                onChange={this.updateFields}
+              />
+              <ButtonGroup>
+                <Button 
+                  bsStyle='success'
+                  onClick={
+                    this.props.filter.bind(null, this.state.filterProperty, this.state.filterOption, this.state.filterValue)
+                  }>Filter
+                </Button>
+                <Button 
+                  bsStyle='success' 
+                  onClick={this.props.clearFiltering
+                  }>Clear Filter
+                </Button>
+              </ButtonGroup>
             </ListGroupItem>
             <ListGroupItem>
               <Button bsStyle='success' onClick={this.props.reset}>Reset Graph</Button>

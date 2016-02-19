@@ -29,6 +29,7 @@ var Graphalyzer = React.createClass({
 
   getInitialState: function() {
     return {
+      filter: {},
       id: '',
       graphList: [],
       graphData: {
@@ -40,6 +41,25 @@ var Graphalyzer = React.createClass({
       selectedNode: {},
       wsError: null,
     };
+  },
+
+  clearFiltering: function() {
+    if (this.state.graphData) {
+      var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
+      for (var nodeID in nodeIDs)
+        this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
+      this.setState({filter: {}});
+    }
+  },
+
+  filter: function(property, option, value) {
+    this.setState({
+      filter: {
+        property: property,
+        option: option,
+        value: value
+      }
+    });
   },
 
   reset: function() {
@@ -80,8 +100,8 @@ var Graphalyzer = React.createClass({
     } else {
       this.setState({
         graphData: {
-          nodes: data.payload.nodes,
-          edges: data.payload.edges
+          nodes: new Vis.DataSet(data.payload.nodes),
+          edges: new Vis.DataSet(data.payload.edges)
         }
       });
     }
@@ -106,7 +126,7 @@ var Graphalyzer = React.createClass({
     setTimeout(
       function () {
         if (ws.readyState === 1) {
-          if(callback != null) callback();
+          if (callback != null) callback();
           return;
         } else self.waitForWS(ws, callback);
       }, 5); // wait 5 milisecond for the connection...
@@ -180,6 +200,7 @@ var Graphalyzer = React.createClass({
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
               <GraphPanel 
+                filter={this.state.filter}
                 graphData={this.state.graphData} 
                 currentChunk={this.state.currentChunk} 
                 totalChunks={this.state.totalChunks} 
@@ -190,6 +211,8 @@ var Graphalyzer = React.createClass({
             <Col lg={3}>
               <Row>
                 <SearchPanel 
+                  clearFiltering={this.clearFiltering}
+                  filter={this.filter}
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}
