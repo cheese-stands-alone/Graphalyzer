@@ -36,6 +36,7 @@ var Graphalyzer = React.createClass({
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
       },
+      tmpGraphData: {},
       totalChunks: 0,
       currentChunk: 0,
       selectedNode: {},
@@ -76,17 +77,23 @@ var Graphalyzer = React.createClass({
 
   addDataToGraph: function(data) {
     var self = this;
-    var newNodeSet, newEdgeSet, totalNodes, totalEdges;
+    var newNodeSet, newEdgeSet;
+    if (!this.state.tmpGraphData.nodes && !this.state.tmpGraphData.edges) {
+      this.setState({
+        tmpGraphData: {
+          nodes: new Vis.DataSet(),
+          edges: new Vis.DataSet()
+        }
+      });
+    }
     if (data.message.currchunk && data.message.totalchunk) {
       if (data.payload.nodes) {
         newNodeSet = data.payload.nodes;
-        totalNodes = this.state.graphData.nodes;
-        totalNodes.add(newNodeSet);
+        this.state.tmpGraphData.nodes.add(newNodeSet);
       }
       if (data.payload.edges) {
         newEdgeSet = data.payload.edges;
-        totalEdges = this.state.graphData.edges;
-        totalEdges.add(newEdgeSet);
+        this.state.tmpGraphData.edges.add(newEdgeSet);
       }
       this.logger(
         data.message.currchunk + ' chunk(s) out of ' + 
@@ -97,6 +104,14 @@ var Graphalyzer = React.createClass({
         currentChunk: data.message.currchunk,
         totalChunks: data.message.totalchunk,
       });
+      if (this.state.currentChunk == this.state.totalChunks) {
+        this.setState({
+          graphData: {
+            nodes: self.state.tmpGraphData.nodes,
+            edges: self.state.tmpGraphData.edges
+          }
+        });
+      }
     } else {
       this.setState({
         graphData: {

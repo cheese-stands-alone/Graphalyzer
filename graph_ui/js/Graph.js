@@ -125,12 +125,7 @@ var Graph = React.createClass({
             type: 'continuous'
           }
         },
-        physics: {
-          repulsion: {
-            nodeDistance: 200,
-            springLength: 10
-          }
-        },
+        physics: false,
         interaction: {
           dragNodes: false,
         }
