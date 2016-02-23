@@ -7,11 +7,46 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Graph = require('./Graph.js');
 var Styles = require('./Styles.js');
 
 var GraphPanel = React.createClass({
+  /**
+   * Calculates the loading bar progress based 
+   * on number of chunks of graph data processed.
+   */
+  calculateLoadingBarProgress: function() {
+    if (this.props.totalChunks) {
+      var maxWidth = 496;
+      var minWidth = 20;
+      console.log(this.props.currentChunks);
+      console.log(this.props.totalChunks);
+      var widthFactor = parseInt(this.props.currentChunks) / parseInt(this.props.totalChunks);
+      console.log(widthFactor);
+      var width = Math.max(minWidth, maxWidth * widthFactor);
+      var text = Math.round(width * 100);
+      console.log(text);
+      var result = {
+        width: width,
+        text: text
+      };
+      return result;
+    } else {
+      var result = {
+        width: 0,
+        text: '0%'
+      };
+      return result;
+    }
+  },
+
   render: function() {
+    var progress = this.calculateLoadingBarProgress();
+    var percentageText = progress.text;
+    var barWidth = progress.width;
+    var barStyle = Styles.barStyle;
+    barStyle.width = barWidth;
     return (
       <div>
         <Graph 
@@ -22,9 +57,9 @@ var GraphPanel = React.createClass({
         />
         <div id='loadingBar' style={Styles.loadingBarStyle}>
           <div className='outerBorder' style={Styles.outerBorderStyle}>
-            <div id='text' style={Styles.textStyle}>0%</div>
+            <div ref='text' id='text' style={Styles.textStyle}>{percentageText}</div>
             <div id='border' style={Styles.borderStyle}>
-                <div id='bar' style={Styles.barStyle} />
+                <div ref='bar' id='bar' style={barStyle} />
             </div>
           </div>
         </div>
