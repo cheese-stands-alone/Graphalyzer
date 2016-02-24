@@ -44,6 +44,17 @@ var GraphPanel = React.createClass({
     var barWidth = progress.width;
     var barStyle = Styles.barStyle;
     barStyle.width = barWidth;
+    var loadingBar;
+    if ((this.props.currentChunk == 0 && this.props.totalChunks == 0) || percentageText == '100%') {
+      loadingBar = null;
+    }
+    else {
+      loadingBar = 
+        <LoadingBar
+          barStyle={barStyle}
+          percentageText={percentageText}
+        />;
+    }
     return (
       <div>
         <Graph 
@@ -52,10 +63,7 @@ var GraphPanel = React.createClass({
           logger={this.props.logger} 
           updateSelectedNode={this.props.updateSelectedNode}
         />
-        <LoadingBar
-          barStyle={barStyle}
-          percentageText={percentageText}
-        />
+        {loadingBar}
       </div>
     );
   }

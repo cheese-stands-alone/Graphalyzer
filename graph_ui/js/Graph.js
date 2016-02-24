@@ -125,7 +125,6 @@ var Graph = React.createClass({
             type: 'continuous'
           }
         },
-        physics: false,
         interaction: {
           dragNodes: false,
         }
