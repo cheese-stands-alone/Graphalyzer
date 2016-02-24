@@ -69,6 +69,7 @@ var Graphalyzer = React.createClass({
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
       },
+      tmpGraphData: {},
       totalChunks: 0,
       currentChunk: 0,
       selectedNode: {}
