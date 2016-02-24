@@ -111,6 +111,7 @@ var Graph = React.createClass({
     return {
       options: {
         nodes: {
+          color: '#97C2FC',
           shape: 'dot',
           size: 10
         },
@@ -121,15 +122,7 @@ var Graph = React.createClass({
             }
           },
           color: '#848484',
-          smooth: {
-            type: 'continuous'
-          }
-        },
-        physics: {
-          repulsion: {
-            nodeDistance: 200,
-            springLength: 10
-          }
+          smooth: false
         },
         interaction: {
           dragNodes: false,
