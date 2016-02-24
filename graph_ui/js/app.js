@@ -208,7 +208,6 @@ var Graphalyzer = React.createClass({
   },
 
   render: function() {
-    console.log(this.state.currentChunk);
     return (
       <Grid>
         <Col lg={12}>

@@ -20,13 +20,9 @@ var GraphPanel = React.createClass({
     if (this.props.totalChunks) {
       var maxWidth = 496;
       var minWidth = 20;
-      console.log(this.props.currentChunks);
-      console.log(this.props.totalChunks);
-      var widthFactor = parseInt(this.props.currentChunks) / parseInt(this.props.totalChunks);
-      console.log(widthFactor);
+      var widthFactor = parseInt(this.props.currentChunk) / parseInt(this.props.totalChunks);
       var width = Math.max(minWidth, maxWidth * widthFactor);
-      var text = Math.round(width * 100);
-      console.log(text);
+      var text = Math.round(widthFactor * 100) + '%';
       var result = {
         width: width,
         text: text
