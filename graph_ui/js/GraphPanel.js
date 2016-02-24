@@ -9,6 +9,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Graph = require('./Graph.js');
+var LoadingBar = require('./LoadingBar.js');
 var Styles = require('./Styles.js');
 
 var GraphPanel = React.createClass({
@@ -51,14 +52,10 @@ var GraphPanel = React.createClass({
           logger={this.props.logger} 
           updateSelectedNode={this.props.updateSelectedNode}
         />
-        <div id='loadingBar' style={Styles.loadingBarStyle}>
-          <div className='outerBorder' style={Styles.outerBorderStyle}>
-            <div ref='text' id='text' style={Styles.textStyle}>{percentageText}</div>
-            <div id='border' style={Styles.borderStyle}>
-                <div ref='bar' id='bar' style={barStyle} />
-            </div>
-          </div>
-        </div>
+        <LoadingBar
+          barStyle={barStyle}
+          percentageText={percentageText}
+        />
       </div>
     );
   }

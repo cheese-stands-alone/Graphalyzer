@@ -105,6 +105,7 @@ var Graphalyzer = React.createClass({
         totalChunks: data.message.totalchunk,
       });
       if (this.state.currentChunk == this.state.totalChunks) {
+        this.logger('Begin drawing graph');
         this.setState({
           graphData: {
             nodes: self.state.tmpGraphData.nodes,
@@ -113,6 +114,7 @@ var Graphalyzer = React.createClass({
         });
       }
     } else {
+      this.logger('Begin drawing graph');
       this.setState({
         graphData: {
           nodes: new Vis.DataSet(data.payload.nodes),
@@ -181,7 +183,6 @@ var Graphalyzer = React.createClass({
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
       else if (action == 'getgraph' || action == 'getgraphchunk') {
-        this.logger('Begin drawing graph');
         this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
         this.logger('List of graphs received');

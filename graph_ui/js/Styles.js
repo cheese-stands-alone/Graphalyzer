@@ -3,7 +3,7 @@ var Styles = {
     position:'relative',
     top:'400px',
     width:'600px',
-    height:'44px',
+    height:'60px',
     margin:'auto auto auto auto',
     border:'8px solid rgba(0,0,0,0.1)',
     background: 'rgb(252,252,252)', /* Old browsers */
