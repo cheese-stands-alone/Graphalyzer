@@ -126,6 +126,7 @@ var Graph = React.createClass({
           color: '#848484',
           smooth: false
         },
+        physics: false,
         interaction: {
           dragNodes: false,
         }
