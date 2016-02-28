@@ -1,10 +1,12 @@
 from websocketserver.handlers.HandlerFactory import *
 import gc
 import logging
+import threading
 
 
 class GraphalyzerServerProtocol(WebSocketServerProtocol):
     """Class to represent websocket server."""
+
     def onConnect(self, request):
         logging.info("Client connecting: {}".format(request.peer))
 
@@ -18,13 +20,14 @@ class GraphalyzerServerProtocol(WebSocketServerProtocol):
         """Method to recieve file. Rejects binary ones."""
         if isbinary:
             response = ErrorHandler(
-                "Error received binary message: Not supported", "")
+                    "Error received binary message: Not supported", "")
             response.handle(self)
         else:
             # Use factory to determin request type and handle it.
             handler = HandlerFactory.makehandler(payload.decode('utf8'))
             try:
-                handler.handle(self)
+                thread = threading.Thread(target=handler.handle, args=(self, ))
+                thread.start()
             except:
                 return
             gc.collect()
