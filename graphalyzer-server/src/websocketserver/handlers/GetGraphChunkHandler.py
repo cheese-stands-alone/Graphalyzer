@@ -5,7 +5,7 @@ from py2neo import Graph
 import math
 import logging
 import concurrent
-
+import threading
 
 class GetGraphChunkHandler(HandleInterface):
     """Class to handle sending whole graph to client."""
@@ -21,15 +21,8 @@ class GetGraphChunkHandler(HandleInterface):
         jsonmsg = {}
         graph = {}
 
-        #Check if nodes or edges are empty and correct the json of they are not.
-        if(nodes != ""):
-            nodes = nodes[:-1]
-            nodes += "]"
-            graph["nodes"] = json.loads(nodes)
-        if(edges != ""):
-            edges = edges[:-1]
-            edges += "]"
-            graph["edges"] = json.loads(edges)
+        graph["nodes"] = nodes
+        graph["edges"] = edges
 
         jsonmsg["message_id"] = "".join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in
@@ -50,87 +43,102 @@ class GetGraphChunkHandler(HandleInterface):
                                       separators=(',', ':')).encode('utf8'))
 
     def __getGraphCount(self, socket, chunksize, graphid):
-        neo4j = Graph()
-        query = "START n=node(*) MATCH n WHERE n.graphid='" \
-                + graphid + "' RETURN COUNT(n)"
-        for record in neo4j.cypher.execute(query):
-            nodenum = record[0]
-        query = "START n=node(*) MATCH (n {graphid:'" + graphid \
-                + "'})-[r{graphid:'" + graphid + "'}]->(m{graphid:'" \
-                + graphid + "'}) RETURN COUNT(r)"
-        for record in neo4j.cypher.execute(query):
-            edgenum = record[0]
-        total = int(nodenum) + int(edgenum)
-        return int(math.ceil(total/chunksize))
+        try:
+            neo4j = Graph()
+            query = "START n=node(*) MATCH n WHERE n.graphid='" \
+                    + graphid + "' RETURN COUNT(n)"
+            for record in neo4j.cypher.execute(query):
+                nodenum = int(math.ceil(int(record[0])/chunksize))
+            query = "START n=node(*) MATCH (n {graphid:'" + graphid \
+                    + "'})-[r{graphid:'" + graphid + "'}]->(m{graphid:'" \
+                    + graphid + "'}) RETURN COUNT(r)"
+            for record in neo4j.cypher.execute(query):
+                edgenum = int(math.ceil(int(record[0])/chunksize))
+            return nodenum + edgenum
+        except Exception:
+            logging.error("Unable to connect to neo4j")
+            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
+            return
 
-    def __queryNeo4J(self, query):
-        neo4j = Graph()
-        return neo4j.cypher.stream(query)
+    def __sendNodes(self, socket, chunksize, cont, numofchunks):
+        graphid = self._payload
+        try:
+            neo4j = Graph()
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+                query = "MATCH n WHERE n.graphid='" + graphid + "' RETURN n"
+
+                print("start")
+
+                nodes = []
+
+                for record in neo4j.cypher.stream(query):
+                    dict = {}
+                    for key in record[0].properties:
+                        if key == "graphid":
+                            continue
+                        dict[key] = record[0].properties[key]
+                    nodes.append(dict)
+                    if(len(nodes) >= chunksize):
+                        executor.submit(self.__send, socket, nodes, [], str(cont), str(numofchunks))
+                        nodes = []
+                if(len(nodes) < 1):
+                    return
+                executor.submit(self.__send, socket, nodes, [], str(cont), str(numofchunks))
+                cont = cont + 1
+        except Exception as ex:
+            print(ex)
+            logging.error("Unable to connect to neo4j")
+            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
+            return
+
+    def __sendEdges(self, socket, chunksize, cont, numofchunks):
+        graphid = self._payload
+        try:
+            neo4j = Graph()
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+                query = "MATCH ({graphid:'" + graphid + "'})-[r]->() RETURN r;"
+                print(query)
+                edges = []
+                print("start")
+                for record in neo4j.cypher.stream(query):
+                    dict = {}
+                    for key in record[0].properties:
+                        if key == "graphid":
+                            continue
+                        dict[key] = record[0].properties[key]
+                    dict["from"] = record[0].start_node.properties["id"]
+                    dict["to"] = record[0].end_node.properties["id"]
+                    edges.append(dict)
+                    if(len(edges) >= chunksize):
+                        print("here")
+                        executor.submit(self.__send, socket, [], edges, str(cont), str(numofchunks))
+                        edges = []
+                if(len(edges) < 1):
+                    return
+                executor.submit(self.__send, socket, [], edges, str(cont), str(numofchunks))
+        except Exception as ex:
+            print(ex)
+            logging.error("Unable to connect to neo4j")
+            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
+            return
 
     def handle(self, socket: WebSocketServerProtocol):
         graphid = self._payload
-        chunksize = 100
+        chunksize = 1000
+
+        import http
+
+        http.client.HTTPConnection._http_vsn = 10
+
+        http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
         if graphid == "":
             ErrorHandler("No graph specified", "").handle(socket)
             return
 
-        # noinspection PyBroadException
-        try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-                # Get total number of nodes and edges in the graph.
-                numofchunks = executor.submit(self.__getGraphCount, socket, chunksize, graphid)
-                query = "START n=node(*) MATCH n WHERE n.graphid='" \
-                    + graphid + "' RETURN n"
-                nodequery = executor.submit(self.__queryNeo4J, query)
-                query = "START n=node(*) MATCH (n {graphid:'" + graphid \
-                    + "'})-[r{graphid:'" + graphid + "'}]->(m{graphid:'" \
-                    + graphid + "'}) RETURN r"
-                edgequery = executor.submit(self.__queryNeo4J, query)
-
-            nodes = "["
-            edges = "["
-            currchunk = 1
-            counter = 0
-
-            for record in nodequery.result():
-                nodes += "{"
-                for key in record[0].properties:
-                    if key == "graphid":
-                        continue
-                    nodes += "\"" + key + "\":\"" + record[0].properties[key] \
-                             + "\","
-                nodes = nodes[:-1]
-                nodes += "},"
-                counter += 1
-                if(counter >= chunksize):
-                    self.__send(socket, nodes, "", str(currchunk), str(numofchunks.result()))
-                    currchunk += 1
-                    nodes = "["
-                    counter = 0
-            if(nodes == "["):
-                nodes = ""
-            for record in edgequery.result():
-                edges += "{"
-                for key in record[0].properties:
-                    if key == "graphid":
-                        continue
-                    edges += "\"" + key + "\":\"" + record[0].properties[key] \
-                             + "\","
-                edges += "\"from\":\"" + \
-                         record[0].start_node.properties["id"] + \
-                         "\",\"to\":\"" + record[0].end_node.properties["id"] \
-                         + "\"},"
-                counter += 1
-                if(counter >= chunksize):
-                    self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
-                    currchunk += 1
-                    edges = "["
-                    nodes = ""
-                    counter = 0
-                    # Send final chunk
-            self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
-        except Exception:
-            logging.error("Unable to connect to neo4j")
-            ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
-            return
+        numofchunks = self.__getGraphCount(socket, chunksize, graphid)
+        cont = 0
+        a = threading.Thread(target=self.__sendEdges, args=(socket, chunksize, cont, numofchunks, ))
+        b = threading.Thread(target=self.__sendNodes, args=(socket, chunksize, cont, numofchunks, ))
+        a.start()
+        b.start()

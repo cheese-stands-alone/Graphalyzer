@@ -19,7 +19,7 @@ def start_websocket_server():
     asyncio.set_event_loop(loop)
 
     factory = WebSocketServerFactory(
-        u"ws://127.0.0.1:" + str(PORT) + "/" + WS_URL, DEBUG)
+        u"ws://127.0.0.1:" + str(PORT) + "/" + WS_URL, debug=False)
     factory.protocol = GraphalyzerServerProtocol
 
     coro = loop.create_server(factory, '0.0.0.0', PORT)
