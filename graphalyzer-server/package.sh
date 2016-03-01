@@ -5,6 +5,7 @@ cd temp
 pip install --target=. autobahn
 pip install --target=. py2neo
 pip install --target=. flask
+pip install --target=. bloac
 zip -r ${APP} *
 cp ${APP}.zip ../${APP}
 rm -Rf ../temp

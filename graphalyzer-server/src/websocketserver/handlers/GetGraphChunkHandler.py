@@ -6,6 +6,7 @@ import math
 import logging
 import concurrent
 import threading
+import blosc
 
 class GetGraphChunkHandler(HandleInterface):
     """Class to handle sending whole graph to client."""
@@ -18,6 +19,7 @@ class GetGraphChunkHandler(HandleInterface):
 
     """Sends data to frontend. Specificly built for chuncking"""
     def __send(self, socket: WebSocketServerProtocol, nodes, edges, cur, total):
+        print("send")
         jsonmsg = {}
         graph = {}
 
@@ -39,8 +41,9 @@ class GetGraphChunkHandler(HandleInterface):
         message["totalchunk"] = total
         jsonmsg["message"] = message
 
-        socket.sendMessage(json.dumps(jsonmsg,
-                                      separators=(',', ':')).encode('utf8'))
+        data = blosc.compress(json.dumps(jsonmsg, separators=(',', ':')).encode('utf8'), typesize=8, cname='lz4hc')
+
+        socket.sendMessage(data)
 
     def __getGraphCount(self, socket, chunksize, graphid):
         try:
@@ -66,17 +69,13 @@ class GetGraphChunkHandler(HandleInterface):
             neo4j = Graph()
             with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
                 query = "MATCH n WHERE n.graphid='" + graphid + "' RETURN n"
-
                 print("start")
-
                 nodes = []
-
                 for record in neo4j.cypher.stream(query):
                     dict = {}
                     for key in record[0].properties:
-                        if key == "graphid":
-                            continue
                         dict[key] = record[0].properties[key]
+                    del dict["graphid"]
                     nodes.append(dict)
                     if(len(nodes) >= chunksize):
                         executor.submit(self.__send, socket, nodes, [], str(cont), str(numofchunks))
@@ -96,21 +95,18 @@ class GetGraphChunkHandler(HandleInterface):
         try:
             neo4j = Graph()
             with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-                query = "MATCH ({graphid:'" + graphid + "'})-[r]->() RETURN r;"
-                print(query)
+                query = "MATCH (par{graphid:'" + graphid + "'})-[rel]->(cld) RETURN par, rel, cld;"
                 edges = []
                 print("start")
                 for record in neo4j.cypher.stream(query):
                     dict = {}
-                    for key in record[0].properties:
-                        if key == "graphid":
-                            continue
-                        dict[key] = record[0].properties[key]
-                    dict["from"] = record[0].start_node.properties["id"]
-                    dict["to"] = record[0].end_node.properties["id"]
+                    for key in record[1].properties:
+                        dict[key] = record[1].properties[key]
+                    del dict["graphid"]
+                    dict["from"] = record[0].properties["id"]
+                    dict["to"] = record[2].properties["id"]
                     edges.append(dict)
                     if(len(edges) >= chunksize):
-                        print("here")
                         executor.submit(self.__send, socket, [], edges, str(cont), str(numofchunks))
                         edges = []
                 if(len(edges) < 1):
@@ -125,12 +121,6 @@ class GetGraphChunkHandler(HandleInterface):
     def handle(self, socket: WebSocketServerProtocol):
         graphid = self._payload
         chunksize = 1000
-
-        import http
-
-        http.client.HTTPConnection._http_vsn = 10
-
-        http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
         if graphid == "":
             ErrorHandler("No graph specified", "").handle(socket)
