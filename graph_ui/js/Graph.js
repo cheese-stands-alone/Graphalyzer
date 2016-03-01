@@ -35,36 +35,94 @@ var Graph = React.createClass({
       switch (this.props.filter.option) {
         case 'Remove Nodes Without':
           for (var nodeID in nodeIDs) {
-            if (this.props.graphData.nodes.get(nodeID)[property])
-              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
-            else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+            if (this.props.graphData.nodes.get(nodeID)[property]) {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'red'
+              });
+            }
+            else {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'rgba(150, 150, 150, 0.50)'
+              });
+            }
           }
+          break;
+        case 'Pattern Match':
+          for (var nodeID in nodeIDs) {
+            // First we check if each node contains the property, otherwise it is also filtered out
+            var propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+            if (propertyToFilter) {
+              if (propertyToFilter.match(this.props.filter.value)) {
+                this.props.graphData.nodes.update({
+                  id: nodeID, 
+                  color: 'red'
+                });
+              }
+              else {
+                this.props.graphData.nodes.update({
+                  id: nodeID, 
+                  color: 'rgba(150, 150, 150, 0.50)'
+                });
+              }
+            } else {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'rgba(150, 150, 150, 0.50)'
+              });
+            }
+          }
+          break;
         case '>':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) > this.props.filter.value)
-              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
-            else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+            if (parseInt(propertyToFilter) > this.props.filter.value) {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'red'
+              });
+            }
+            else {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'rgba(150, 150, 150, 0.50)'
+              });
+            }
           }
           break;
         case '=':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) == this.props.filter.value)
-              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
-            else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+            if (parseInt(propertyToFilter) == this.props.filter.value) {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'red'
+              });
+            }
+            else { 
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'rgba(150, 150, 150, 0.50)'
+              });
+            }
           }
           break;
         case '<':
           for (var nodeID in nodeIDs) {
             propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) < this.props.filter.value)
-              this.props.graphData.nodes.update({id: nodeID, color: 'red'});
-            else 
-              this.props.graphData.nodes.update({id: nodeID, color: 'rgba(150,150,150,0.50)'});
+            if (parseInt(propertyToFilter) < this.props.filter.value) {
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'red'
+              });
+            }
+            else { 
+              this.props.graphData.nodes.update({
+                id: nodeID, 
+                color: 'rgba(150, 150, 150, 0.50)'
+              });
+            }
           }
           break;
         default:
