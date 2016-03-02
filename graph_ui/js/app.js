@@ -9,6 +9,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Vis = require('vis');
+var Buffer = require('buffer').Buffer;
+var lz4 = require('lz4');
 var ReactBootstrap = require('react-bootstrap'),
     GraphalyzerPanel = ReactBootstrap.Panel,
     Grid = ReactBootstrap.Grid,
@@ -19,11 +21,14 @@ var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 
+var websocket = new WebSocket('ws://rwhite226.duckdns.org:1618/ws');
+websocket.binaryType = 'arraybuffer';
+
 var Graphalyzer = React.createClass({
 
   getDefaultProps: function() {
     return {
-      websocket: new WebSocket('ws://rwhite226.duckdns.org:1618/ws')
+      websocket: websocket
     };
   },
 
@@ -175,25 +180,38 @@ var Graphalyzer = React.createClass({
   handleWSMessage: function(event) {
     this.logger('Message received from server');
     var response = event.data;
+    var action;
+
     if (response !== null) {
-      var responseJSON = JSON.parse(response);
-      if (responseJSON.error) {
-        this.logger('Server returned error: ' + responseJSON.error);
-        return;
+      if (response instanceof ArrayBuffer) {
+        var output = lz4.decode(response);
+        var responseJSON = JSON.parse(output);
+        action = responseJSON.message.client_request_type;
+        if (action == 'getgraph' || action == 'getgraphchunk')
+          this.addDataToGraph(responseJSON);
+        else {
+          this.logger('Error parsing binary data');
+        }
+      } else {
+        var responseJSON = JSON.parse(response);
+        if (responseJSON.error) {
+          this.logger('Server returned error: ' + responseJSON.error);
+          return;
+        }
+        action = responseJSON.message.client_request_type;
+        if (action == 'error') return;
+        else if (action == 'getgraph' || action == 'getgraphchunk') {
+          this.addDataToGraph(responseJSON);
+        } else if (action == 'listgraphs') {
+          this.logger('List of graphs received');
+          this.setState({
+            graphList: responseJSON.payload
+          });
+        } else if (action == 'newid') {
+          this.logger('New ID received from server');
+          this.setState({id: responseJSON.payload});
+        } else return;      
       }
-      var action = responseJSON.message.client_request_type;
-      if (action == 'error') return;
-      else if (action == 'getgraph' || action == 'getgraphchunk') {
-        this.addDataToGraph(responseJSON);
-      } else if (action == 'listgraphs') {
-        this.logger('List of graphs received');
-        this.setState({
-          graphList: responseJSON.payload
-        });
-      } else if (action == 'newid') {
-        this.logger('New ID received from server');
-        this.setState({id: responseJSON.payload});
-      } else return;
     }
   },
 
