@@ -6,7 +6,7 @@ import math
 import logging
 import concurrent
 import threading
-import blosc
+import lz4
 
 class GetGraphChunkHandler(HandleInterface):
     """Class to handle sending whole graph to client."""
@@ -19,7 +19,6 @@ class GetGraphChunkHandler(HandleInterface):
 
     """Sends data to frontend. Specificly built for chuncking"""
     def __send(self, socket: WebSocketServerProtocol, nodes, edges, cur, total):
-        print("send")
         jsonmsg = {}
         graph = {}
 
@@ -41,7 +40,7 @@ class GetGraphChunkHandler(HandleInterface):
         message["totalchunk"] = total
         jsonmsg["message"] = message
 
-        data = blosc.compress(json.dumps(jsonmsg, separators=(',', ':')).encode('utf8'), typesize=8, cname='lz4hc')
+        data = lz4.dumps((json.dumps(jsonmsg, separators=(',', ':')).encode('utf8')))
 
         socket.sendMessage(data)
 
@@ -69,7 +68,6 @@ class GetGraphChunkHandler(HandleInterface):
             neo4j = Graph()
             with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
                 query = "MATCH n WHERE n.graphid='" + graphid + "' RETURN n"
-                print("start")
                 nodes = []
                 for record in neo4j.cypher.stream(query):
                     dict = {}
@@ -97,7 +95,6 @@ class GetGraphChunkHandler(HandleInterface):
             with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
                 query = "MATCH (par{graphid:'" + graphid + "'})-[rel]->(cld) RETURN par, rel, cld;"
                 edges = []
-                print("start")
                 for record in neo4j.cypher.stream(query):
                     dict = {}
                     for key in record[1].properties:
@@ -120,7 +117,7 @@ class GetGraphChunkHandler(HandleInterface):
 
     def handle(self, socket: WebSocketServerProtocol):
         graphid = self._payload
-        chunksize = 1000
+        chunksize = 10000
 
         if graphid == "":
             ErrorHandler("No graph specified", "").handle(socket)
