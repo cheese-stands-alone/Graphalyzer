@@ -1,6 +1,6 @@
 /**
  * app.js
- * 
+ *
  * @author Andrew Bowler, Alberto Gomez-Estrada, Taylor Welter
  */
 
@@ -63,6 +63,16 @@ var Graphalyzer = React.createClass({
     });
   },
 
+  filterDataSet: function(propertySet, optionSet, valueSet) {
+    this.setState({
+      filter: {
+        property: property,
+        option: option,
+        value: value
+      }
+    });
+  },
+
   reset: function() {
     this.setState({
       graphData: {
@@ -97,8 +107,8 @@ var Graphalyzer = React.createClass({
         this.state.tmpGraphData.edges.add(newEdgeSet);
       }
       this.logger(
-        data.message.currchunk + ' chunk(s) out of ' + 
-        data.message.totalchunk + 
+        data.message.currchunk + ' chunk(s) out of ' +
+        data.message.totalchunk +
         ' received.'
       );
       this.setState({
@@ -127,14 +137,14 @@ var Graphalyzer = React.createClass({
 
   logger: function(message) {
     var date = new Date();
-    console.log('[' + 
-      date.getUTCFullYear() + '-' + 
-      date.getUTCMonth() + '-' + 
-      date.getUTCDate() + ' ' + 
-      date.getUTCHours() + ':' + 
-      date.getUTCMinutes() + ':' + 
-      date.getUTCSeconds() + ':' + 
-      date.getUTCMilliseconds() + ']  ' + 
+    console.log('[' +
+      date.getUTCFullYear() + '-' +
+      date.getUTCMonth() + '-' +
+      date.getUTCDate() + ' ' +
+      date.getUTCHours() + ':' +
+      date.getUTCMinutes() + ':' +
+      date.getUTCSeconds() + ':' +
+      date.getUTCMilliseconds() + ']  ' +
       message
     );
   },
@@ -158,7 +168,7 @@ var Graphalyzer = React.createClass({
   },
 
   getGraphList: function(data) {
-    var request = {  
+    var request = {
       'message_id': '',
       'sender_id': '',
       'time': '',
@@ -216,20 +226,21 @@ var Graphalyzer = React.createClass({
           {this.state.wsError}
           <GraphalyzerPanel header='Graphalyzer' bsStyle='primary'>
             <Col lg={9}>
-              <GraphPanel 
+              <GraphPanel
                 filter={this.state.filter}
-                graphData={this.state.graphData} 
-                currentChunk={this.state.currentChunk} 
-                totalChunks={this.state.totalChunks} 
-                logger={this.logger} 
-                updateSelectedNode={this.updateSelectedNode} 
+                graphData={this.state.graphData}
+                currentChunk={this.state.currentChunk}
+                totalChunks={this.state.totalChunks}
+                logger={this.logger}
+                updateSelectedNode={this.updateSelectedNode}
               />
             </Col>
             <Col lg={3}>
               <Row>
-                <SearchPanel 
+                <SearchPanel
                   clearFiltering={this.clearFiltering}
                   filter={this.filter}
+                  filterDataSet={this.filterDataSet}
                   graphList={this.state.graphList}
                   getGraphList={this.getGraphList}
                   logger={this.logger}
@@ -238,9 +249,9 @@ var Graphalyzer = React.createClass({
                 />
               </Row>
               <Row>
-                <NodePropertiesPanel 
+                <NodePropertiesPanel
                   logger={this.logger}
-                  selectedNode={this.state.selectedNode} 
+                  selectedNode={this.state.selectedNode}
                 />
               </Row>
             </Col>

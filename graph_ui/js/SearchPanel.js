@@ -21,6 +21,7 @@ var ReactBootstrap = require('react-bootstrap'),
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
+	  this.counter = 0;
     return {
       nodeName: '',
       filterOption: 'none',
@@ -34,7 +35,7 @@ var SearchPanel = React.createClass({
 
   getGraph: function(key) {
     var self = this;
-    var request = {  
+    var request = {
       'message_id': '',
       'sender_id': '',
       'time': '',
@@ -46,7 +47,7 @@ var SearchPanel = React.createClass({
     };
 
     this.props.logger(
-      'Requesting graph ' 
+      'Requesting graph '
       + '\'' + this.props.graphList[key].Graph + '\''
     );
     this.props.sendWebSocketMessage(request);
@@ -67,12 +68,31 @@ var SearchPanel = React.createClass({
     });
   },
 
+  addFilter: function() {
+	  this.counter = this.counter + 1;
+/*	this.addNewFilter = true;
+	console.log(this.addNewFilter);
+	React.render();*/
+	this.forceUpdate();
+  },
+
+  clearFilter: function() {
+	  this.counter = 0;
+/*	this.addNewFilter = true;
+	console.log(this.addNewFilter);
+	React.render();*/
+    this.props.clearFiltering;
+
+  	this.forceUpdate();
+  },
+
   render: function() {
     var errPanel;
     var graphDropdown;
     var graphs = [];
+	var filterSet = [];
     if (this.state.searchErr) errPanel = <SearchErrorPanel message={this.state.searchErrMessage} />;
-
+//console.log(clearFiltering);
     if (this.props.graphList) {
       for (var i = 0; i < this.props.graphList.length; i++) {
         graphs.push(
@@ -80,7 +100,47 @@ var SearchPanel = React.createClass({
         );
       }
     } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
-	
+
+	  for (var i = 0; i < this.counter; i++) {
+		    var propRef = 'filterProperty' + i;
+			var opRef = 'filterOption' + i;
+			var valRef = 'filterValue' + i;
+        filterSet.push(
+          <Input
+          key={propRef}
+					type='text'
+					placeholder='Filter Property'
+					ref={propRef}
+					value={this.state.filterProperty}
+					onChange={this.updateFields}
+				  />
+		);
+		filterSet.push(
+				  <Input
+          key={opRef}
+					type='select'
+					onChange={this.updateFields}
+					ref={opRef}>
+					<option value='Remove Nodes Without'>Remove Nodes Without</option>
+					<option value='Pattern Match'>Pattern Match</option>
+					<option value='>'>&gt;</option>
+					<option value='<'>&lt;</option>
+					<option value='='>=</option>
+				  </Input>
+		);
+		filterSet.push(
+				  <Input
+          key={valRef}
+					type='text'
+					placeholder='Filter Value'
+					ref={valRef}
+					value={this.state.filterValue}
+					onChange={this.updateFields}
+				  />
+        );
+      }
+
+
     var self = this;
     return (
       <div>
@@ -101,8 +161,8 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <ButtonGroup>
                 <DropdownButton
-                  onSelect={function(event, eventKey) {self.getGraph(eventKey);}} 
-                  id='graph-list-dropdown' 
+                  onSelect={function(event, eventKey) {self.getGraph(eventKey);}}
+                  id='graph-list-dropdown'
                   title='Select a graph'>
                   {graphs}
                 </DropdownButton>
@@ -110,49 +170,56 @@ var SearchPanel = React.createClass({
               </ButtonGroup>
             </ListGroupItem>
             <ListGroupItem>
-              <Input 
-                type='text' 
-                placeholder='Node Name' 
-                ref='nodeName' 
-                value={this.state.nodeName} 
+              <Input
+                type='text'
+                placeholder='Node Name'
+                ref='nodeName'
+                value={this.state.nodeName}
                 onChange={this.updateFields}
               />
             </ListGroupItem>
             <ListGroupItem>
-              <Input 
-                type='text' 
-                placeholder='Filter Property' 
-                ref='filterProperty' 
-                value={this.state.filterProperty} 
-                onChange={this.updateFields}
-              />
-              <Input
-                type='select'
-                onChange={this.updateFields}
-                ref='filterOption'>
-                <option value='Remove Nodes Without'>Remove Nodes Without</option>
-                <option value='Pattern Match'>Pattern Match</option>
-                <option value='>'>&gt;</option>
-                <option value='<'>&lt;</option>
-                <option value='='>=</option>
-              </Input>
-              <Input 
-                type='text' 
-                placeholder='Filter Value' 
-                ref='filterValue' 
-                value={this.state.filterValue} 
-                onChange={this.updateFields}
-              />
+				  <Input
+					type='text'
+					placeholder='Filter Property'
+					ref='filterProperty'
+					value={this.state.filterProperty}
+					onChange={this.updateFields}
+				  />
+				  <Input
+					type='select'
+					onChange={this.updateFields}
+					ref='filterOption'>
+					<option value='Remove Nodes Without'>Remove Nodes Without</option>
+					<option value='Pattern Match'>Pattern Match</option>
+					<option value='>'>&gt;</option>
+					<option value='<'>&lt;</option>
+					<option value='='>=</option>
+				  </Input>
+				  <Input
+					type='text'
+					placeholder='Filter Value'
+					ref='filterValue'
+					value={this.state.filterValue}
+					onChange={this.updateFields}
+				  />
+				  {filterSet}
               <ButtonGroup>
-                <Button 
+			    <Button
+                  bsStyle='success'
+                  onClick={
+					  this.addFilter
+                  }>Add New Filter
+                </Button>
+                <Button
                   bsStyle='success'
                   onClick={
                     this.props.filter.bind(null, this.state.filterProperty, this.state.filterOption, this.state.filterValue)
                   }>Filter
                 </Button>
-                <Button 
-                  bsStyle='success' 
-                  onClick={this.props.clearFiltering
+                <Button
+                  bsStyle='success'
+                  onClick={this.clearFilter
                   }>Clear Filter
                 </Button>
               </ButtonGroup>
