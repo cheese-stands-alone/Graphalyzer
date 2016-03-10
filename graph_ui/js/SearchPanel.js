@@ -21,12 +21,11 @@ var ReactBootstrap = require('react-bootstrap'),
 
 var SearchPanel = React.createClass({
   getInitialState: function() {
-	  this.counter = 0;
     return {
       nodeName: '',
-      filterOption: 'none',
-      filterProperty: '',
-      filterValue: '',
+      filterOptionArray: ['none'],
+      filterPropertyArray: [''],
+      filterValueArray: [''],
       request_type: 'getgraph',
       searchErr: false,
       searchErrMessage: ''
@@ -57,8 +56,10 @@ var SearchPanel = React.createClass({
     this.props.getGraphList();
   },
 
-  updateFields: function() {
+  updateFields: function(key) {
     var self = this;
+
+      //TODO
     this.setState({
       filterOption: self.refs.filterOption.getValue(),
       filterProperty: self.refs.filterProperty.getValue(),
@@ -69,18 +70,11 @@ var SearchPanel = React.createClass({
   },
 
   addFilter: function() {
-	  this.counter = this.counter + 1;
-/*	this.addNewFilter = true;
-	console.log(this.addNewFilter);
-	React.render();*/
-	this.forceUpdate();
+	  //TODO
   },
 
   clearFilter: function() {
-	  this.counter = 0;
-/*	this.addNewFilter = true;
-	console.log(this.addNewFilter);
-	React.render();*/
+
     this.props.clearFiltering;
 
   	this.forceUpdate();
@@ -90,9 +84,9 @@ var SearchPanel = React.createClass({
     var errPanel;
     var graphDropdown;
     var graphs = [];
-	var filterSet = [];
+	  var filterSet = [];
+  
     if (this.state.searchErr) errPanel = <SearchErrorPanel message={this.state.searchErrMessage} />;
-//console.log(clearFiltering);
     if (this.props.graphList) {
       for (var i = 0; i < this.props.graphList.length; i++) {
         graphs.push(
@@ -101,44 +95,46 @@ var SearchPanel = React.createClass({
       }
     } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
 
-	  for (var i = 0; i < this.counter; i++) {
-		    var propRef = 'filterProperty' + i;
-			var opRef = 'filterOption' + i;
-			var valRef = 'filterValue' + i;
-        filterSet.push(
-          <Input
-          key={propRef}
-					type='text'
-					placeholder='Filter Property'
-					ref={propRef}
-					value={this.state.filterProperty}
-					onChange={this.updateFields}
-				  />
-		);
-		filterSet.push(
-				  <Input
-          key={opRef}
-					type='select'
-					onChange={this.updateFields}
-					ref={opRef}>
-					<option value='Remove Nodes Without'>Remove Nodes Without</option>
-					<option value='Pattern Match'>Pattern Match</option>
-					<option value='>'>&gt;</option>
-					<option value='<'>&lt;</option>
-					<option value='='>=</option>
-				  </Input>
-		);
-		filterSet.push(
-				  <Input
-          key={valRef}
-					type='text'
-					placeholder='Filter Value'
-					ref={valRef}
-					value={this.state.filterValue}
-					onChange={this.updateFields}
-				  />
-        );
-      }
+    if (this.props.filterPropertyArray) {
+  	  for (var i = 0; i <= this.props.filterPropertyArray.length; i++) {
+  		    var propRef = 'filterProperty' + i;
+  			var opRef = 'filterOption' + i;
+  			var valRef = 'filterValue' + i;
+          filterSet.push(
+            <Input
+            key={propRef}
+  					type='text'
+  					placeholder='Filter Property'
+  					ref={propRef}
+  					value={this.state.filterPropertyArray['filterProperty' + i]}
+  					onChange={this.updateFields(propRef)}
+  				  />
+  		);
+  		filterSet.push(
+  				  <Input
+            key={opRef}
+  					type='select'
+  					onChange={this.updateFields(opRef)}
+  					ref={opRef}>
+  					<option value='Remove Nodes Without'>Remove Nodes Without</option>
+  					<option value='Pattern Match'>Pattern Match</option>
+  					<option value='>'>&gt;</option>
+  					<option value='<'>&lt;</option>
+  					<option value='='>=</option>
+  				  </Input>
+  		);
+  		filterSet.push(
+  				  <Input
+            key={valRef}
+  					type='text'
+  					placeholder='Filter Value'
+  					ref={valRef}
+  					value={this.state.filterValueArray['filterValue' + i]}
+  					onChange={this.updateFields(valRef)}
+  				  />
+          );
+        }
+    }
 
 
     var self = this;
@@ -179,30 +175,6 @@ var SearchPanel = React.createClass({
               />
             </ListGroupItem>
             <ListGroupItem>
-				  <Input
-					type='text'
-					placeholder='Filter Property'
-					ref='filterProperty'
-					value={this.state.filterProperty}
-					onChange={this.updateFields}
-				  />
-				  <Input
-					type='select'
-					onChange={this.updateFields}
-					ref='filterOption'>
-					<option value='Remove Nodes Without'>Remove Nodes Without</option>
-					<option value='Pattern Match'>Pattern Match</option>
-					<option value='>'>&gt;</option>
-					<option value='<'>&lt;</option>
-					<option value='='>=</option>
-				  </Input>
-				  <Input
-					type='text'
-					placeholder='Filter Value'
-					ref='filterValue'
-					value={this.state.filterValue}
-					onChange={this.updateFields}
-				  />
 				  {filterSet}
               <ButtonGroup>
 			    <Button

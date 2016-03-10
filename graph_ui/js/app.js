@@ -28,7 +28,9 @@ var Graphalyzer = React.createClass({
   },
 
   getInitialState: function() {
+    //TODO
     return {
+      filterList: [],
       filter: {},
       id: '',
       graphList: [],
@@ -49,6 +51,7 @@ var Graphalyzer = React.createClass({
       var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
       for (var nodeID in nodeIDs)
         this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
+        //TODO
       this.setState({filter: {}});
     }
   },
@@ -64,6 +67,7 @@ var Graphalyzer = React.createClass({
   },
 
   filterDataSet: function(propertySet, optionSet, valueSet) {
+    //TODO
     this.setState({
       filter: {
         property: property,
