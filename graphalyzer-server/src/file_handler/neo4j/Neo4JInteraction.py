@@ -16,14 +16,17 @@ class Neo4JInteraction(object):
 		# Increase timeout because it can take a really long time.
 		http.socket_timeout = 9999
 
-		query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file://" +
-		         graphlocation + "' AS line " +
-		         "MERGE (child:node {id:line.childid, graphid:\"" +
-		         graphid + "\"}) " +
-		         "MERGE (parent:node {id:line.parentid, graphid:\"" +
-		         graphid + "\"}) " +
-		         "MERGE (parent)-[rel:edge {id:line.edgeid, graphid:\"" +
-                 graphid + "\"}]->(child)")
+
+		fileURI = self.oSWrapper.getFileURI(graphlocation)
+		print(fileURI)
+		query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file:" +
+		         fileURI + "' AS line " +
+		         "MERGE (child:node {id:line.childid, graphid:'" +
+		         graphid + "'}) " +
+		         "MERGE (parent:node {id:line.parentid, graphid:'" +
+		         graphid + "'}) " +
+		         "MERGE (parent)-[rel:edge {id:line.edgeid, graphid:'" +
+                 graphid + "'}]->(child)")
 		# noinspection PyBroadException
 		try:
 			graph = Graph()
@@ -32,6 +35,7 @@ class Neo4JInteraction(object):
 			graph.cypher.execute("CREATE CONSTRAINT ON (rel:edge) ASSERT rel.id IS UNIQUE")
 			graph.cypher.execute(query)
 		except Exception:
+			print("Unexpected error:", sys.exc_info())
 			self.logger.error("Edges failed. Unable to connect to neo4j.")
 
 	def loadProp(self, graphlocation: str, graphid: str):
