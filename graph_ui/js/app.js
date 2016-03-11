@@ -30,7 +30,7 @@ var Graphalyzer = React.createClass({
   getInitialState: function() {
     //TODO
     return {
-      filterList: [],
+      filterList: {filterOptionArray: ['none'], filterPropertyArray: [''], filterValueArray: ['']},
       filter: {},
       id: '',
       graphList: [],
@@ -52,7 +52,7 @@ var Graphalyzer = React.createClass({
       for (var nodeID in nodeIDs)
         this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
         //TODO
-      this.setState({filter: {}});
+      this.setState({filter: {filterOptionArray: ['none'], filterPropertyArray: [''], filterValueArray: ['']}});
     }
   },
 

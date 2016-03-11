@@ -61,16 +61,16 @@ var SearchPanel = React.createClass({
 
       //TODO
     this.setState({
-      filterOption: self.refs.filterOption.getValue(),
-      filterProperty: self.refs.filterProperty.getValue(),
-      filterValue: self.refs.filterValue.getValue(),
+      filterOptionArray: self.refs.filterOptionArray,
+      filterPropertyArray: self.refs.filterPropertyArray,
+      filterValueArray: self.refs.filterValueArray,
       nodeName: this.refs.nodeName.getValue(),
       request_type: this.refs.request_type.getValue()
     });
   },
 
   addFilter: function() {
-	  //TODO
+	  //TODO should filter be added to list here or in app.js - probably app.js
   },
 
   clearFilter: function() {
@@ -95,26 +95,27 @@ var SearchPanel = React.createClass({
       }
     } else graphs = <MenuItem key={i} eventKey={1}>No graphs available. Please refresh.</MenuItem>;
 
-    if (this.props.filterPropertyArray) {
-  	  for (var i = 0; i <= this.props.filterPropertyArray.length; i++) {
+    if (this.props.filterList) {
+  	  for (var i = 0; i <= this.props.filterList.length; i++) {
   		    var propRef = 'filterProperty' + i;
   			var opRef = 'filterOption' + i;
   			var valRef = 'filterValue' + i;
+			//TODO should it be current state or in app.js e.g. props
           filterSet.push(
             <Input
             key={propRef}
   					type='text'
   					placeholder='Filter Property'
   					ref={propRef}
-  					value={this.state.filterPropertyArray['filterProperty' + i]}
-  					onChange={this.updateFields(propRef)}
+  					value={this.state.filterPropertyArray[i]}
+  					onChange={this.updateFields()}
   				  />
   		);
   		filterSet.push(
   				  <Input
             key={opRef}
   					type='select'
-  					onChange={this.updateFields(opRef)}
+  					onChange={this.updateFields()}
   					ref={opRef}>
   					<option value='Remove Nodes Without'>Remove Nodes Without</option>
   					<option value='Pattern Match'>Pattern Match</option>
@@ -129,8 +130,8 @@ var SearchPanel = React.createClass({
   					type='text'
   					placeholder='Filter Value'
   					ref={valRef}
-  					value={this.state.filterValueArray['filterValue' + i]}
-  					onChange={this.updateFields(valRef)}
+  					value={this.state.filterValueArray[i]}
+  					onChange={this.updateFields()}
   				  />
           );
         }
