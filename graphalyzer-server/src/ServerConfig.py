@@ -1,4 +1,4 @@
-PORT = 1618
+PORT = 80
 WS_URL = "ws"
 DEBUG = True
 LOGGERLEVEL = 10
