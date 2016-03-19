@@ -14,7 +14,7 @@ Senior Design Project
 1. Go into the graphalyzer-server directory
 2. Run package.sh.
 3. This will greate a file called ServerApp.
-4. Run python3 ./ServerApp
+4. Run `python3 ./ServerApp`
 
 ### Setting up test environment
 1. `npm install` takes care of installing Jest.
