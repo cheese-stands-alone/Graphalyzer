@@ -1,6 +1,5 @@
 # Client-side
 graph_ui/node_modules/
-graph_ui/build/
 
 .metadata*
 *.orig
@@ -18,7 +17,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/
