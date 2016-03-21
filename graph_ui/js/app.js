@@ -21,7 +21,7 @@ var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 
-var websocket = new WebSocket('ws://rwhite226.duckdns.org:1618/ws');
+var websocket = new WebSocket('ws://52.3.104.50:80/ws');
 websocket.binaryType = 'arraybuffer';
 
 var Graphalyzer = React.createClass({

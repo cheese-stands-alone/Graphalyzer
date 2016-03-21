@@ -131,6 +131,7 @@ var SearchPanel = React.createClass({
                 onChange={this.updateFields}
                 ref='filterOption'>
                 <option value='Remove Nodes Without'>Remove Nodes Without</option>
+                <option value='Pattern Match'>Pattern Match</option>
                 <option value='>'>&gt;</option>
                 <option value='<'>&lt;</option>
                 <option value='='>=</option>
