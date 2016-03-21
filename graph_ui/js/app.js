@@ -23,7 +23,7 @@ var Graphalyzer = React.createClass({
 
   getDefaultProps: function() {
     return {
-      websocket: new WebSocket('ws://localhost:80/ws')
+      websocket: new WebSocket('ws://52.3.104.50:80/ws')
     };
   },
 
