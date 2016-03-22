@@ -22,13 +22,16 @@ var ReactBootstrap = require('react-bootstrap'),
 var SearchPanel = React.createClass({
   getInitialState: function() {
     return {
-      nodeName: '',
       filterOption: 'none',
       filterProperty: '',
       filterValue: '',
       request_type: 'getgraph',
       searchErr: false,
-      searchErrMessage: ''
+      searchErrMessage: '',
+      searchOptions: {
+        key: '',
+        value: ''
+      }
     };
   },
 
@@ -62,8 +65,11 @@ var SearchPanel = React.createClass({
       filterOption: self.refs.filterOption.getValue(),
       filterProperty: self.refs.filterProperty.getValue(),
       filterValue: self.refs.filterValue.getValue(),
-      nodeName: this.refs.nodeName.getValue(),
-      request_type: this.refs.request_type.getValue()
+      request_type: self.refs.request_type.getValue(),
+      searchOptions: {
+        key: self.refs.searchKey.getValue(),
+        value: self.refs.searchValue.getValue()
+      }
     });
   },
 
@@ -112,11 +118,23 @@ var SearchPanel = React.createClass({
             <ListGroupItem>
               <Input 
                 type='text' 
-                placeholder='Node Name' 
-                ref='nodeName' 
-                value={this.state.nodeName} 
+                placeholder='Property (ID if left blank)' 
+                ref='searchKey' 
+                value={this.state.searchOptions.key} 
                 onChange={this.updateFields}
               />
+              <Input 
+                type='text'
+                placeholder='Value'
+                ref='searchValue'
+                value={this.state.searchOptions.value}
+                onChange={this.updateFields}
+              />
+              <Button 
+                bsStyle='success' 
+                onClick={this.props.searchNode.bind(null, this.state.searchOptions)}
+                >Search
+              </Button>
             </ListGroupItem>
             <ListGroupItem>
               <Input 

@@ -36,6 +36,7 @@ var Graphalyzer = React.createClass({
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
       },
+      nodeInFocus: {},
       tmpGraphData: {},
       totalChunks: 0,
       currentChunk: 0,
@@ -61,6 +62,33 @@ var Graphalyzer = React.createClass({
         value: value
       }
     });
+  },
+
+  searchNode: function(params) {
+    if (!this.state.graphData)
+      return;
+    if (params.value) {
+      var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
+      console.log(nodes);
+      for (var node in nodes) {
+        if (node.key) {
+          if (node.value == params.value) {
+            this.setState({
+              nodeInFocus: nodeID
+            });
+            console.log(this.state.nodeInFocus);
+            return;
+          }
+        } else {
+          if (node.id == params.value) {
+            this.setState({
+              nodeInFocus: nodeID
+            });
+            return;
+          }
+        }
+      }
+    }
   },
 
   reset: function() {
@@ -234,6 +262,7 @@ var Graphalyzer = React.createClass({
                   getGraphList={this.getGraphList}
                   logger={this.logger}
                   reset={this.reset}
+                  searchNode={this.searchNode}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
