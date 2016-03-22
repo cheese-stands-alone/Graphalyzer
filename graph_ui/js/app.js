@@ -65,24 +65,25 @@ var Graphalyzer = React.createClass({
   },
 
   searchNode: function(params) {
+    var key = params.key;
+    var value = params.value;
     if (!this.state.graphData)
       return;
-    if (params.value) {
+    if (value) {
       var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
-      console.log(nodes);
-      for (var node in nodes) {
-        if (node.key) {
-          if (node.value == params.value) {
+      for (var nodeID in nodes) {
+        var node = this.state.graphData.nodes.get(nodeID);
+        if (node[key]) {
+          if (node[key] == value) {
             this.setState({
-              nodeInFocus: nodeID
+              nodeInFocus: node
             });
-            console.log(this.state.nodeInFocus);
             return;
           }
         } else {
-          if (node.id == params.value) {
+          if (node.id == value) {
             this.setState({
-              nodeInFocus: nodeID
+              nodeInFocus: node
             });
             return;
           }
@@ -250,6 +251,7 @@ var Graphalyzer = React.createClass({
                 currentChunk={this.state.currentChunk} 
                 totalChunks={this.state.totalChunks} 
                 logger={this.logger} 
+                nodeInFocus={this.state.nodeInFocus}
                 updateSelectedNode={this.updateSelectedNode} 
               />
             </Col>
