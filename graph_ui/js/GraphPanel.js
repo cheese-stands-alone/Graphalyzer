@@ -61,6 +61,8 @@ var GraphPanel = React.createClass({
           filter={this.props.filter}
           graphData={this.props.graphData} 
           logger={this.props.logger} 
+          nodeInFocus={this.props.nodeInFocus}
+          updateNodeInFocus={this.props.updateNodeInFocus}
           updateSelectedNode={this.props.updateSelectedNode}
         />
         {loadingBar}

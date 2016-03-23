@@ -124,23 +124,43 @@ var Graph = React.createClass({
     }
   },
 
+  focusOnNode: function() {
+    if (this.props.nodeInFocus) {
+      var options = {
+        animation: true,
+        scale: 3.0
+      };
+      this.state.network.focus(this.props.nodeInFocus.id, options);
+      var arr = [this.props.nodeInFocus.id];
+      this.state.network.selectNodes(arr);
+      this.props.updateSelectedNode(this.props.nodeInFocus);
+    }
+  },
+
   isGraphEmpty: function() {
     return this.props.graphData.nodes.length == 0 && this.props.graphData.edges.length == 0;
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    return (this.props.graphData != nextProps.graphData) || 
+      return (this.props.graphData != nextProps.graphData) ||
       (this.props.filter != nextProps.filter) || 
-      (this.props.totalChunks != nextProps.currentChunk);
+      (this.props.totalChunks != nextProps.currentChunk) ||
+      (this.props.nodeInFocus != nextProps.nodeInFocus);
   },
 
   componentDidUpdate: function() {
-    this.state.network.setData({
-      nodes: this.props.graphData.nodes,
-      edges: this.props.graphData.edges
-    });
+    if (this.props.graphData != this.state.oldData) {
+      this.setState({
+        oldData: this.props.graphData
+      });
+      this.state.network.setData({
+        nodes: this.props.graphData.nodes,
+        edges: this.props.graphData.edges
+      });
+    }
 
     this.doFilter();
+    this.focusOnNode();
 
     this.state.network.on('selectNode', function(event) {
       var nodeID = event.nodes[0];
@@ -150,6 +170,8 @@ var Graph = React.createClass({
 
     this.state.network.on('deselectNode', function(event) {
       this.props.updateSelectedNode({});
+      this.props.updateNodeInFocus({});
+      this.state.network.releaseNode();
     }.bind(this));
 
     // Called when Vis is finished drawing the graph
@@ -187,7 +209,8 @@ var Graph = React.createClass({
 
   getInitialState: function() {
     return {
-      network: {}
+      network: {},
+      oldData: {}
     };
   },
 

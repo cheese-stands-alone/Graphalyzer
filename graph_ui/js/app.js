@@ -36,7 +36,7 @@ var Graphalyzer = React.createClass({
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
       },
-      nodeInFocus: {},
+      nodeInFocus: null,
       tmpGraphData: {},
       totalChunks: 0,
       currentChunk: 0,
@@ -64,28 +64,31 @@ var Graphalyzer = React.createClass({
     });
   },
 
+  updateNodeInFocus: function(node) {
+    this.setState({
+      nodeInFocus: node
+    });
+  },
+
   searchNode: function(params) {
-    var key = params.key;
-    var value = params.value;
     if (!this.state.graphData)
       return;
+    var key = params.key;
+    var value = params.value;
+    var nodeInFocus;
     if (value) {
       var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
       for (var nodeID in nodes) {
         var node = this.state.graphData.nodes.get(nodeID);
         if (node[key]) {
           if (node[key] == value) {
-            this.setState({
-              nodeInFocus: node
-            });
-            return;
+            this.updateNodeInFocus(node);
+            break;
           }
         } else {
           if (node.id == value) {
-            this.setState({
-              nodeInFocus: node
-            });
-            return;
+            this.updateNodeInFocus(node);
+            break;
           }
         }
       }
@@ -252,6 +255,7 @@ var Graphalyzer = React.createClass({
                 totalChunks={this.state.totalChunks} 
                 logger={this.logger} 
                 nodeInFocus={this.state.nodeInFocus}
+                updateNodeInFocus={this.updateNodeInFocus}
                 updateSelectedNode={this.updateSelectedNode} 
               />
             </Col>
