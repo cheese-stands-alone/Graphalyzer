@@ -63,64 +63,62 @@ var Graph = React.createClass({
    * If there are any filter options passed in, perform filtering. Otherwise do nothing.
    */
   doFilter: function() {
-    if (this.hasFilterOptions() && !this.isGraphEmpty()) {
-      var property = this.props.filter.property;
-      var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
-      var propertyToFilter;
-      switch (this.props.filter.option) {
-        case 'Remove Nodes Without':
-          for (var nodeID in nodeIDs) {
-            if (this.props.graphData.nodes.get(nodeID)[property])
+    var property = this.props.filter.property;
+    var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
+    var propertyToFilter;
+    switch (this.props.filter.option) {
+      case 'Remove Nodes Without':
+        for (var nodeID in nodeIDs) {
+          if (this.props.graphData.nodes.get(nodeID)[property])
+            this.highlight(nodeID);
+          else 
+            this.filterOut(nodeID);
+        }
+        break;
+      case 'Pattern Match':
+        for (var nodeID in nodeIDs) {
+          if (this.props.filter.value) {
+            if (this.testPropertyValueForMatch(nodeID))
               this.highlight(nodeID);
             else 
-              this.filterOut(nodeID);
-          }
-          break;
-        case 'Pattern Match':
-          for (var nodeID in nodeIDs) {
-            if (this.props.filter.value) {
-              if (this.testPropertyValueForMatch(nodeID))
-                this.highlight(nodeID);
-              else 
-                this.filterOut(nodeID);             
-            } else {
-              if (this.testPropertiesForMatch(nodeID))
-                this.highlight(nodeID);
-              else
-                this.filterOut(nodeID);
-            }
-          }
-          break;
-        case '>':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) > this.props.filter.value) 
+              this.filterOut(nodeID);             
+          } else {
+            if (this.testPropertiesForMatch(nodeID))
               this.highlight(nodeID);
             else
               this.filterOut(nodeID);
           }
-          break;
-        case '=':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) == this.props.filter.value)
-              this.highlight(nodeID);
-            else
-              this.filterOut(nodeID);
-          }
-          break;
-        case '<':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) < this.props.filter.value)
-              this.highlight(nodeID);
-            else
-              this.filterOut(nodeID);
-          }
-          break;
-        default:
-          break;
-      }
+        }
+        break;
+      case '>':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) > this.props.filter.value) 
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      case '=':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) == this.props.filter.value)
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      case '<':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) < this.props.filter.value)
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      default:
+        break;
     }
   },
 
@@ -158,8 +156,10 @@ var Graph = React.createClass({
         edges: this.props.graphData.edges
       });
     }
+    this.state.network.releaseNode();
 
-    this.doFilter();
+    if (this.hasFilterOptions() && !this.isGraphEmpty() && !this.state.filterActive)
+      this.doFilter();
     this.focusOnNode();
 
     this.state.network.on('selectNode', function(event) {

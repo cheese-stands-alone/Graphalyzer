@@ -30,6 +30,7 @@ var Graphalyzer = React.createClass({
   getInitialState: function() {
     return {
       filter: {},
+      filterActive: false,
       id: '',
       graphList: [],
       graphData: {
@@ -50,7 +51,10 @@ var Graphalyzer = React.createClass({
       var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
       for (var nodeID in nodeIDs)
         this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
-      this.setState({filter: {}});
+      this.setState({
+        filter: {},
+        filterActive: false
+      });
     }
   },
 
@@ -60,7 +64,8 @@ var Graphalyzer = React.createClass({
         property: property,
         option: option,
         value: value
-      }
+      },
+      filterActive: true
     });
   },
 
@@ -250,6 +255,7 @@ var Graphalyzer = React.createClass({
             <Col lg={9}>
               <GraphPanel 
                 filter={this.state.filter}
+                filterActive={this.state.filterActive}
                 graphData={this.state.graphData} 
                 currentChunk={this.state.currentChunk} 
                 totalChunks={this.state.totalChunks} 
