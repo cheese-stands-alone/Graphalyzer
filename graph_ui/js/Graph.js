@@ -125,7 +125,6 @@ var Graph = React.createClass({
   focusOnNode: function() {
     if (this.props.nodeInFocus) {
       var options = {
-        animation: true,
         scale: 3.0
       };
       this.state.network.focus(this.props.nodeInFocus.id, options);
