@@ -30,12 +30,14 @@ var Graphalyzer = React.createClass({
   getInitialState: function() {
     return {
       filter: {},
+      filterActive: false,
       id: '',
       graphList: [],
       graphData: {
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
       },
+      nodeInFocus: null,
       tmpGraphData: {},
       totalChunks: 0,
       currentChunk: 0,
@@ -49,7 +51,10 @@ var Graphalyzer = React.createClass({
       var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
       for (var nodeID in nodeIDs)
         this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
-      this.setState({filter: {}});
+      this.setState({
+        filter: {},
+        filterActive: false
+      });
     }
   },
 
@@ -59,8 +64,40 @@ var Graphalyzer = React.createClass({
         property: property,
         option: option,
         value: value
-      }
+      },
+      filterActive: true
     });
+  },
+
+  updateNodeInFocus: function(node) {
+    this.setState({
+      nodeInFocus: node
+    });
+  },
+
+  searchNode: function(params) {
+    if (!this.state.graphData)
+      return;
+    var key = params.key;
+    var value = params.value;
+    var nodeInFocus;
+    if (value) {
+      var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
+      for (var nodeID in nodes) {
+        var node = this.state.graphData.nodes.get(nodeID);
+        if (node[key]) {
+          if (node[key] == value) {
+            this.updateNodeInFocus(node);
+            break;
+          }
+        } else {
+          if (node.id == value) {
+            this.updateNodeInFocus(node);
+            break;
+          }
+        }
+      }
+    }
   },
 
   reset: function() {
@@ -218,10 +255,13 @@ var Graphalyzer = React.createClass({
             <Col lg={9}>
               <GraphPanel 
                 filter={this.state.filter}
+                filterActive={this.state.filterActive}
                 graphData={this.state.graphData} 
                 currentChunk={this.state.currentChunk} 
                 totalChunks={this.state.totalChunks} 
                 logger={this.logger} 
+                nodeInFocus={this.state.nodeInFocus}
+                updateNodeInFocus={this.updateNodeInFocus}
                 updateSelectedNode={this.updateSelectedNode} 
               />
             </Col>
@@ -234,6 +274,7 @@ var Graphalyzer = React.createClass({
                   getGraphList={this.getGraphList}
                   logger={this.logger}
                   reset={this.reset}
+                  searchNode={this.searchNode}
                   sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>

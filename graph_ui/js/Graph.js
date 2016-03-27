@@ -63,64 +63,75 @@ var Graph = React.createClass({
    * If there are any filter options passed in, perform filtering. Otherwise do nothing.
    */
   doFilter: function() {
-    if (this.hasFilterOptions() && !this.isGraphEmpty()) {
-      var property = this.props.filter.property;
-      var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
-      var propertyToFilter;
-      switch (this.props.filter.option) {
-        case 'Remove Nodes Without':
-          for (var nodeID in nodeIDs) {
-            if (this.props.graphData.nodes.get(nodeID)[property])
+    var property = this.props.filter.property;
+    var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
+    var propertyToFilter;
+    switch (this.props.filter.option) {
+      case 'Remove Nodes Without':
+        for (var nodeID in nodeIDs) {
+          if (this.props.graphData.nodes.get(nodeID)[property])
+            this.highlight(nodeID);
+          else 
+            this.filterOut(nodeID);
+        }
+        break;
+      case 'Pattern Match':
+        for (var nodeID in nodeIDs) {
+          if (this.props.filter.value) {
+            if (this.testPropertyValueForMatch(nodeID))
               this.highlight(nodeID);
             else 
-              this.filterOut(nodeID);
-          }
-          break;
-        case 'Pattern Match':
-          for (var nodeID in nodeIDs) {
-            if (this.props.filter.value) {
-              if (this.testPropertyValueForMatch(nodeID))
-                this.highlight(nodeID);
-              else 
-                this.filterOut(nodeID);             
-            } else {
-              if (this.testPropertiesForMatch(nodeID))
-                this.highlight(nodeID);
-              else
-                this.filterOut(nodeID);
-            }
-          }
-          break;
-        case '>':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) > this.props.filter.value) 
+              this.filterOut(nodeID);             
+          } else {
+            if (this.testPropertiesForMatch(nodeID))
               this.highlight(nodeID);
             else
               this.filterOut(nodeID);
           }
-          break;
-        case '=':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) == this.props.filter.value)
-              this.highlight(nodeID);
-            else
-              this.filterOut(nodeID);
-          }
-          break;
-        case '<':
-          for (var nodeID in nodeIDs) {
-            propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
-            if (parseInt(propertyToFilter) < this.props.filter.value)
-              this.highlight(nodeID);
-            else
-              this.filterOut(nodeID);
-          }
-          break;
-        default:
-          break;
-      }
+        }
+        break;
+      case '>':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) > this.props.filter.value) 
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      case '=':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) == this.props.filter.value)
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      case '<':
+        for (var nodeID in nodeIDs) {
+          propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
+          if (parseInt(propertyToFilter) < this.props.filter.value)
+            this.highlight(nodeID);
+          else
+            this.filterOut(nodeID);
+        }
+        break;
+      default:
+        break;
+    }
+  },
+
+  focusOnNode: function() {
+    if (this.props.nodeInFocus) {
+      var options = {
+        animation: true,
+        scale: 3.0
+      };
+      this.state.network.focus(this.props.nodeInFocus.id, options);
+      var arr = [this.props.nodeInFocus.id];
+      this.state.network.selectNodes(arr);
+      this.props.updateSelectedNode(this.props.nodeInFocus);
     }
   },
 
@@ -129,18 +140,27 @@ var Graph = React.createClass({
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-    return (this.props.graphData != nextProps.graphData) || 
+      return (this.props.graphData != nextProps.graphData) ||
       (this.props.filter != nextProps.filter) || 
-      (this.props.totalChunks != nextProps.currentChunk);
+      (this.props.totalChunks != nextProps.currentChunk) ||
+      (this.props.nodeInFocus != nextProps.nodeInFocus);
   },
 
   componentDidUpdate: function() {
-    this.state.network.setData({
-      nodes: this.props.graphData.nodes,
-      edges: this.props.graphData.edges
-    });
+    if (this.props.graphData != this.state.oldData) {
+      this.setState({
+        oldData: this.props.graphData
+      });
+      this.state.network.setData({
+        nodes: this.props.graphData.nodes,
+        edges: this.props.graphData.edges
+      });
+    }
+    this.state.network.releaseNode();
 
-    this.doFilter();
+    if (this.hasFilterOptions() && !this.isGraphEmpty() && !this.state.filterActive)
+      this.doFilter();
+    this.focusOnNode();
 
     this.state.network.on('selectNode', function(event) {
       var nodeID = event.nodes[0];
@@ -150,6 +170,8 @@ var Graph = React.createClass({
 
     this.state.network.on('deselectNode', function(event) {
       this.props.updateSelectedNode({});
+      this.props.updateNodeInFocus({});
+      this.state.network.releaseNode();
     }.bind(this));
 
     // Called when Vis is finished drawing the graph
@@ -187,7 +209,8 @@ var Graph = React.createClass({
 
   getInitialState: function() {
     return {
-      network: {}
+      network: {},
+      oldData: {}
     };
   },
 
