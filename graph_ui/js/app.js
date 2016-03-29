@@ -267,6 +267,7 @@ var Graphalyzer = React.createClass({
               />
             </Col>
             <Col lg={3}>
+            {/*
               <Row>
                 <SearchPanel 
                   clearFiltering={this.clearFiltering}
@@ -277,6 +278,13 @@ var Graphalyzer = React.createClass({
                   reset={this.reset}
                   searchNode={this.searchNode}
                   sendWebSocketMessage={this.sendWebSocketMessage}
+                />
+              </Row>
+            */}
+              <Row>
+                <Dashboard
+                  getGraphList={this.getGraphList}
+                  graphList={this.state.graphList}
                 />
               </Row>
               <Row>
@@ -295,20 +303,20 @@ var Graphalyzer = React.createClass({
 
 // TODO: REMOVE THIS AFTER DASHBOARD IS COMPLETE AND INTEGRATED AND SEARCHPANEL IS DELETED
 
-var TestApp = React.createClass({
-  render: function() {
-    return (
-      <Dashboard/>
-    );
-  }
-});
-
-ReactDOM.render(
-  <TestApp/>,
-  document.getElementById('main')
-);
+// var TestApp = React.createClass({
+//   render: function() {
+//     return (
+//       <Dashboard/>
+//     );
+//   }
+// });
 
 // ReactDOM.render(
-//   <Graphalyzer />,
+//   <TestApp/>,
 //   document.getElementById('main')
 // );
+
+ReactDOM.render(
+  <Graphalyzer />,
+  document.getElementById('main')
+);

@@ -17,7 +17,10 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <Panel header='Dashboard' bsStyle='primary'>
-        <Settings/>
+        <Settings
+          getGraphList={this.props.getGraphList}
+          graphList={this.props.graphList}
+        />
       </Panel>
     );
   }

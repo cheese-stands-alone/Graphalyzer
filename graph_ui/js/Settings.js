@@ -42,7 +42,10 @@ var Settings = React.createClass({
           </Modal.Header>
           <Modal.Body>
             <Panel header='Load Graph' bsStyle='primary'>
-              <GraphLoader/>
+              <GraphLoader
+                getGraphList={this.props.getGraphList}
+                graphList={this.props.graphList}
+              />
               <SubgraphInput/>
             </Panel>
           </Modal.Body>
