@@ -21,6 +21,40 @@ var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 var Dashboard = require('./Dashboard.js');
 
 var Graphalyzer = React.createClass({
+  getDefaultProps: function() {
+    return {
+      websocket: new WebSocket('ws://52.3.104.50:80/ws/')
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      currentGraph: null,
+      filter: {},
+      filterActive: false,
+      id: '',
+      graphList: [],
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      nodeInFocus: null,
+      tmpGraphData: {},
+      totalChunks: 0,
+      currentChunk: 0,
+      selectedNode: {},
+      wsError: null,
+    };
+  },
+
+  componentDidMount: function() {
+    var self = this;
+    this.props.websocket.onmessage = this.handleWSMessage;
+    this.props.websocket.onerror = function(event) {
+      self.setState({wsError: <Alert bsStyle='danger'>There was a problem with the server. Check the console.</Alert>});
+    };
+  },
+
   addDataToGraph: function(data) {
     var self = this;
     var newNodeSet, newEdgeSet;
@@ -82,14 +116,6 @@ var Graphalyzer = React.createClass({
     }
   },
 
-  componentDidMount: function() {
-    var self = this;
-    this.props.websocket.onmessage = this.handleWSMessage;
-    this.props.websocket.onerror = function(event) {
-      self.setState({wsError: <Alert bsStyle='danger'>There was a problem with the server. Check the console.</Alert>});
-    };
-  },
-
   filter: function(property, option, value) {
     this.setState({
       filter: {
@@ -99,12 +125,6 @@ var Graphalyzer = React.createClass({
       },
       filterActive: true
     });
-  },
-
-  getDefaultProps: function() {
-    return {
-      websocket: new WebSocket('ws://52.3.104.50:80/ws/')
-    };
   },
 
   getGraphList: function(data) {
@@ -120,25 +140,6 @@ var Graphalyzer = React.createClass({
     };
     this.logger('Requesting list of graphs');
     this.sendWebSocketMessage(request);
-  },
-
-  getInitialState: function() {
-    return {
-      filter: {},
-      filterActive: false,
-      id: '',
-      graphList: [],
-      graphData: {
-        nodes: new Vis.DataSet(),
-        edges: new Vis.DataSet()
-      },
-      nodeInFocus: null,
-      tmpGraphData: {},
-      totalChunks: 0,
-      currentChunk: 0,
-      selectedNode: {},
-      wsError: null,
-    };
   },
 
   handleWSMessage: function(event) {
@@ -182,6 +183,8 @@ var Graphalyzer = React.createClass({
   },
 
   requestGraph: function(graph) {
+    if (this.state.graph == graph)
+      return;
     var request = {  
       'message_id': '',
       'sender_id': '',
@@ -197,6 +200,9 @@ var Graphalyzer = React.createClass({
       'Requesting graph ' 
       + '\'' + graph + '\''
     );
+    this.setState({
+      currentGraph: graph
+    });
     this.sendWebSocketMessage(request);
   },
 
