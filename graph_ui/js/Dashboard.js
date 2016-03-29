@@ -17,7 +17,7 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <Panel header='Dashboard' bsStyle='primary'>
-        <Settings />
+        <Settings/>
       </Panel>
     );
   }

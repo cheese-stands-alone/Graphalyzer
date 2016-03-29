@@ -9,9 +9,10 @@
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap'),
     Button = ReactBootstrap.Button,
-    Modal = ReactBootstrap.Modal;
+    Modal = ReactBootstrap.Modal,
+    Panel = ReactBootstrap.Panel;
 var GraphLoader = require('./GraphLoader.js');
-var SubgraphPanel = require('./SubgraphPanel.js');
+var SubgraphInput = require('./SubgraphInput.js');
 var FilterPanel = require('./FilterPanel.js');
 
 var Settings = React.createClass({
@@ -36,11 +37,14 @@ var Settings = React.createClass({
           container={this}
           aria-labelledby='settings-title'
         >
-          <Modal.Header>
+          <Modal.Header id='settings-modal-header'>
             <Modal.Title id='settings-title'>Settings</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>One fine ass body...</p>
+            <Panel header='Load Graph' bsStyle='primary'>
+              <GraphLoader/>
+              <SubgraphInput/>
+            </Panel>
           </Modal.Body>
           <Modal.Footer>
             <Button bsStyle='primary' onClick={close}>Close</Button>

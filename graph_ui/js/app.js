@@ -18,6 +18,7 @@ var ReactBootstrap = require('react-bootstrap'),
 var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
+var Dashboard = require('./Dashboard.js');
 
 var Graphalyzer = React.createClass({
 
@@ -292,7 +293,22 @@ var Graphalyzer = React.createClass({
   }
 });
 
+// TODO: REMOVE THIS AFTER DASHBOARD IS COMPLETE AND INTEGRATED AND SEARCHPANEL IS DELETED
+
+var TestApp = React.createClass({
+  render: function() {
+    return (
+      <Dashboard/>
+    );
+  }
+});
+
 ReactDOM.render(
-  <Graphalyzer />,
+  <TestApp/>,
   document.getElementById('main')
 );
+
+// ReactDOM.render(
+//   <Graphalyzer />,
+//   document.getElementById('main')
+// );
