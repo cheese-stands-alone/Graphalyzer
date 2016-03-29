@@ -15,3 +15,5 @@ var GraphLoader = React.createClass({
     );
   }
 });
+
+module.exports = GraphLoader;

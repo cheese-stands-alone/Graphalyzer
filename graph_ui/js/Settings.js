@@ -20,3 +20,5 @@ var Settings = React.createClass({
     );
   }
 });
+
+module.exports = Settings;

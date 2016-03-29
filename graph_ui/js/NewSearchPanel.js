@@ -17,3 +17,5 @@ var NewSearchPanel = React.createClass({
     );
   }
 });
+
+module.exports = NewSearchPanel;

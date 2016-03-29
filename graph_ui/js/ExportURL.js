@@ -15,3 +15,5 @@ var ExportURL = React.createClass({
     );
   }
 });
+
+module.exports = ExportURL;

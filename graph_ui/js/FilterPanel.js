@@ -15,3 +15,5 @@ var FilterPanel = React.createClass({
     );
   }
 });
+
+module.exports = FilterPanel;
