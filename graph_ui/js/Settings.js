@@ -16,15 +16,26 @@ var SubgraphInput = require('./SubgraphInput.js');
 var FilterPanel = require('./FilterPanel.js');
 
 var Settings = React.createClass({
+  close: function() {
+    this.setState({
+      show: false
+    });
+  },
+
+  draw: function() {
+    this.close();
+    if (this.state.selectedGraph)
+      this.props.requestGraph(this.state.selectedGraph);
+  },
+
   getInitialState: function() {
     return {
+      selectedGraph: null,
       show: false
     };
   },
 
   render: function() {
-    let close = () => this.setState({ show: false});
-
     return (
       <div className='modal-container'>
         <Button 
@@ -45,16 +56,24 @@ var Settings = React.createClass({
               <GraphLoader
                 getGraphList={this.props.getGraphList}
                 graphList={this.props.graphList}
+                selectGraph={this.selectGraph}
               />
               <SubgraphInput/>
             </Panel>
           </Modal.Body>
           <Modal.Footer>
-            <Button bsStyle='primary' onClick={close}>Close</Button>
+            <Button onClick={this.close}>Close</Button>
+            <Button bsStyle='primary' onClick={this.draw}>Draw</Button>
           </Modal.Footer>
         </Modal>
       </div>
     );
+  },
+
+  selectGraph: function(graph) {
+    this.setState({
+      selectedGraph: graph
+    });
   }
 });
 

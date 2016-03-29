@@ -20,6 +20,7 @@ var Dashboard = React.createClass({
         <Settings
           getGraphList={this.props.getGraphList}
           graphList={this.props.graphList}
+          requestGraph={this.props.requestGraph}
         />
       </Panel>
     );
