@@ -209,6 +209,7 @@ var Graphalyzer = React.createClass({
 
   reset: function() {
     this.setState({
+      currentGraph: null,
       graphData: {
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
