@@ -314,7 +314,8 @@ var Graphalyzer = React.createClass({
                   logger={this.logger}
                   requestGraph={this.requestGraph}
                   filter={this.filter}
-                  clearFilter={this.filter}
+                  clearFilter={this.clearFilter}
+                  reset={this.reset}
                 />
                 <NewSearchPanel
                   searchNode={this.searchNode}
