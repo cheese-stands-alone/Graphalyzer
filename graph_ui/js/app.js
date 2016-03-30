@@ -19,6 +19,7 @@ var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 var Dashboard = require('./Dashboard.js');
+var NewSearchPanel = require('./NewSearchPanel.js')
 
 var Graphalyzer = React.createClass({
   getDefaultProps: function() {
@@ -312,6 +313,11 @@ var Graphalyzer = React.createClass({
                   graphList={this.state.graphList}
                   logger={this.logger}
                   requestGraph={this.requestGraph}
+                  filter={this.filter}
+                  clearFilter={this.filter}
+                />
+                <NewSearchPanel
+                  searchNode={this.searchNode}
                 />
               </Row>
               <Row>

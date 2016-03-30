@@ -1,7 +1,7 @@
 /**
  * Settings.js
  *
- * @author Andrew Bowler
+ * @author Andrew Bowler, Taylor Welter
  */
 
 'use strict';
@@ -59,6 +59,12 @@ var Settings = React.createClass({
                 selectGraph={this.selectGraph}
               />
               <SubgraphInput/>
+            </Panel>
+            <Panel header='Filter Graph' bsStyle='success'>
+              <FilterPanel
+                filter={this.props.filter}
+                clearFilter={this.props.clearFilter}
+              />
             </Panel>
           </Modal.Body>
           <Modal.Footer>
