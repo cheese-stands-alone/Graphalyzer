@@ -68,8 +68,8 @@ var FilterPanel = React.createClass({
         />
         <Button 
           bsStyle='primary' 
-          onClick={this.props.clearFiltering
-          }>Clear Filter
+          onClick={this.props.clearFilter}>
+          Clear Filter
         </Button>
       </div>
     );

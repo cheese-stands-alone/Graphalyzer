@@ -51,14 +51,13 @@ var Settings = React.createClass({
       <div className='modal-container'>
         <Button 
           bsStyle='primary'
-          onClick={() => this.setState({ show: true})}
-          >Settings
+          onClick={() => this.setState({show: true})}
+        >Settings
         </Button>
         <Modal
           show={this.state.show}
           container={this}
-          aria-labelledby='settings-title'
-        >
+          aria-labelledby='settings-title'>
           <Modal.Header id='settings-modal-header'>
             <Modal.Title id='settings-title'>Settings</Modal.Title>
           </Modal.Header>
@@ -92,23 +91,6 @@ var Settings = React.createClass({
       selectedGraph: graph
     });
   },
-
-  filterReady: function()
-  {
-    this.setState({
-      isFilterReady: this.state.filterProp && 
-                     this.state.filterOpt && 
-                     this.state.filterVal 
-    });
-  },
-
-  checkFilter: function(property, option, value) {
-    this.setState({
-      filterProp: property,
-      filterOpt: option,
-      filterVal: value
-    });
-  }
 });
 
 module.exports = Settings;

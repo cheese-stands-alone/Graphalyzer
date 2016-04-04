@@ -9,13 +9,11 @@
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap'),
     Panel = ReactBootstrap.Panel,
-    Button = ReactBootstrap.Button,
-    Input = ReactBootstrap.Input;
+    Button = ReactBootstrap.Button;
 var Settings = require('./Settings.js');
 var SearchPanel = require('./SearchPanel.js');
 var ExportURL = require('./ExportURL.js');
 
-// TODO: Finalize this design
 var Dashboard = React.createClass({
   render: function() {
     return (
@@ -27,8 +25,8 @@ var Dashboard = React.createClass({
           filter={this.props.filter}
           clearFilter={this.props.clearFilter}
         />
-		<br/>
-		<SearchPanel
+        <br/>
+        <SearchPanel
           searchNode={this.props.searchNode}
         />
         <Button id='URLButton' bsStyle='primary'>Export URL</Button>

@@ -104,11 +104,19 @@ var Graphalyzer = React.createClass({
     }
   },
 
-  clearFiltering: function() {
+  clearFilter: function() {
     if (this.state.graphData) {
       var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
-      for (var nodeID in nodeIDs)
-        this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
+      var removeFilterFromNodes = [];
+      for (var nodeID in nodeIDs) {
+        if (this.state.graphData.nodes.get(nodeID).color != '#97C2FC') {
+          removeFilterFromNodes.push({
+            id: nodeID,
+            color: '#97C2FC'
+          });
+        }
+      }
+      this.state.graphData.nodes.update(removeFilterFromNodes);
       this.setState({
         filter: {},
         filterActive: false
@@ -308,7 +316,7 @@ var Graphalyzer = React.createClass({
                   filter={this.filter}
                   clearFilter={this.clearFilter}
                   reset={this.reset}
-				  searchNode={this.searchNode}
+                  searchNode={this.searchNode}
                 />
               </Row>
               <Row>

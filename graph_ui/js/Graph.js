@@ -145,7 +145,7 @@ var Graph = React.createClass({
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
-      return (this.props.graphData != nextProps.graphData) ||
+    return (this.props.graphData != nextProps.graphData) ||
       (this.props.filter != nextProps.filter) || 
       (this.props.totalChunks != nextProps.currentChunk) ||
       (this.props.nodeInFocus != nextProps.nodeInFocus);
@@ -163,7 +163,7 @@ var Graph = React.createClass({
     }
     this.state.network.releaseNode();
 
-    if (this.hasFilterOptions() && !this.isGraphEmpty() && !this.state.filterActive)
+    if (this.hasFilterOptions() && !this.isGraphEmpty() && !this.props.filterActive)
       this.doFilter();
     this.focusOnNode();
 
