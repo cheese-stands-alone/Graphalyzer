@@ -15,7 +15,7 @@ var Settings = require('./Settings.js');
 var SearchPanel = require('./SearchPanel.js');
 var ExportURL = require('./ExportURL.js');
 
-// TODO: All these line breaks are kinda janky, maybe make a button group or something
+// TODO: Finalize this design
 var Dashboard = React.createClass({
   render: function() {
     return (
@@ -27,11 +27,12 @@ var Dashboard = React.createClass({
           filter={this.props.filter}
           clearFilter={this.props.clearFilter}
         />
-        <br/>
-        <Button bsStyle='success'>Export URL</Button>
-        <br/>
-        <br/>
-        <Button bsStyle='warning' onClick={this.props.reset}>Reset Graph</Button>
+		<br/>
+		<SearchPanel
+          searchNode={this.props.searchNode}
+        />
+        <Button id='URLButton' bsStyle='success'>Export URL</Button>
+        <Button id='resetButton' bsStyle='warning' onClick={this.props.reset}>Reset Graph</Button>
       </Panel>
     );
   }

@@ -9,8 +9,9 @@
 
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap'),
-    Panel = ReactBootstrap.Panel,
+    Well = ReactBootstrap.Well,
     Input = ReactBootstrap.Input,
+	Glyphicon = ReactBootstrap.Glyphicon,
     Button = ReactBootstrap.Button;
 
 var SearchPanel = React.createClass({
@@ -32,12 +33,13 @@ var SearchPanel = React.createClass({
       }
     });
   },
-
+	
   render: function() {
     return (
       <div>
-        <Panel header='Search Panel' bsStyle='info'>
+        <Well bsSize="small">
           <Input 
+		    label="Search:"
             type='text' 
             placeholder='Property (ID if left blank)' 
             ref='searchKey' 
@@ -50,13 +52,16 @@ var SearchPanel = React.createClass({
             ref='searchValue'
             value={this.state.searchOptions.value}
             onChange={this.updateFields}
+			addonAfter={
+			  <Button 
+	            bsStyle='info'
+				bsSize="xsmall"
+	            onClick={this.props.searchNode.bind(null, this.state.searchOptions)}> 
+			    <Glyphicon glyph="search" />
+              </Button>
+			}
           />
-          <Button 
-            bsStyle='info' 
-            onClick={this.props.searchNode.bind(null, this.state.searchOptions)}
-            >Search
-          </Button>
-        </Panel>
+        </Well>
       </div>
     );
   }

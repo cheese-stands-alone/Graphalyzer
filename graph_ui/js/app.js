@@ -308,9 +308,7 @@ var Graphalyzer = React.createClass({
                   filter={this.filter}
                   clearFilter={this.clearFilter}
                   reset={this.reset}
-                />
-                <SearchPanel
-                  searchNode={this.searchNode}
+				  searchNode={this.searchNode}
                 />
               </Row>
               <Row>
