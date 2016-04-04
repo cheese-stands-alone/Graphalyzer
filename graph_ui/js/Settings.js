@@ -50,7 +50,7 @@ var Settings = React.createClass({
     return (
       <div className='modal-container'>
         <Button 
-          bsStyle='success'
+          bsStyle='primary'
           onClick={() => this.setState({ show: true})}
           >Settings
         </Button>
@@ -71,7 +71,7 @@ var Settings = React.createClass({
               />
               <SubgraphInput/>
             </Panel>
-            <Panel header='Filter Graph' bsStyle='success'>
+            <Panel header='Filter Graph' bsStyle='primary'>
               <FilterPanel
                 clearFilter={this.props.clearFilter}
                 updateFilter={this.updateFilter}

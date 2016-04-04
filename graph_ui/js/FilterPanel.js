@@ -67,7 +67,7 @@ var FilterPanel = React.createClass({
           onChange={this.updateFields}
         />
         <Button 
-          bsStyle='success' 
+          bsStyle='primary' 
           onClick={this.props.clearFiltering
           }>Clear Filter
         </Button>
