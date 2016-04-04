@@ -33,6 +33,12 @@ var FilterPanel = React.createClass({
     });
   },
 
+  checkFilter: function() {
+    this.props.checkFilter(this.state.filterOption, 
+                           this.state.filterProperty, 
+                           this.state.filterValue);
+  },
+
   render: function() {
     return (
       <div>

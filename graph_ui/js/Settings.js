@@ -24,12 +24,26 @@ var Settings = React.createClass({
 
   draw: function() {
     this.close();
+
+    //TODO: WIP
+    if (this.state.isFilterReady)
+    {
+      //TODO: This clearly isn't calling the filter logic, find what is
+      // Probably Graph.doFilter(), that's not getting called, 
+      // or we're not passing up the filter correctly
+      
+      this.props.filter(filterProp, filterOpt, filterVal);
+    }
     if (this.state.selectedGraph)
       this.props.requestGraph(this.state.selectedGraph);
   },
 
   getInitialState: function() {
     return {
+      filterProp: null,
+      filterOpt: null,
+      filterVal: null,
+      isFilterReady: false,
       selectedGraph: null,
       show: false
     };
@@ -64,6 +78,7 @@ var Settings = React.createClass({
               <FilterPanel
                 filter={this.props.filter}
                 clearFilter={this.props.clearFilter}
+                checkFilter={this.checkFilter}
               />
             </Panel>
           </Modal.Body>
@@ -79,6 +94,23 @@ var Settings = React.createClass({
   selectGraph: function(graph) {
     this.setState({
       selectedGraph: graph
+    });
+  },
+
+  filterReady: function()
+  {
+    this.setState({
+      isFilterReady: this.state.filterProp && 
+                     this.state.filterOpt && 
+                     this.state.filterVal 
+    });
+  },
+
+  checkFilter: function(property, option, value) {
+    this.setState({
+      filterProp: property,
+      filterOpt: option,
+      filterVal: value
     });
   }
 });
