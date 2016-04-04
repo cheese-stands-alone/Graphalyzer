@@ -74,7 +74,7 @@ var Graph = React.createClass({
         for (var nodeID in nodeIDs) {
           if (this.props.graphData.nodes.get(nodeID)[property])
             this.highlight(highlightedNodes, nodeID);
-          else 
+          else
             this.filterOut(filteredOutNodes, nodeID);
         }
         break;

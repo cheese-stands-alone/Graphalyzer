@@ -29,14 +29,14 @@ var FilterPanel = React.createClass({
   updateFields: function() {
     var self = this;
     this.setState({
-      filter: {
+      filter: {      
         option: self.refs.option.getValue(),
         property: self.refs.property.getValue(),
         value: self.refs.value.getValue()
       }
-    });
-
-    this.props.updateFilter(this.state.filter);
+    }, function() {
+      this.props.updateFilter(this.state.filter);
+    }.bind(this));
   },
 
   render: function() {
