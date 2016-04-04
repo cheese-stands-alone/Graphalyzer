@@ -24,16 +24,16 @@ var Graph = React.createClass({
     } else return false;
   },
 
-  filterOut: function(nodeID) {
-    this.props.graphData.nodes.update({
-      id: nodeID, 
+  filterOut: function(filteredOutNodes, newNodeID) {
+    filteredOutNodes.push({
+      id: newNodeID, 
       color: 'rgba(150, 150, 150, 0.50)'
     });
   },
 
-  highlight: function(nodeID) {
-    this.props.graphData.nodes.update({
-      id: nodeID, 
+  highlight: function(highlightedNodes, newNodeID) {
+    highlightedNodes.push({
+      id: newNodeID, 
       color: 'red'
     });
   },
@@ -65,28 +65,31 @@ var Graph = React.createClass({
   doFilter: function() {
     var property = this.props.filter.property;
     var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
+    var highlightedNodes = [];
+    var filteredOutNodes = [];
+    var filteredData = [];
     var propertyToFilter;
     switch (this.props.filter.option) {
       case 'Remove Nodes Without':
         for (var nodeID in nodeIDs) {
           if (this.props.graphData.nodes.get(nodeID)[property])
-            this.highlight(nodeID);
+            this.highlight(highlightedNodes, nodeID);
           else 
-            this.filterOut(nodeID);
+            this.filterOut(filteredOutNodes, nodeID);
         }
         break;
       case 'Pattern Match':
         for (var nodeID in nodeIDs) {
           if (this.props.filter.value) {
             if (this.testPropertyValueForMatch(nodeID))
-              this.highlight(nodeID);
+              this.highlight(highlightedNodes, nodeID);
             else 
-              this.filterOut(nodeID);             
+              this.filterOut(filteredOutNodes, nodeID);             
           } else {
             if (this.testPropertiesForMatch(nodeID))
-              this.highlight(nodeID);
+              this.highlight(highlightedNodes, nodeID);
             else
-              this.filterOut(nodeID);
+              this.filterOut(filteredOutNodes, nodeID);
           }
         }
         break;
@@ -94,32 +97,35 @@ var Graph = React.createClass({
         for (var nodeID in nodeIDs) {
           propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
           if (parseInt(propertyToFilter) > this.props.filter.value) 
-            this.highlight(nodeID);
+            this.highlight(highlightedNodes, nodeID);
           else
-            this.filterOut(nodeID);
+            this.filterOut(filteredOutNodes, nodeID);
         }
         break;
       case '=':
         for (var nodeID in nodeIDs) {
           propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
           if (parseInt(propertyToFilter) == this.props.filter.value)
-            this.highlight(nodeID);
+            this.highlight(highlightedNodes, nodeID);
           else
-            this.filterOut(nodeID);
+            this.filterOut(filteredOutNodes, nodeID);
         }
         break;
       case '<':
         for (var nodeID in nodeIDs) {
           propertyToFilter = this.props.graphData.nodes.get(nodeID)[property];
           if (parseInt(propertyToFilter) < this.props.filter.value)
-            this.highlight(nodeID);
+            this.highlight(highlightedNodes, nodeID);
           else
-            this.filterOut(nodeID);
+            this.filterOut(filteredOutNodes, nodeID);
         }
         break;
       default:
         break;
     }
+    filteredData = highlightedNodes.concat(filteredOutNodes);
+    if (filteredData.length > 0)
+      this.props.graphData.nodes.update(filteredData);
   },
 
   focusOnNode: function() {
