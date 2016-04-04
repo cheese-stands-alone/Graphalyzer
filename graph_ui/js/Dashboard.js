@@ -12,7 +12,7 @@ var ReactBootstrap = require('react-bootstrap'),
     Button = ReactBootstrap.Button,
     Input = ReactBootstrap.Input;
 var Settings = require('./Settings.js');
-var NewSearchPanel = require('./NewSearchPanel.js');
+var SearchPanel = require('./SearchPanel.js');
 var ExportURL = require('./ExportURL.js');
 
 // TODO: All these line breaks are kinda janky, maybe make a button group or something

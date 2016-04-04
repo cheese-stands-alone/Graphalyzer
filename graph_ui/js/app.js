@@ -19,7 +19,6 @@ var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
 var Dashboard = require('./Dashboard.js');
-var NewSearchPanel = require('./NewSearchPanel.js')
 
 var Graphalyzer = React.createClass({
   getDefaultProps: function() {
@@ -183,9 +182,14 @@ var Graphalyzer = React.createClass({
     );
   },
 
-  requestGraph: function(graph) {
-    if (this.state.graph == graph)
+  requestGraph: function(graph, filter) {
+    if (this.state.graph == graph && this.state.filter == filter)
       return;
+
+    this.setState({
+      filter: filter
+    });
+
     var request = {  
       'message_id': '',
       'sender_id': '',
@@ -210,6 +214,7 @@ var Graphalyzer = React.createClass({
   reset: function() {
     this.setState({
       currentGraph: null,
+      filter: {},
       graphData: {
         nodes: new Vis.DataSet(),
         edges: new Vis.DataSet()
@@ -294,20 +299,6 @@ var Graphalyzer = React.createClass({
               />
             </Col>
             <Col lg={3}>
-            {/*
-              <Row>
-                <SearchPanel 
-                  clearFiltering={this.clearFiltering}
-                  filter={this.filter}
-                  graphList={this.state.graphList}
-                  getGraphList={this.getGraphList}
-                  logger={this.logger}
-                  reset={this.reset}
-                  searchNode={this.searchNode}
-                  sendWebSocketMessage={this.sendWebSocketMessage}
-                />
-              </Row>
-            */}
               <Row>
                 <Dashboard
                   getGraphList={this.getGraphList}
@@ -318,7 +309,7 @@ var Graphalyzer = React.createClass({
                   clearFilter={this.clearFilter}
                   reset={this.reset}
                 />
-                <NewSearchPanel
+                <SearchPanel
                   searchNode={this.searchNode}
                 />
               </Row>

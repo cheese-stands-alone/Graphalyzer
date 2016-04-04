@@ -18,25 +18,25 @@ var FilterPanel = React.createClass({
 
   getInitialState: function() {
     return {
-      filterOption: 'none',
-      filterProperty: '',
-      filterValue: ''
+      filter: {
+        option: 'none',
+        property: '',
+        value: ''
+      }
     };
   },
 
   updateFields: function() {
     var self = this;
     this.setState({
-      filterOption: self.refs.filterOption.getValue(),
-      filterProperty: self.refs.filterProperty.getValue(),
-      filterValue: self.refs.filterValue.getValue()
+      filter: {
+        option: self.refs.option.getValue(),
+        property: self.refs.property.getValue(),
+        value: self.refs.value.getValue()
+      }
     });
-  },
 
-  checkFilter: function() {
-    this.props.checkFilter(this.state.filterOption, 
-                           this.state.filterProperty, 
-                           this.state.filterValue);
+    this.props.updateFilter(this.state.filter);
   },
 
   render: function() {
@@ -45,14 +45,14 @@ var FilterPanel = React.createClass({
         <Input 
           type='text' 
           placeholder='Filter Property' 
-          ref='filterProperty' 
-          value={this.state.filterProperty} 
+          ref='property' 
+          value={this.state.filter.property} 
           onChange={this.updateFields}
         />
         <Input
           type='select'
           onChange={this.updateFields}
-          ref='filterOption'>
+          ref='option'>
           <option value='Remove Nodes Without'>Remove Nodes Without</option>
           <option value='Pattern Match'>Pattern Match</option>
           <option value='>'>&gt;</option>
@@ -62,8 +62,8 @@ var FilterPanel = React.createClass({
         <Input 
           type='text' 
           placeholder='Filter Value' 
-          ref='filterValue' 
-          value={this.state.filterValue} 
+          ref='value' 
+          value={this.state.filter.value} 
           onChange={this.updateFields}
         />
         <Button 

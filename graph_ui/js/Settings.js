@@ -24,29 +24,26 @@ var Settings = React.createClass({
 
   draw: function() {
     this.close();
-
-    //TODO: WIP
-    if (this.state.isFilterReady)
-    {
-      //TODO: This clearly isn't calling the filter logic, find what is
-      // Probably Graph.doFilter(), that's not getting called, 
-      // or we're not passing up the filter correctly
-      
-      this.props.filter(filterProp, filterOpt, filterVal);
-    }
     if (this.state.selectedGraph)
-      this.props.requestGraph(this.state.selectedGraph);
+      this.props.requestGraph(this.state.selectedGraph, this.state.filter);
   },
 
   getInitialState: function() {
     return {
-      filterProp: null,
-      filterOpt: null,
-      filterVal: null,
-      isFilterReady: false,
+      filter: {
+        property: null,
+        option: null,
+        value: null
+      },
       selectedGraph: null,
       show: false
     };
+  },
+
+  updateFilter: function(filter) {
+    this.setState({
+      filter: filter
+    });
   },
 
   render: function() {
@@ -76,9 +73,8 @@ var Settings = React.createClass({
             </Panel>
             <Panel header='Filter Graph' bsStyle='success'>
               <FilterPanel
-                filter={this.props.filter}
                 clearFilter={this.props.clearFilter}
-                checkFilter={this.checkFilter}
+                updateFilter={this.updateFilter}
               />
             </Panel>
           </Modal.Body>
