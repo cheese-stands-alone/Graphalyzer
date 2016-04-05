@@ -16,6 +16,18 @@ var SubgraphInput = require('./SubgraphInput.js');
 var FilterPanel = require('./FilterPanel.js');
 
 var Settings = React.createClass({
+  getInitialState: function() {
+    return {
+      filter: {
+        property: null,
+        option: null,
+        value: null
+      },
+      selectedGraph: null,
+      show: false
+    };
+  },
+  
   close: function() {
     this.setState({
       show: false
@@ -28,16 +40,10 @@ var Settings = React.createClass({
       this.props.requestGraph(this.state.selectedGraph, this.state.filter);
   },
 
-  getInitialState: function() {
-    return {
-      filter: {
-        property: null,
-        option: null,
-        value: null
-      },
-      selectedGraph: null,
-      show: false
-    };
+  selectGraph: function(graph) {
+    this.setState({
+      selectedGraph: graph
+    });
   },
 
   updateFilter: function(filter) {
@@ -84,12 +90,6 @@ var Settings = React.createClass({
         </Modal>
       </div>
     );
-  },
-
-  selectGraph: function(graph) {
-    this.setState({
-      selectedGraph: graph
-    });
   },
 });
 

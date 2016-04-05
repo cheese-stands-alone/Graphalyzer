@@ -4,18 +4,14 @@
  * @author Andrew Bowler, Taylor Welter
  */
 
- //TODO: Deal with the filter logic--merge it into graph drawing or what have you
-
 'use strict';
 
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap'),
-    Panel = ReactBootstrap.Panel,
     Input = ReactBootstrap.Input,
     Button = ReactBootstrap.Button;
 
 var FilterPanel = React.createClass({
-
   getInitialState: function() {
     return {
       filter: {
