@@ -21,6 +21,22 @@ var SubgraphInput = React.createClass({
     };
   },
 
+  toggleDisable: function() {
+    var disabled = this.state.disabled;
+    this.setState({disabled: !disabled});
+  },
+
+  updateFields: function() {
+    var self = this;
+    var newState = React.addons.update(this.state, {
+      subgraph: {
+        id: {$set: self.refs.subgraphID.getValue()},
+        degrees: {$set: self.refs.subgraphDegrees.getValue()}
+      }
+    });
+    this.setState(newState);
+  },
+
   render: function() {
     return (
       <div>
@@ -43,22 +59,6 @@ var SubgraphInput = React.createClass({
         />
       </div>
     );
-  },
-
-  toggleDisable: function() {
-    var disabled = this.state.disabled;
-    this.setState({disabled: !disabled});
-  },
-
-  updateFields: function() {
-    var self = this;
-    var newState = React.addons.update(this.state, {
-      subgraph: {
-        id: {$set: self.refs.subgraphID.getValue()},
-        degrees: {$set: self.refs.subgraphDegrees.getValue()}
-      }
-    });
-    this.setState(newState);
   },
 });
 

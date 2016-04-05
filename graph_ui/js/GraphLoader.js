@@ -17,6 +17,14 @@ var GraphLoader = React.createClass({
     this.props.getGraphList();
   },
 
+  selectGraph: function() {
+    var idx = this.refs.selectGraph.getValue();
+    if (this.props.graphList && idx > -1)
+      this.props.selectGraph(this.props.graphList[idx].Graph);
+    else
+      this.props.selectGraph(null);
+  },
+
   render: function() {
     var self = this;
     var graphs = [];
@@ -45,14 +53,6 @@ var GraphLoader = React.createClass({
       </div>
     );
   },
-
-  selectGraph: function() {
-    var idx = this.refs.selectGraph.getValue();
-    if (this.props.graphList && idx > -1)
-      this.props.selectGraph(this.props.graphList[idx].Graph);
-    else
-      this.props.selectGraph(null);
-  }
 });
 
 module.exports = GraphLoader;
