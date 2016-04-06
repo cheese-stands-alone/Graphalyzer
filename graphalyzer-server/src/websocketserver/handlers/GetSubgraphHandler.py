@@ -54,13 +54,12 @@ class GetSubgraphHandler(HandleInterface):
 
     def __getGraphCount(self, socket, chunksize, graphid):
         neo4j = Graph()
-        query = "START n=node(*) MATCH n WHERE n.graphid='" \
-                + graphid + "' RETURN COUNT(n)"
+        query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
+                self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN count(DISTINCT m);"
         for record in neo4j.cypher.execute(query):
             nodenum = record[0]
-        query = "START n=node(*) MATCH (n {graphid:'" + graphid \
-                + "'})-[r{graphid:'" + graphid + "'}]->(m{graphid:'" \
-                + graphid + "'}) RETURN COUNT(r)"
+            query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
+                    self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN count(r);"
         for record in neo4j.cypher.execute(query):
             edgenum = record[0]
         total = int(nodenum) + int(edgenum)
@@ -84,13 +83,12 @@ class GetSubgraphHandler(HandleInterface):
                 # Get total number of nodes and edges in the graph.
                 numofchunks = executor.submit(self.__getGraphCount, socket, chunksize, graphid)
                 query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                        self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN m;"
+                        self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN DISTINCT m;"
                 nodequery = executor.submit(self.__queryNeo4J, query)
                 query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
                         self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN r;"
                 edgequery = executor.submit(self.__queryNeo4J, query)
 
-            print("here")
             nodes = "["
             edges = "["
             currchunk = 1
@@ -113,18 +111,24 @@ class GetSubgraphHandler(HandleInterface):
                     counter = 0
             if (nodes == "["):
                 nodes = ""
-            print("nodes done")
+            edgeset = set()
             for record in edgequery.result():
                 for item in record[0]:
-                    edges += "{"
-                    print(item)
+                    edgetoadd = ""
+                    shouldISkip = False
                     for key in item.properties:
-                        print(key)
                         if key == "graphid":
                             continue
-                        edges += "\"" + key + "\":\"" + item.properties[key] \
+                        if key == "id":
+                            if item.properties[key] in edgeset:
+                                shouldISkip = True
+                            else:
+                                edgeset.add(item.properties[key])
+                        edgetoadd += "\"" + key + "\":\"" + item.properties[key] \
                                  + "\","
-                    edges += "\"from\":\"" + \
+                    if shouldISkip:
+                        continue
+                    edges += "{" + edgetoadd + "\"from\":\"" + \
                              item.start_node.properties["id"] + \
                              "\",\"to\":\"" + item.end_node.properties["id"] \
                              + "\"},"
