@@ -18,9 +18,9 @@ var ReactBootstrap = require('react-bootstrap'),
 var GraphPanel = require('./GraphPanel.js');
 var SearchPanel = require('./SearchPanel.js');
 var NodePropertiesPanel = require('./NodePropertiesPanel.js');
+var Dashboard = require('./Dashboard.js');
 
 var Graphalyzer = React.createClass({
-
   getDefaultProps: function() {
     return {
       websocket: new WebSocket('ws://52.3.104.50:80/ws/')
@@ -29,6 +29,7 @@ var Graphalyzer = React.createClass({
 
   getInitialState: function() {
     return {
+      currentGraph: null,
       filter: {},
       filterActive: false,
       id: '',
@@ -46,71 +47,12 @@ var Graphalyzer = React.createClass({
     };
   },
 
-  clearFiltering: function() {
-    if (this.state.graphData) {
-      var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
-      for (var nodeID in nodeIDs)
-        this.state.graphData.nodes.update({id: nodeID, color: '#97C2FC'});
-      this.setState({
-        filter: {},
-        filterActive: false
-      });
-    }
-  },
-
-  filter: function(property, option, value) {
-    this.setState({
-      filter: {
-        property: property,
-        option: option,
-        value: value
-      },
-      filterActive: true
-    });
-  },
-
-  updateNodeInFocus: function(node) {
-    this.setState({
-      nodeInFocus: node
-    });
-  },
-
-  searchNode: function(params) {
-    if (!this.state.graphData)
-      return;
-    var key = params.key;
-    var value = params.value;
-    var nodeInFocus;
-    if (value) {
-      var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
-      for (var nodeID in nodes) {
-        var node = this.state.graphData.nodes.get(nodeID);
-        if (node[key]) {
-          if (node[key] == value) {
-            this.updateNodeInFocus(node);
-            break;
-          }
-        } else {
-          if (node.id == value) {
-            this.updateNodeInFocus(node);
-            break;
-          }
-        }
-      }
-    }
-  },
-
-  reset: function() {
-    this.setState({
-      graphData: {
-        nodes: new Vis.DataSet(),
-        edges: new Vis.DataSet()
-      },
-      tmpGraphData: {},
-      totalChunks: 0,
-      currentChunk: 0,
-      selectedNode: {}
-    });
+  componentDidMount: function() {
+    var self = this;
+    this.props.websocket.onmessage = this.handleWSMessage;
+    this.props.websocket.onerror = function(event) {
+      self.setState({wsError: <Alert bsStyle='danger'>There was a problem with the server. Check the console.</Alert>});
+    };
   },
 
   addDataToGraph: function(data) {
@@ -162,35 +104,34 @@ var Graphalyzer = React.createClass({
     }
   },
 
-  logger: function(message) {
-    var date = new Date();
-    console.log('[' + 
-      date.getUTCFullYear() + '-' + 
-      date.getUTCMonth() + '-' + 
-      date.getUTCDate() + ' ' + 
-      date.getUTCHours() + ':' + 
-      date.getUTCMinutes() + ':' + 
-      date.getUTCSeconds() + ':' + 
-      date.getUTCMilliseconds() + ']  ' + 
-      message
-    );
+  clearFilter: function() {
+    if (this.state.graphData) {
+      var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
+      var removeFilterFromNodes = [];
+      for (var nodeID in nodeIDs) {
+        if (this.state.graphData.nodes.get(nodeID).color != '#97C2FC') {
+          removeFilterFromNodes.push({
+            id: nodeID,
+            color: '#97C2FC'
+          });
+        }
+      }
+      this.state.graphData.nodes.update(removeFilterFromNodes);
+      this.setState({
+        filter: {},
+        filterActive: false
+      });
+    }
   },
 
-  waitForWS: function(ws, callback) {
-    var self = this;
-    setTimeout(
-      function () {
-        if (ws.readyState === 1) {
-          if (callback != null) callback();
-          return;
-        } else self.waitForWS(ws, callback);
-      }, 5); // wait 5 milisecond for the connection...
-  },
-
-  sendWebSocketMessage: function(request) {
-    var self = this;
-    this.waitForWS(self.props.websocket, function() {
-      self.props.websocket.send(JSON.stringify(request));
+  filter: function(property, option, value) {
+    this.setState({
+      filter: {
+        property: property,
+        option: option,
+        value: value
+      },
+      filterActive: true
     });
   },
 
@@ -218,9 +159,10 @@ var Graphalyzer = React.createClass({
         this.logger('Server returned error: ' + responseJSON.error);
         return;
       }
+
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
-      else if (action == 'getgraph' || action == 'getgraphchunk') {
+      else if (action == 'getgraphchunk') {
         this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
         this.logger('List of graphs received');
@@ -234,16 +176,115 @@ var Graphalyzer = React.createClass({
     }
   },
 
+  logger: function(message) {
+    var date = new Date();
+    console.log('[' + 
+      date.getUTCFullYear() + '-' + 
+      date.getUTCMonth() + '-' + 
+      date.getUTCDate() + ' ' + 
+      date.getUTCHours() + ':' + 
+      date.getUTCMinutes() + ':' + 
+      date.getUTCSeconds() + ':' + 
+      date.getUTCMilliseconds() + ']  ' + 
+      message
+    );
+  },
+
+  requestGraph: function(graph, filter) {
+    if (this.state.graph == graph && this.state.filter == filter)
+      return;
+
+    this.setState({
+      filter: filter
+    });
+
+    var request = {  
+      'message_id': '',
+      'sender_id': '',
+      'time': '',
+      'request': 'getgraphchunk',
+      'status': '',
+      'error': '',
+      'payload': graph,
+      'message': ''
+    };
+
+    this.logger(
+      'Requesting graph ' 
+      + '\'' + graph + '\''
+    );
+    this.setState({
+      currentGraph: graph
+    });
+    this.sendWebSocketMessage(request);
+  },
+
+  reset: function() {
+    this.setState({
+      currentGraph: null,
+      filter: {},
+      graphData: {
+        nodes: new Vis.DataSet(),
+        edges: new Vis.DataSet()
+      },
+      tmpGraphData: {},
+      totalChunks: 0,
+      currentChunk: 0,
+      selectedNode: {}
+    });
+  },
+
+  searchNode: function(params) {
+    if (!this.state.graphData)
+      return;
+    var key = params.key;
+    var value = params.value;
+    var nodeInFocus;
+    if (value) {
+      var nodes = this.state.graphData.nodes.get({returnType: 'Object'});
+      for (var nodeID in nodes) {
+        var node = this.state.graphData.nodes.get(nodeID);
+        if (node[key]) {
+          if (node[key] == value) {
+            this.updateNodeInFocus(node);
+            break;
+          }
+        } else {
+          if (node.id == value) {
+            this.updateNodeInFocus(node);
+            break;
+          }
+        }
+      }
+    }
+  },
+
+  sendWebSocketMessage: function(request) {
+    var self = this;
+    this.waitForWS(self.props.websocket, function() {
+      self.props.websocket.send(JSON.stringify(request));
+    });
+  },
+
   updateSelectedNode: function(node) {
     this.setState({selectedNode: node});
   },
 
-  componentDidMount: function() {
+  updateNodeInFocus: function(node) {
+    this.setState({
+      nodeInFocus: node
+    });
+  },
+
+  waitForWS: function(ws, callback) {
     var self = this;
-    this.props.websocket.onmessage = this.handleWSMessage;
-    this.props.websocket.onerror = function(event) {
-      self.setState({wsError: <Alert bsStyle='danger'>There was a problem with the server. Check the console.</Alert>});
-    };
+    setTimeout(
+      function () {
+        if (ws.readyState === 1) {
+          if (callback != null) callback();
+          return;
+        } else self.waitForWS(ws, callback);
+      }, 5);
   },
 
   render: function() {
@@ -267,15 +308,15 @@ var Graphalyzer = React.createClass({
             </Col>
             <Col lg={3}>
               <Row>
-                <SearchPanel 
-                  clearFiltering={this.clearFiltering}
-                  filter={this.filter}
-                  graphList={this.state.graphList}
+                <Dashboard
                   getGraphList={this.getGraphList}
+                  graphList={this.state.graphList}
                   logger={this.logger}
+                  requestGraph={this.requestGraph}
+                  filter={this.filter}
+                  clearFilter={this.clearFilter}
                   reset={this.reset}
                   searchNode={this.searchNode}
-                  sendWebSocketMessage={this.sendWebSocketMessage}
                 />
               </Row>
               <Row>
