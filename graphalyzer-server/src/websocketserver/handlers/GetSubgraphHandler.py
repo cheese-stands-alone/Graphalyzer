@@ -55,14 +55,14 @@ class GetSubgraphHandler(HandleInterface):
     def __getGraphCount(self, socket, chunksize, graphid):
         neo4j = Graph()
         query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN count(DISTINCT m);"
+                self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN count(DISTINCT m);"
         for record in neo4j.cypher.execute(query):
             nodenum = record[0]
             query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                    self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN count(r);"
+                    self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN count(r);"
         for record in neo4j.cypher.execute(query):
             edgenum = record[0]
-        total = int(nodenum) + int(edgenum)
+        total = int(nodenum) + int(edgenum) + 1 # 1 for the source node
         return int(math.ceil(total / chunksize))
 
     def __queryNeo4J(self, query):
@@ -83,10 +83,10 @@ class GetSubgraphHandler(HandleInterface):
                 # Get total number of nodes and edges in the graph.
                 numofchunks = executor.submit(self.__getGraphCount, socket, chunksize, graphid)
                 query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                        self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN DISTINCT m;"
+                        self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN DISTINCT m UNION MATCH (m {graphid:'" + graphid + "',id:'" + self._node + "'}) RETURN m"
                 nodequery = executor.submit(self.__queryNeo4J, query)
                 query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                        self._depth + "]->(m{graphid:'" + graphid + "'}) RETURN r;"
+                        self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN r;"
                 edgequery = executor.submit(self.__queryNeo4J, query)
 
             nodes = "["
