@@ -46,7 +46,7 @@ var Settings = React.createClass({
       };
       
       if (this.state.subgraph) {
-        if (parseInt(this.state.subgraph.depth) > 0)
+        if (this.state.subgraph.depth > 0)
           graph.subgraph = this.state.subgraph;
       }
 

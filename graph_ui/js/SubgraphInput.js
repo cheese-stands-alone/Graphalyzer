@@ -52,14 +52,20 @@ var SubgraphInput = React.createClass({
           onChange={this.updateFields}
           disabled={this.state.disabled}
         />
-        <Input 
-          type='text'
+        <Input
+          type='select'
           placeholder='Depth (in nodes)'
           ref='depth'
           value={this.state.subgraph.depth}
           onChange={this.updateFields}
-          disabled={this.state.disabled}
-        />
+          disabled={this.state.disabled}>
+          <option key={-1} value={-1} disabled selected>Depth (in nodes)</option>
+          <option key={0} value={1}>1</option>
+          <option key={1} value={2}>2</option>
+          <option key={2} value={3}>3</option>
+          <option key={3} value={4}>4</option>
+          <option key={4} value={5}>5</option>
+        </Input>
       </div>
     );
   },
