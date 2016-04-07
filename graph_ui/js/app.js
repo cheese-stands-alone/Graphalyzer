@@ -155,7 +155,6 @@ var Graphalyzer = React.createClass({
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
-      console.log(responseJSON);
       if (responseJSON.error) {
         this.logger('Server returned error: ' + responseJSON.error);
         return;
@@ -163,9 +162,9 @@ var Graphalyzer = React.createClass({
 
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
-      else if (action == 'getgraphchunk' || action == 'getsubgraph') {
+      else if (action == 'getgraphchunk' || action == 'getsubgraph')
         this.addDataToGraph(responseJSON);
-      } else if (action == 'listgraphs') {
+      else if (action == 'listgraphs') {
         this.logger('List of graphs received');
         this.setState({
           graphList: responseJSON.payload
@@ -210,7 +209,6 @@ var Graphalyzer = React.createClass({
         'graphid': graph.selectedGraph,
         'node': graph.subgraph.nodeID
       };
-      console.log(request);
     } else {
       if (this.state.currentGraph == graph.selectedGraph && this.state.filter == graph.filter) return;
       request['request'] = 'getgraphchunk';
