@@ -38,6 +38,10 @@ var Settings = React.createClass({
     this.close();
     if (this.state.selectedGraph)
       this.props.requestGraph(this.state.selectedGraph, this.state.filter);
+      if (this.state.subgraph) {
+        if (parseInt(this.state.subgraph.depth) > 0)
+          graph.subgraph = this.state.subgraph;
+      }
   },
 
   selectGraph: function(graph) {
