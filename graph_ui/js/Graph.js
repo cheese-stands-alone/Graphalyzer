@@ -15,7 +15,10 @@ var Graph = React.createClass({
     return {
       options: {
         nodes: {
-          color: '#97C2FC',
+          color: {
+            background: '#97C2FC',
+            highlight: '#45E01E'
+          },
           borderWidth: 0,
           borderWidthSelected: 1,
           shape: 'dot',
