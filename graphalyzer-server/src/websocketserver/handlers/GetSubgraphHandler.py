@@ -55,11 +55,11 @@ class GetSubgraphHandler(HandleInterface):
     def __getGraphCount(self, socket, chunksize, graphid):
         neo4j = Graph()
         query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN count(DISTINCT m);"
+                self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN COUNT(DISTINCT m);"
         for record in neo4j.cypher.execute(query):
             nodenum = record[0]
             query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                    self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN count(r);"
+                    self._depth + "]-(m{graphid:'" + graphid + "'}) UNWIND r as k RETURN COUNT(DISTINCT k);"
         for record in neo4j.cypher.execute(query):
             edgenum = record[0]
         total = int(nodenum) + int(edgenum) + 1 # 1 for the source node
@@ -86,7 +86,7 @@ class GetSubgraphHandler(HandleInterface):
                         self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN DISTINCT m UNION MATCH (m {graphid:'" + graphid + "',id:'" + self._node + "'}) RETURN m"
                 nodequery = executor.submit(self.__queryNeo4J, query)
                 query = "MATCH (n {graphid:'" + graphid + "',id:'" + self._node + "'})-[r*.." + \
-                        self._depth + "]-(m{graphid:'" + graphid + "'}) RETURN r;"
+                        self._depth + "]-(m{graphid:'" + graphid + "'}) UNWIND r as k RETURN DISTINCT k;"
                 edgequery = executor.submit(self.__queryNeo4J, query)
 
             nodes = "["
@@ -111,35 +111,26 @@ class GetSubgraphHandler(HandleInterface):
                     counter = 0
             if (nodes == "["):
                 nodes = ""
-            edgeset = set()
             for record in edgequery.result():
-                for item in record[0]:
-                    edgetoadd = ""
-                    shouldISkip = False
-                    for key in item.properties:
-                        if key == "graphid":
-                            continue
-                        if key == "id":
-                            if item.properties[key] in edgeset:
-                                shouldISkip = True
-                            else:
-                                edgeset.add(item.properties[key])
-                        edgetoadd += "\"" + key + "\":\"" + item.properties[key] \
-                                 + "\","
-                    if shouldISkip:
+                item = record[0]
+                edges += "{"
+                for key in item.properties:
+                    if key == "graphid":
                         continue
-                    edges += "{" + edgetoadd + "\"from\":\"" + \
-                             item.start_node.properties["id"] + \
-                             "\",\"to\":\"" + item.end_node.properties["id"] \
-                             + "\"},"
-                    counter += 1
-                    if (counter >= chunksize):
-                        self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
-                        currchunk += 1
-                        edges = "["
-                        nodes = ""
-                        counter = 0
-                        # Send final chunk
+                    edges += "\"" + key + "\":\"" + item.properties[key] \
+                             + "\","
+                edges += "\"from\":\"" + \
+                         item.start_node.properties["id"] + \
+                         "\",\"to\":\"" + item.end_node.properties["id"] \
+                         + "\"},"
+                counter += 1
+                if (counter >= chunksize):
+                    self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
+                    currchunk += 1
+                    edges = "["
+                    nodes = ""
+                    counter = 0
+                    # Send final chunk
             self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
         except Exception:
             logging.error("Unable to connect to neo4j")
