@@ -155,6 +155,7 @@ var Graphalyzer = React.createClass({
     var response = event.data;
     if (response !== null) {
       var responseJSON = JSON.parse(response);
+      console.log(responseJSON);
       if (responseJSON.error) {
         this.logger('Server returned error: ' + responseJSON.error);
         return;
@@ -162,7 +163,7 @@ var Graphalyzer = React.createClass({
 
       var action = responseJSON.message.client_request_type;
       if (action == 'error') return;
-      else if (action == 'getgraphchunk') {
+      else if (action == 'getgraphchunk' || action == 'getsubgraph') {
         this.addDataToGraph(responseJSON);
       } else if (action == 'listgraphs') {
         this.logger('List of graphs received');
@@ -171,7 +172,9 @@ var Graphalyzer = React.createClass({
         });
       } else if (action == 'newid') {
         this.logger('New ID received from server');
-        this.setState({id: responseJSON.payload});
+        this.setState({
+          id: responseJSON.payload
+        });
       } else return;
     }
   },
@@ -190,32 +193,40 @@ var Graphalyzer = React.createClass({
     );
   },
 
-  requestGraph: function(graph, filter) {
-    if (this.state.graph == graph && this.state.filter == filter)
-      return;
-
-    this.setState({
-      filter: filter
-    });
-
-    var request = {  
+  requestGraph: function(graph) {
+    var request = {
       'message_id': '',
       'sender_id': '',
       'time': '',
-      'request': 'getgraphchunk',
       'status': '',
       'error': '',
-      'payload': graph,
       'message': ''
     };
 
+    if (graph.subgraph) {
+      request['request'] = 'getsubgraph';
+      request['payload'] = {
+        'depth': graph.subgraph.depth,
+        'graphid': graph.selectedGraph,
+        'node': graph.subgraph.nodeID
+      };
+      console.log(request);
+    } else {
+      if (this.state.currentGraph == graph.selectedGraph && this.state.filter == graph.filter) return;
+      request['request'] = 'getgraphchunk';
+      request['payload'] = graph.selectedGraph;
+    }
+
     this.logger(
       'Requesting graph ' 
-      + '\'' + graph + '\''
+      + '\'' + graph.selectedGraph + '\''
     );
+
     this.setState({
-      currentGraph: graph
+      currentGraph: graph.selectedGraph,
+      filter: graph.filter
     });
+
     this.sendWebSocketMessage(request);
   },
 
