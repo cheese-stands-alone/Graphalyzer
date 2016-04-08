@@ -7,6 +7,7 @@
 'use strict';
 
 var React = require('react');
+var ReactStateUpdate = require('react-addons-update');
 var ReactBootstrap = require('react-bootstrap'),
     Input = ReactBootstrap.Input;
 
@@ -15,8 +16,8 @@ var SubgraphInput = React.createClass({
     return {
       disabled: true,
       subgraph: {
-        id: '',
-        degrees: ''
+        nodeID: '',
+        depth: ''
       }
     };
   },
@@ -28,13 +29,15 @@ var SubgraphInput = React.createClass({
 
   updateFields: function() {
     var self = this;
-    var newState = React.addons.update(this.state, {
+    var newState = ReactStateUpdate(this.state, {
       subgraph: {
-        id: {$set: self.refs.subgraphID.getValue()},
-        degrees: {$set: self.refs.subgraphDegrees.getValue()}
+        nodeID: {$set: self.refs.sourceNodeID.getValue()},
+        depth: {$set: self.refs.depth.getValue()}
       }
     });
-    this.setState(newState);
+    this.setState(newState, function() {
+      this.props.updateSubgraph(this.state.subgraph)
+    }.bind(this));
   },
 
   render: function() {
@@ -44,19 +47,25 @@ var SubgraphInput = React.createClass({
         <Input 
           type='text' 
           placeholder='Source Node ID' 
-          ref='subgraphID' 
-          value={this.state.subgraph.id} 
+          ref='sourceNodeID' 
+          value={this.state.subgraph.nodeID} 
           onChange={this.updateFields}
           disabled={this.state.disabled}
         />
-        <Input 
-          type='text'
-          placeholder='Degrees of Connectivity'
-          ref='subgraphDegrees'
-          value={this.state.subgraph.degrees}
+        <Input
+          type='select'
+          placeholder='Depth (in nodes)'
+          ref='depth'
+          value={this.state.subgraph.depth}
           onChange={this.updateFields}
-          disabled={this.state.disabled}
-        />
+          disabled={this.state.disabled}>
+          <option key={-1} value={-1} disabled defaultValue>Depth (in nodes)</option>
+          <option key={0} value={1}>1</option>
+          <option key={1} value={2}>2</option>
+          <option key={2} value={3}>3</option>
+          <option key={3} value={4}>4</option>
+          <option key={4} value={5}>5</option>
+        </Input>
       </div>
     );
   },

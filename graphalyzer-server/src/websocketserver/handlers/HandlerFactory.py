@@ -2,6 +2,7 @@ from websocketserver.handlers.GetGraphHandler import *
 from websocketserver.handlers.ListGraphHandler import *
 from websocketserver.handlers.SessionIDHandler import *
 from websocketserver.handlers.GetGraphChunkHandler import *
+from websocketserver.handlers.GetSubgraphHandler import *
 
 
 class HandlerFactory(object):
@@ -26,6 +27,11 @@ class HandlerFactory(object):
                 return ListGraphHandler(request)
             elif request == "getgraphchunk":
                 return GetGraphChunkHandler(request, payload)
+            elif request == "getsubgraph":
+                node = payload["node"]
+                depth = payload["depth"]
+                graphid = payload["graphid"]
+                return GetSubgraphHandler(request, graphid, node, depth)
             elif request == "newid":
                 return SessionIDHandler(request)
             else:

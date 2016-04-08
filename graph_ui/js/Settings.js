@@ -24,6 +24,7 @@ var Settings = React.createClass({
         value: null
       },
       selectedGraph: null,
+      subgraph: null,
       show: false
     };
   },
@@ -35,9 +36,22 @@ var Settings = React.createClass({
   },
 
   draw: function() {
+    var self = this;
+    var graph;
     this.close();
-    if (this.state.selectedGraph)
-      this.props.requestGraph(this.state.selectedGraph, this.state.filter);
+    if (this.state.selectedGraph) {
+      graph = {
+        filter: self.state.filter,
+        selectedGraph: self.state.selectedGraph
+      };
+      
+      if (this.state.subgraph) {
+        if (this.state.subgraph.depth > 0)
+          graph.subgraph = this.state.subgraph;
+      }
+
+      this.props.requestGraph(graph);
+    }
   },
 
   selectGraph: function(graph) {
@@ -49,6 +63,12 @@ var Settings = React.createClass({
   updateFilter: function(filter) {
     this.setState({
       filter: filter
+    });
+  },
+
+  updateSubgraph: function(subgraph) {
+    this.setState({
+      subgraph: subgraph
     });
   },
 
@@ -74,7 +94,9 @@ var Settings = React.createClass({
                 graphList={this.props.graphList}
                 selectGraph={this.selectGraph}
               />
-              <SubgraphInput/>
+              <SubgraphInput
+                updateSubgraph={this.updateSubgraph}
+              />
             </Panel>
             <Panel header='Filter Graph' bsStyle='primary'>
               <FilterPanel
