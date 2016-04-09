@@ -29,7 +29,9 @@ var Dashboard = React.createClass({
         <SearchPanel
           searchNode={this.props.searchNode}
         />
-        <ExportURL/>
+        <ExportURL
+          getCurrentState={this.props.getCurrentState}
+        />
         <Button id='resetButton' bsStyle='warning' onClick={this.props.reset}>Reset Graph</Button>
       </Panel>
     );

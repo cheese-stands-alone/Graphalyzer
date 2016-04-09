@@ -18,8 +18,6 @@ var FilterPanel = require('./FilterPanel.js');
 var Settings = React.createClass({
   getInitialState: function() {
 	  
-	  
-	  	  
 	  var selectedGraphVal = null;
 	  var renderInitialVal = false;
       if(this.getParameterByName('selectedGraph') != null){
@@ -70,13 +68,14 @@ var Settings = React.createClass({
     var self = this;
     var graph;
     this.close();
+
     if (this.state.selectedGraph) {
       graph = {
         filter: self.state.filter,
         selectedGraph: self.state.selectedGraph
       };
-      
-      if (this.state.subgraph) {
+
+      if (this.state.subgraph && !this.state.disabled) {
         if (this.state.subgraph.depth > 0){
           graph.subgraph = this.state.subgraph;
 		}
@@ -85,9 +84,10 @@ var Settings = React.createClass({
     }
   },
 
-  selectGraph: function(graph) {
+  selectGraph: function(graph, disabled) {
     this.setState({
-      selectedGraph: graph
+      selectedGraph: graph,
+      disabled: disabled
     });
   },
 
@@ -97,7 +97,7 @@ var Settings = React.createClass({
     });
   },
 
-  updateSubgraph: function(subgraph) {
+  updateSubgraph: function(subgraph, disabled) {
     this.setState({
       subgraph: subgraph
     });

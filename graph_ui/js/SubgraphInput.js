@@ -24,7 +24,17 @@ var SubgraphInput = React.createClass({
 
   toggleDisable: function() {
     var disabled = this.state.disabled;
+
     this.setState({disabled: !disabled});
+    
+    var newState = ReactStateUpdate(this.state, {
+      nodeID: {$set: self.refs.sourceNodeID.getValue()},
+      depth: {$set: self.refs.depth.getValue()},
+      disabled: disabled
+    });
+    this.setState(newState, function() {
+      this.props.updateSubgraph(this.state.subgraph, this.state.disabled)
+    }.bind(this));
   },
 
   updateFields: function() {
@@ -36,14 +46,14 @@ var SubgraphInput = React.createClass({
       }
     });
     this.setState(newState, function() {
-      this.props.updateSubgraph(this.state.subgraph)
+      this.props.updateSubgraph(this.state.subgraph, this.state.disabled)
     }.bind(this));
   },
 
   render: function() {
     return (
       <div>
-        <Input type='checkbox' label='Get Subgraph' onChange={this.toggleDisable}/>
+        <Input type='checkbox' label='Get Subgraph' onClick={this.toggleDisable}/>
         <Input 
           type='text' 
           placeholder='Source Node ID' 
