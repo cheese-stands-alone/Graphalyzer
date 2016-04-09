@@ -135,6 +135,13 @@ var Graphalyzer = React.createClass({
     });
   },
 
+  getCurrentState: function() {
+    return this.state;
+  },
+
+  //currentGraph: graph.selectedGraph,
+ //     filter: graph.filter
+
   getGraphList: function(data) {
     var request = {  
       'message_id': '',
@@ -222,7 +229,8 @@ var Graphalyzer = React.createClass({
 
     this.setState({
       currentGraph: graph.selectedGraph,
-      filter: graph.filter
+      filter: graph.filter,
+      subgraph: graph.subgraph
     });
 
     this.sendWebSocketMessage(request);
@@ -325,6 +333,7 @@ var Graphalyzer = React.createClass({
                   filter={this.filter}
                   clearFilter={this.clearFilter}
                   reset={this.reset}
+                  getCurrentState={this.getCurrentState}
                   searchNode={this.searchNode}
                 />
               </Row>
