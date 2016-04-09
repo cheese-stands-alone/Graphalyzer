@@ -17,16 +17,47 @@ var FilterPanel = require('./FilterPanel.js');
 
 var Settings = React.createClass({
   getInitialState: function() {
-    return {
-      filter: {
+	  
+	  
+	  	  
+	  var selectedGraphVal = null;
+	  var renderInitialVal = false;
+      if(this.getParameterByName('selectedGraph') != null){
+		  selectedGraphVal = this.getParameterByName('selectedGraph');
+		  renderInitialVal = true;
+	  }
+	  
+	  var filterVal = {
         property: null,
         option: null,
         value: null
-      },
-      selectedGraph: null,
-      subgraph: null,
+      };
+      if(this.getParameterByName('filter') != null){
+		  filterVal = JSON.parse(this.getParameterByName('filter'));
+	  }
+	  
+	  var subgraphVal = false;
+      if(this.getParameterByName('subgraph') != null){
+		  subgraphVal = JSON.parse(this.getParameterByName('subgraph'));
+	  }
+	  
+	  this.renderInitial = renderInitialVal;
+    return {
+      filter: filterVal,
+      selectedGraph: selectedGraphVal,
+      subgraph: subgraphVal,
       show: false
     };
+  },
+  
+  getParameterByName: function(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
   },
   
   close: function() {
@@ -46,10 +77,10 @@ var Settings = React.createClass({
       };
       
       if (this.state.subgraph) {
-        if (this.state.subgraph.depth > 0)
+        if (this.state.subgraph.depth > 0){
           graph.subgraph = this.state.subgraph;
+		}
       }
-
       this.props.requestGraph(graph);
     }
   },
@@ -73,6 +104,12 @@ var Settings = React.createClass({
   },
 
   render: function() {
+  
+    if(this.renderInitial){
+      this.renderInitial = false;
+      this.draw();
+    }
+  
     return (
       <div className='modal-container'>
         <Button 
