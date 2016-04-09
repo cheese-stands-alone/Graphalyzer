@@ -23,6 +23,12 @@ var SearchPanel = React.createClass({
     };
   },
 
+  search: function() {
+    this.props.searchNode(this.state.searchOptions, function() {
+      this.setState(this.getInitialState());      
+    }.bind(this));
+  },
+
   updateFields: function() {
     var self = this;
     this.setState({

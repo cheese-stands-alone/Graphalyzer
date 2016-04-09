@@ -229,18 +229,7 @@ var Graphalyzer = React.createClass({
   },
 
   reset: function() {
-    this.setState({
-      currentGraph: null,
-      filter: {},
-      graphData: {
-        nodes: new Vis.DataSet(),
-        edges: new Vis.DataSet()
-      },
-      tmpGraphData: {},
-      totalChunks: 0,
-      currentChunk: 0,
-      selectedNode: {}
-    });
+    this.setState(this.getInitialState());
   },
 
   searchNode: function(params) {
