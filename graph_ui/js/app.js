@@ -1,7 +1,9 @@
 /**
  * app.js
+ *
+ * Root component of Graphalyzer
  * 
- * @author Andrew Bowler, Alberto Gomez-Estrada, Taylor Welter
+ * @author Andrew Bowler, Alberto Gomez-Estrada, Michael Sgroi, Taylor Welter
  */
 
 'use strict';
@@ -55,6 +57,10 @@ var Graphalyzer = React.createClass({
     };
   },
 
+  /**
+   * Stores the provided graph data (contains node and edge arrays) 
+   * into the app's current state
+   */
   addDataToGraph: function(data) {
     var self = this;
     var newNodeSet, newEdgeSet;
@@ -104,6 +110,9 @@ var Graphalyzer = React.createClass({
     }
   },
 
+  /**
+   * Clears any filters within the current graph data and removes colors
+   */
   clearFilter: function() {
     if (this.state.graphData) {
       var nodeIDs = this.state.graphData.nodes.get({returnType: 'Object'});
@@ -124,6 +133,9 @@ var Graphalyzer = React.createClass({
     }
   },
 
+  /**
+   * Sets the current filter state for other components
+   */
   filter: function(property, option, value) {
     this.setState({
       filter: {
@@ -135,7 +147,10 @@ var Graphalyzer = React.createClass({
     });
   },
 
-  getGraphList: function(data) {
+  /**
+   * Requests a list of graphs currently stored on the server
+   */
+  getGraphList: function() {
     var request = {  
       'message_id': '',
       'sender_id': '',
@@ -150,6 +165,10 @@ var Graphalyzer = React.createClass({
     this.sendWebSocketMessage(request);
   },
 
+  /**
+   * Handles all WebSocket messages from the server, updating current 
+   * graph data, graph lists, or the session ID depending on the response
+   */
   handleWSMessage: function(event) {
     this.logger('Message received from server');
     var response = event.data;
@@ -178,6 +197,9 @@ var Graphalyzer = React.createClass({
     }
   },
 
+  /**
+   * Prints timestamped debug messages to the browser console
+   */
   logger: function(message) {
     var date = new Date();
     console.log('[' + 
@@ -192,6 +214,10 @@ var Graphalyzer = React.createClass({
     );
   },
 
+  /**
+   * Requests graph data from the server from the given graph object, 
+   * which may contain subgraph parameters
+   */
   requestGraph: function(graph) {
     var request = {
       'message_id': '',
@@ -228,6 +254,9 @@ var Graphalyzer = React.createClass({
     this.sendWebSocketMessage(request);
   },
 
+  /**
+   * Resets the application to its initial state
+   */
   reset: function() {
     this.setState({
       currentGraph: null,
@@ -243,6 +272,10 @@ var Graphalyzer = React.createClass({
     });
   },
 
+  /**
+   * Searches for a node in the graph data based on a provided 
+   * key/value pair
+   */
   searchNode: function(params) {
     if (!this.state.graphData)
       return;
@@ -268,6 +301,9 @@ var Graphalyzer = React.createClass({
     }
   },
 
+  /**
+   * Sends a WebSocket message to the server
+   */
   sendWebSocketMessage: function(request) {
     var self = this;
     this.waitForWS(self.props.websocket, function() {
@@ -275,16 +311,25 @@ var Graphalyzer = React.createClass({
     });
   },
 
+  /**
+   * Updates selected node - for other components
+   */
   updateSelectedNode: function(node) {
     this.setState({selectedNode: node});
   },
 
+  /**
+   * Updates node in focus on the canvas - for other components
+   */
   updateNodeInFocus: function(node) {
     this.setState({
       nodeInFocus: node
     });
   },
 
+  /**
+   * Refreshes connection to the WebSocket server
+   */
   waitForWS: function(ws, callback) {
     var self = this;
     setTimeout(

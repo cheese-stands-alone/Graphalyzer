@@ -1,6 +1,9 @@
 /**
  * Graph.js
  *
+ * Displays the graph in a canvas drawn by Vis.js, processing any 
+ * filters and searches
+ * 
  * @author Andrew Bowler, Alberto Gomez-Estrada
  */
 
@@ -96,6 +99,10 @@ var Graph = React.createClass({
       (this.props.nodeInFocus != nextProps.nodeInFocus);
   },
 
+  /**
+   * If there are any filters present, run their tests on the 
+   * graph data
+   */
   doFilter: function() {
     var property = this.props.filter.property;
     var nodeIDs = this.props.graphData.nodes.get({returnType: 'Object'});
@@ -162,6 +169,9 @@ var Graph = React.createClass({
       this.props.graphData.nodes.update(filteredData);
   },
 
+  /**
+   * Greys out nodes that don't pass the filter test
+   */
   filterOut: function(filteredOutNodes, newNodeID) {
     filteredOutNodes.push({
       id: newNodeID, 
@@ -169,6 +179,9 @@ var Graph = React.createClass({
     });
   },
 
+  /**
+   * Instructs the canvas to zoom in on a searched node
+   */
   focusOnNode: function() {
     if (this.props.nodeInFocus) {
       var options = {
@@ -181,12 +194,18 @@ var Graph = React.createClass({
     }
   },
 
+  /**
+   * Checks if any filters exist
+   */
   hasFilterOptions: function() {
     if (this.props.filter) {
       return this.props.filter.property && this.props.filter.option;
     } else return false;
   },
 
+  /**
+   * Highlights nodes that pass the filter test
+   */
   highlight: function(highlightedNodes, newNodeID) {
     highlightedNodes.push({
       id: newNodeID, 
@@ -194,6 +213,9 @@ var Graph = React.createClass({
     });
   },
 
+  /**
+   * Checks if any graph data exists
+   */
   isGraphEmpty: function() {
     return this.props.graphData.nodes.length == 0 && this.props.graphData.edges.length == 0;
   },
@@ -219,6 +241,10 @@ var Graph = React.createClass({
     return propertyToFilter && new RegExp(this.props.filter.value).test(propertyToFilter);
   },
 
+  /**
+   * Nothing is rendered in this method other than a container for 
+   * Vis.js to draw the graph
+   */
   render: function() {
     return (<div></div>);
   }

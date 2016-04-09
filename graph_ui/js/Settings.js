@@ -1,7 +1,10 @@
 /**
  * Settings.js
  *
- * @author Andrew Bowler, Taylor Welter
+ * Modal for users to set Graphalyzer parameters, including selecting 
+ * graphs, subgraph and filter parameters
+ * 
+ * @author Andrew Bowler, Alberto Gomez-Estrada, Michael Sgroi, Taylor Welter
  */
 
 'use strict';
@@ -29,12 +32,18 @@ var Settings = React.createClass({
     };
   },
   
+  /**
+   * Closes the modal when clicking the close button
+   */
   close: function() {
     this.setState({
       show: false
     });
   },
 
+  /**
+   * Sets app's state before requesting a graph from the server
+   */
   draw: function() {
     var self = this;
     var graph;
@@ -54,18 +63,27 @@ var Settings = React.createClass({
     }
   },
 
+  /**
+   * Sets the currently selected graph
+   */
   selectGraph: function(graph) {
     this.setState({
       selectedGraph: graph
     });
   },
 
+  /**
+   * Updates filter state - for other components
+   */
   updateFilter: function(filter) {
     this.setState({
       filter: filter
     });
   },
 
+  /**
+   * Updates subgraph state - for other components
+   */
   updateSubgraph: function(subgraph) {
     this.setState({
       subgraph: subgraph

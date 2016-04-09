@@ -1,3 +1,9 @@
+/**
+ * gulpfile.js
+ * 
+ * @author Andrew Bowler
+ */
+
 var gulp = require('gulp');
 var browserify = require('browserify');
 var babel = require('gulp-babel');
@@ -14,6 +20,9 @@ var paths = {
   build: './build'
 };
 
+/**
+ * Compiles and minifies all JavaScript files once.
+ */
 gulp.task('production', function () {
   browserify("js/app.js")
   .transform('babelify', {
@@ -26,6 +35,9 @@ gulp.task('production', function () {
   .pipe(livereload());
 });
 
+/**
+ * Compiles unminified JavaScript for development
+ */
 gulp.task('dev', function() {
   browserify("js/app.js")
   .transform('babelify', {
@@ -37,11 +49,12 @@ gulp.task('dev', function() {
   .pipe(livereload());
 });
 
-// Rerun the task when a file changes
+/**
+ * Watches for changes in the JavaScript and re-runs gulp dev
+ */
 gulp.task('watch', function() {
   livereload.listen();
   gulp.watch(files.js, ['dev']);
 });
 
-// The default task (called when you run `gulp` from cli)
 gulp.task('default', ['watch', 'dev']);

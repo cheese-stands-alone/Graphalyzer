@@ -1,6 +1,9 @@
 /**
  * SubgraphInput.js
  *
+ * Allows users to specify subgraph parameters by source node ID and 
+ * depth ranging from 1-5
+ *
  * @author Andrew Bowler
  */
 
@@ -22,11 +25,17 @@ var SubgraphInput = React.createClass({
     };
   },
 
+  /**
+   * Toggles disabled attribute of this component in the HTML
+   */
   toggleDisable: function() {
     var disabled = this.state.disabled;
     this.setState({disabled: !disabled});
   },
 
+  /**
+   * Update state from input value change
+   */
   updateFields: function() {
     var self = this;
     var newState = ReactStateUpdate(this.state, {
