@@ -29,6 +29,12 @@ var SearchPanel = React.createClass({
   /**
    * Update state from input value change
    */
+  search: function() {
+    this.props.searchNode(this.state.searchOptions, function() {
+      this.setState(this.getInitialState());      
+    }.bind(this));
+  },
+
   updateFields: function() {
     var self = this;
     this.setState({

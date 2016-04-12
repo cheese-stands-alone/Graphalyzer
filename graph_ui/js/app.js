@@ -150,6 +150,13 @@ var Graphalyzer = React.createClass({
   /**
    * Requests a list of graphs currently stored on the server
    */
+  getCurrentState: function() {
+    return this.state;
+  },
+
+  /**
+   * Requests a list of graphs currently stored on the server
+   */
   getGraphList: function() {
     var request = {  
       'message_id': '',
@@ -248,7 +255,8 @@ var Graphalyzer = React.createClass({
 
     this.setState({
       currentGraph: graph.selectedGraph,
-      filter: graph.filter
+      filter: graph.filter,
+      subgraph: graph.subgraph
     });
 
     this.sendWebSocketMessage(request);
@@ -258,18 +266,7 @@ var Graphalyzer = React.createClass({
    * Resets the application to its initial state
    */
   reset: function() {
-    this.setState({
-      currentGraph: null,
-      filter: {},
-      graphData: {
-        nodes: new Vis.DataSet(),
-        edges: new Vis.DataSet()
-      },
-      tmpGraphData: {},
-      totalChunks: 0,
-      currentChunk: 0,
-      selectedNode: {}
-    });
+    this.setState(this.getInitialState());
   },
 
   /**
@@ -370,6 +367,7 @@ var Graphalyzer = React.createClass({
                   filter={this.filter}
                   clearFilter={this.clearFilter}
                   reset={this.reset}
+                  getCurrentState={this.getCurrentState}
                   searchNode={this.searchNode}
                 />
               </Row>
