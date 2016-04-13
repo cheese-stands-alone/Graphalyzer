@@ -148,7 +148,9 @@ var Graphalyzer = React.createClass({
   },
 
   /**
-   * Requests a list of graphs currently stored on the server
+   * Returns the value of the parameters for the current instance
+   * of Graphalyzer. In effect, the parameters required to replicate
+   * the current session. Used in ExportURL.js.
    */
   getCurrentState: function() {
     return this.state;
