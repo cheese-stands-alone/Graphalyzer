@@ -28,11 +28,11 @@ class GetSubgraphHandler(HandleInterface):
         if (nodes != ""):
             nodes = nodes[:-1]
             nodes += "]"
-            graph["nodes"] = json.loads(nodes)
+            graph["nodes"] = json.loads(nodes, strict=False)
         if (edges != ""):
             edges = edges[:-1]
             edges += "]"
-            graph["edges"] = json.loads(edges)
+            graph["edges"] = json.loads(edges, strict=False)
 
         jsonmsg["message_id"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in
@@ -132,7 +132,8 @@ class GetSubgraphHandler(HandleInterface):
                     counter = 0
                     # Send final chunk
             self.__send(socket, nodes, edges, str(currchunk), str(numofchunks.result()))
-        except Exception:
+        except Exception as e:
+            logging.error(e)
             logging.error("Unable to connect to neo4j")
             ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
             return

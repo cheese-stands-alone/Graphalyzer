@@ -29,7 +29,9 @@ class FileHandler(object):
 			filename, file_extension = self.oSWrapper.getFileExtension(file)
 			newFileString = currentTime + "-" + self.oSWrapper.getFileName(file) + file_extension
 			self.moveFileToBackup(file, newFileString, temp, backup)
-
-			self.addToNeo4J(backup + newFileString, self.oSWrapper.getFileName(newFileString))
+			self.logger.error(filename)
+			self.logger.error(filename.find("-"))
+			self.logger.error(filename[filename.find("-") + 1:])
+			self.addToNeo4J(backup + newFileString, filename[filename.find("-") + 1:])
 		except:
 			self.logger.error("Error handling file " + str(sys.exc_info()))

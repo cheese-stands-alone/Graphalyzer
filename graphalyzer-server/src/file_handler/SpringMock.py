@@ -15,7 +15,10 @@ class SpringMock(object):
 
 
 	def __init__(self):
-		self.appendOSPathHeader()
+		#self.appendOSPathHeader()
+		self.tempDirectory = TEMPDIRECTORY
+		self.backupDirectory = BACKUPDIRECTORY
+		self.logDirectory = LOGDIRECTORY
 		self.setupLogger()
 
 	def getServerFileHandlingService(self):
