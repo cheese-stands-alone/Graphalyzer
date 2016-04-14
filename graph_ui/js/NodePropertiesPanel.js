@@ -1,6 +1,8 @@
 /**
  * NodePropertiesPanel.js
  *
+ * Lists all of the properties of a selected node
+ *
  * @author Andrew Bowler, Taylor Welter
  */
 
