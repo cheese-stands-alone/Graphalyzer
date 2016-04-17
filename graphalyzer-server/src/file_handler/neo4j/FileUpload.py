@@ -25,5 +25,6 @@ class FileUpload(object):
 				graphID = graphID.replace("Prop", "")
 				self.logger.info("Property graph to be uploaded to database. Graph ID is " + graphID)
 				self.neo4JInteraction.loadProp(graphFileLocation, graphID)
-		except:
+		except Exception as e:
+			self.logger.error(e)
 			self.logger.error("Problem uploading to Neo4J " + str(sys.exc_info()))

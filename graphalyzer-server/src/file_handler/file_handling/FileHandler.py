@@ -33,5 +33,6 @@ class FileHandler(object):
 			self.logger.error(filename.find("-"))
 			self.logger.error(filename[filename.find("-") + 1:])
 			self.addToNeo4J(backup + newFileString, filename[filename.find("-") + 1:])
-		except:
+		except Exception as e:
+			self.logger.error(e)
 			self.logger.error("Error handling file " + str(sys.exc_info()))

@@ -25,14 +25,10 @@ class GetGraphChunkHandler(HandleInterface):
         if(nodes != ""):
             nodes = nodes[:-1]
             nodes += "]"
-            logging.error(nodes)
             graph["nodes"] = json.loads(nodes, strict=False)
         if(edges != ""):
-            logging.error(edges)
-            if(len(edges) != 1):
-                edges = edges[:-1]
+            edges = edges[:-1]
             edges += "]"
-            logging.error(edges)
             graph["edges"] = json.loads(edges, strict=False)
 
         jsonmsg["message_id"] = "".join(
