@@ -13,11 +13,7 @@ class ServerFileHandlingService(object):
 	def startService(self):
 		self.storageFolderInit.initializeStorageFolders()
 		self.logger.info("Service starting.")
-		# //TODO
-		# //parseConfig();
-		# if 1/*result from parseConfig indicates use backup data*/:
-		# 	//parse backup files
-		# }
 		while 1:
+			#wait appropriate time, then scan for new files
 			time.sleep(self.waitTimeInMinutes * 60)
 			self.fileScanner.scanForNewFiles()

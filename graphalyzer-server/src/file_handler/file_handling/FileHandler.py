@@ -27,9 +27,11 @@ class FileHandler(object):
 			currentTime = self.oSWrapper.getCurrentUTCDate()
 
 			filename, file_extension = self.oSWrapper.getFileExtension(file)
+			#append time to graph name for backup
 			newFileString = currentTime + "-" + self.oSWrapper.getFileName(file) + file_extension
 			self.moveFileToBackup(file, newFileString, temp, backup)
-
-			self.addToNeo4J(backup + newFileString, self.oSWrapper.getFileName(newFileString))
-		except:
+			#remove uuid from name and send to neo4j
+			self.addToNeo4J(backup + newFileString, filename[filename.find("-") + 1:])
+		except Exception as e:
+			self.logger.error(e)
 			self.logger.error("Error handling file " + str(sys.exc_info()))

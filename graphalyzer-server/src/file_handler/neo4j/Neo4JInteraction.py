@@ -13,9 +13,13 @@ class Neo4JInteraction(object):
 			and graphid is the unique id for this graph"""
 		from py2neo import Graph
 		from py2neo.packages.httpstream import http
+		import os
 		# Increase timeout because it can take a really long time.
 		http.socket_timeout = 9999
-
+		self.logger.info(graphlocation)
+		if graphlocation.find("/") != 0 and graphlocation.find(":") != 1:
+			graphlocation = os.getcwd() + "/" + graphlocation
+		self.logger.info(graphlocation)
 		query = ("USING PERIODIC COMMIT 1000 LOAD CSV  WITH HEADERS FROM 'file://" +
 		         graphlocation + "' AS line " +
 		         "MERGE (child:node {id:line.childid, graphid:\"" +
@@ -31,7 +35,8 @@ class Neo4JInteraction(object):
 			graph.cypher.execute("CREATE CONSTRAINT ON (parent:node) ASSERT parent.id IS UNIQUE")
 			graph.cypher.execute("CREATE CONSTRAINT ON (rel:edge) ASSERT rel.id IS UNIQUE")
 			graph.cypher.execute(query)
-		except Exception:
+		except Exception as e:
+			self.logger.error(e);
 			self.logger.error("Edges failed. Unable to connect to neo4j.")
 
 	def loadProp(self, graphlocation: str, graphid: str):
@@ -41,6 +46,7 @@ class Neo4JInteraction(object):
 		from py2neo.packages.httpstream import http
 		# Increase timeout because it can take a really long time.
 		http.socket_timeout = 9999
+		self.logger.info(graphlocation)
 		# noinspection PyBroadException
 		try:
 			from py2neo import Graph
@@ -61,5 +67,6 @@ class Neo4JInteraction(object):
 				tx.append(query)
 				count += 1
 			tx.commit()
-		except Exception:
+		except Exception as e:
+			self.logger.error(e);
 			self.logger.error("Properties failed. Unable to connect to neo4j.")

@@ -54,7 +54,8 @@ class GetGraphHandler(HandleInterface):
                          + "\"},"
             edges = edges[:-1]
             edges += "]"
-        except Exception:
+        except Exception as e:
+            logging.error(e)
             logging.error("Unable to connect to neo4j")
             ErrorHandler(self._request, "Unable to connect to neo4j", "").handle(socket)
             return
@@ -63,8 +64,8 @@ class GetGraphHandler(HandleInterface):
             ErrorHandler(self._request, "Graph not found", graphid).handle(socket)
             return
 
-        graph["nodes"] = json.loads(nodes)
-        graph["edges"] = json.loads(edges)
+        graph["nodes"] = json.loads(nodes, strict=False)
+        graph["edges"] = json.loads(edges, strict=False)
 
         jsonmsg["message_id"] = "".join(
             random.choice(string.ascii_uppercase + string.digits) for _ in

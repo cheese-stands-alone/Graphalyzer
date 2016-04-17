@@ -14,10 +14,11 @@ class FileScanner(object):
 	def scanForNewFiles(self):
 		try:
 			dFiles = self.oSWrapper.getFileListing(self.tempDirectory)
-			self.logger.debug("Files found: " + str(dFiles))
+			if len(dFiles) > 0:
+				self.logger.debug("Files found: " + str(dFiles))
 
 			for d in dFiles:
-				# //TODO - add file lock check
 				self.fileHandler.handleNewFile(d, self.tempDirectory, self.backupDirectory)
-		except:
+		except Exception as e:
+			self.logger.error(e)
 			self.logger.error("Error scanning for files " + str(sys.exc_info()))

@@ -3,6 +3,7 @@ import datetime
 import shutil
 from os import path
 
+#wrapper for os library
 class OSWrapper(object):
 
 	def __init__(self, logger):
@@ -48,8 +49,8 @@ class OSWrapper(object):
 			self.logger.debug("OS is Windows. Returning path header 'c:/'")
 			return "c:/"
 		else:
-			self.logger.debug("OS is Linux. Returning no header. Logs being placed in current directory.")
-			return ""
+			self.logger.debug("OS is Linux. Returning path header '/'")
+			return "/"
 
 	def oSIsWindows(self):
 		return os.name is 'nt'

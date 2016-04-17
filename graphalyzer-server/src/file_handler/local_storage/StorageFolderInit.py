@@ -8,6 +8,7 @@ class StorageFolderInit(object):
 		self.backupDirectory = backupDirectory
 		self.logger = logger
 
+	#initialize folders if non-existent
 	def initializeStorageFolders(self):
 		if not self.oSWrapper.validPath(self.tempDirectory):
 			self.logger.info("Temporary upload directory does not exist. Creating at " + self.tempDirectory)
