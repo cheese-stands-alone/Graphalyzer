@@ -7,9 +7,9 @@ class FileUpload(object):
 		self.logger = logger
 
 	def addFileToDatabase(self, graphFileLocation, graphID):
-		#TODO change upload name and graph property
 		try:
 			if "edge" in graphID or "Edge" in graphID:
+				#remove edge from graph name
 				graphID = graphID.replace("edges", "")
 				graphID = graphID.replace("Edges", "")
 				graphID = graphID.replace("edge", "")
@@ -17,6 +17,7 @@ class FileUpload(object):
 				self.logger.info("Edge graph to be uploaded to database. Graph ID is " + graphID)
 				self.neo4JInteraction.loadEdges(graphFileLocation, graphID)
 			else:
+				#remove property from graph name
 				graphID = graphID.replace("properties", "")
 				graphID = graphID.replace("Properties", "")
 				graphID = graphID.replace("props", "")

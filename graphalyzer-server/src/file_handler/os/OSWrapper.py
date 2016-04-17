@@ -3,6 +3,7 @@ import datetime
 import shutil
 from os import path
 
+#wrapper for os library
 class OSWrapper(object):
 
 	def __init__(self, logger):

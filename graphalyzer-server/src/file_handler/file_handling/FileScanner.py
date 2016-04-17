@@ -18,7 +18,6 @@ class FileScanner(object):
 				self.logger.debug("Files found: " + str(dFiles))
 
 			for d in dFiles:
-				# //TODO - add file lock check
 				self.fileHandler.handleNewFile(d, self.tempDirectory, self.backupDirectory)
 		except Exception as e:
 			self.logger.error(e)

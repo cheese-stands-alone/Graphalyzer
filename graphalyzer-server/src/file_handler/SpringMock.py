@@ -10,8 +10,8 @@ from file_handler.rest_upload.InitRestService import *
 import logging
 from ServerConfig import *
 
+#used to intialize all classes with appropriate injections
 class SpringMock(object):
-
 
 
 	def __init__(self):
