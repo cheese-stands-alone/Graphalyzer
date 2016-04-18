@@ -1,3 +1,9 @@
+/**
+ * Loading Bar to display data collection progress
+ * 
+ * @author Andrew Bowler
+ */
+
 var React = require('react');
 var Styles = require('./Styles.js');
 

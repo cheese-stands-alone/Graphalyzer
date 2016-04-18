@@ -1,7 +1,10 @@
 /**
  * Settings.js
  *
- * @author Andrew Bowler, Taylor Welter
+ * Modal for users to set Graphalyzer parameters, including selecting 
+ * graphs, subgraph and filter parameters
+ * 
+ * @author Andrew Bowler, Alberto Gomez-Estrada, Michael Sgroi, Taylor Welter
  */
 
 'use strict';
@@ -15,9 +18,13 @@ var GraphLoader = require('./GraphLoader.js');
 var SubgraphInput = require('./SubgraphInput.js');
 var FilterPanel = require('./FilterPanel.js');
 
+ /**
+   * Sets initial values, parsing them from the url if existent
+   */
 var Settings = React.createClass({
   getInitialState: function() {
 	  
+	  //Sets selectedGraphVal to default and parses url to check for value to use if deep linked
 	  var selectedGraphVal = null;
 	  var renderInitialVal = false;
       if(this.getParameterByName('selectedGraph') != null){
@@ -25,6 +32,7 @@ var Settings = React.createClass({
 		  renderInitialVal = true;
 	  }
 	  
+	  //Sets filterVal to default and parses url to check for value to use if deep linked
 	  var filterVal = {
         property: null,
         option: null,
@@ -34,11 +42,13 @@ var Settings = React.createClass({
 		  filterVal = JSON.parse(this.getParameterByName('filter'));
 	  }
 	  
+	  //Sets subgraphVal to default and parses url to check for value to use if deep linked
 	  var subgraphVal = false;
       if(this.getParameterByName('subgraph') != null){
 		  subgraphVal = JSON.parse(this.getParameterByName('subgraph'));
 	  }
 	  
+	  //If a graph was given in the url, we need to render the graph so we save the boolean true to load it in render later
 	  this.renderInitial = renderInitialVal;
     return {
       filter: filterVal,
@@ -48,6 +58,10 @@ var Settings = React.createClass({
     };
   },
   
+  /**
+   * Parses url using regex to find the given variable name
+   * Returns null for no variable, empty string for no value, or the parsed value if existent
+   */
   getParameterByName: function(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -58,12 +72,18 @@ var Settings = React.createClass({
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   },
   
+  /**
+   * Closes the modal when clicking the close button
+   */
   close: function() {
     this.setState({
       show: false
     });
   },
 
+  /**
+   * Sets app's state before requesting a graph from the server
+   */
   draw: function() {
     var self = this;
     var graph;
@@ -84,6 +104,9 @@ var Settings = React.createClass({
     }
   },
 
+  /**
+   * Sets the currently selected graph
+   */
   selectGraph: function(graph, disabled) {
     this.setState({
       selectedGraph: graph,
@@ -91,12 +114,18 @@ var Settings = React.createClass({
     });
   },
 
+  /**
+   * Updates filter state - for other components
+   */
   updateFilter: function(filter) {
     this.setState({
       filter: filter
     });
   },
 
+  /**
+   * Updates subgraph state - for other components
+   */
   updateSubgraph: function(subgraph, disabled) {
     this.setState({
       subgraph: subgraph
@@ -104,7 +133,7 @@ var Settings = React.createClass({
   },
 
   render: function() {
-  
+	//Checks to see if this is the first time loading the page and if so, calls draw for initial graph state parameters
     if(this.renderInitial){
       this.renderInitial = false;
       this.draw();

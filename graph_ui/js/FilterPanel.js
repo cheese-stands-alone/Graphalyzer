@@ -1,6 +1,11 @@
 /**
  * FilterPanel.js
  *
+ * Filters a graph based on a property contained within a node or edge,
+ * an option or qualifier on the filtering: 
+ * (remove nodes without, pattern matching, greater than, less than, equal to),
+ * as well as a quantifier or value to attribute to the option/qualifier.
+ * 
  * @author Andrew Bowler, Taylor Welter
  */
 

@@ -1,7 +1,9 @@
 /**
  * GraphLoader.js
  *
- * @author Andrew Bowler
+ * Presents a list of graphs from the server for the user to select
+ * 
+ * @author Andrew Bowler, Taylor Welter
  */
 
 'use strict';
@@ -17,6 +19,9 @@ var GraphLoader = React.createClass({
     this.props.getGraphList();
   },
 
+  /**
+   * Select a graph from the list
+   */
   selectGraph: function() {
     var idx = this.refs.selectGraph.getValue();
     if (this.props.graphList && idx > -1)
@@ -32,7 +37,6 @@ var GraphLoader = React.createClass({
       <option key={-1} value={-1}>Select a graph</option>
     );
 
-    // TODO: get graph list into this component
     if (this.props.graphList) {
       for (var i = 0; i < this.props.graphList.length; i++) {
         graphs.push(

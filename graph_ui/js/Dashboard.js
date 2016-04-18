@@ -1,6 +1,10 @@
 /**
  * Dashboard.js
  *
+ * Main functional panel on the UI. 
+ * Interfaces with the Settings Panel, the Search Panel, 
+ * as well as the Export URL and Reset buttons.
+ *
  * @author Andrew Bowler, Taylor Welter
  */
 
