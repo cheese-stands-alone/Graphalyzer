@@ -21,6 +21,7 @@ var ReactBootstrap = require('react-bootstrap'),
     Button = ReactBootstrap.Button;
 var Settings = require('./Settings.js');
 var GraphalyzerAddress = "http://graphalyzer.wk-dev.wdesk.org/";
+var LastURLReturned = "";
 var currentState = {};
 
 var ExportURL = React.createClass({
@@ -63,7 +64,8 @@ var ExportURL = React.createClass({
 	  	}
 
 	  	URL = URL.replace(/[^=&]+=(&|$)/g,"").replace(/&$/,"");
-	  	return encodeURI(URL);
+      LastURLReturned = encodeURI(URL);
+	  	return LastURLReturned;
   	}
   },
 

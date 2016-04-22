@@ -9,15 +9,24 @@ import ExportURL from '../js/ExportURL';
 
 describe('ExportURL', () => {
 
-  it('renders the button', () => {
-    
-    const exportURL = TestUtils.renderIntoDocument(
+  var URL = "http://graphalyzer.wk-dev.wdesk.org/"
+
+  const exportURL = TestUtils.renderIntoDocument(
       <ExportURL />
     );
 
+  it('renders the button', () => {
+
     const exportURLNode = ReactDOM.findDOMNode(exportURL);
 
-    expect(exportURLNode).toBeUndefined();
+    expect(exportURLNode).toBeDefined();
+  });
+
+  it('returns a url', () => {
+    
+    exportURL.createURL();
+
+    expect(exportURL).toEqual(URL);
   });
   
 });
