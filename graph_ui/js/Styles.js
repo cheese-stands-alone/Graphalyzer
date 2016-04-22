@@ -1,3 +1,9 @@
+/**
+ * Styles.js
+ *
+ * @author Andrew Bowler
+ */
+
 var Styles = {
   outerBorderStyle: {
     position:'relative',

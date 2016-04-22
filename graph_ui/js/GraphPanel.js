@@ -1,6 +1,9 @@
 /**
  * GraphPanel.js
  *
+ * Container for either a Vis.js graph canvas or a loading bar when 
+ * data is being received
+ * 
  * @author Andrew Bowler, Alberto Gomez-Estrada
  */
 

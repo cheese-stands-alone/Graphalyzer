@@ -1,6 +1,9 @@
 /**
  * SearchPanel.js
  *
+ * Input panel for users to search the graph for nodes based on 
+ * property key/value pairs, or node ID by default
+ * 
  * @author Andrew Bowler, Taylor Welter
  *
  */
@@ -23,6 +26,9 @@ var SearchPanel = React.createClass({
     };
   },
 
+  /**
+   * Update state from input value change
+   */
   search: function() {
     this.props.searchNode(this.state.searchOptions, function() {
       this.setState(this.getInitialState());      
